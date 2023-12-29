@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
-import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,13 +24,25 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen>
     with AutomaticKeepAliveClientMixin {
-  EventRepository eventRepository = EventRepository();
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
+  Map<String, bool> _editState = {};
 
   @override
   void initState() {
     super.initState();
     BlocProvider.of<EventBloc>(context)
         .add(EventFetchEvent(eventId: widget.eventId));
+    for (var detail in [
+      'Caption',
+      'Title',
+      'Date Event',
+      'Date End',
+      'Tags',
+      'ImageUrl'
+    ]) {
+      _editState[detail] = false;
+    }
   }
 
   @override
@@ -130,7 +141,7 @@ class _EventScreenState extends State<EventScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildShowFeedButton(context, event),
-                    _buildEditButton(context, event),
+                    _buildStatsButton(context, event),
                   ],
                 ),
               ),
@@ -206,13 +217,13 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-  Widget _buildEditButton(BuildContext context, Event event) {
+  Widget _buildStatsButton(BuildContext context, Event event) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: couleurBleuClair2,
       ),
       onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Edit'),
+      child: const Text('Stats'),
     );
   }
 
@@ -237,17 +248,13 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildDetailRows(Event event) {
-    // Utilisez _buildDetailList si event.done est false, sinon utilisez _buildDetailListLock
-    final detailListBuilder =
-        event.done ? _buildDetailListLock : _buildDetailList;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: detailListBuilder(event, true),
+            children: _buildDetailListLock(event, true),
           ),
         ),
         SizedBox(
@@ -256,7 +263,7 @@ class _EventScreenState extends State<EventScreen>
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: detailListBuilder(event, false),
+            children: _buildDetailListLock(event, false),
           ),
         ),
       ],
@@ -279,31 +286,15 @@ class _EventScreenState extends State<EventScreen>
       'LogoUrl': event.logoUrl.toString(),
     };
 
-    final int splitIndex = details.length ~/ 2;
-    final entries = isFirstColumn
-        ? details.entries.take(splitIndex)
-        : details.entries.skip(splitIndex);
-
-    return entries
-        .map((e) => _buildTextLock(e.key, e.value))
-        .expand((widget) => [widget, const SizedBox(height: 10)])
-        .toList();
-  }
-
-  List<Widget> _buildDetailList(Event event, bool isFirstColumn) {
-    final details = {
-      'ID': event.id,
-      'Author': event.author.author,
-      'LogoUrl': event.logoUrl.toString(),
-      'Participants': event.participants.toString(),
-      'Done': event.done.toString(),
-      'Date': event.date.toString(),
-      'Date Event': event.dateEvent.toString(),
-      'Date End': event.date.toString(),
-      'Title': event.title,
-      'Tags': event.tags.toString(),
-      'ImageUrl': event.imageUrl.toString(),
-      'Caption': event.caption,
+    final editableDetails = {
+      'Caption',
+      'Title',
+      'Date Event',
+      'Date End',
+      'Tags',
+      'ImageUrl',
+      'LogoUrl',
+      'Done',
     };
 
     final int splitIndex = details.length ~/ 2;
@@ -312,60 +303,117 @@ class _EventScreenState extends State<EventScreen>
         : details.entries.skip(splitIndex);
 
     return entries
-        .map((e) {
-          final isTextField = [
-            'Caption',
-            'Title',
-            'Date Event',
-            'Date End',
-            'Tags',
-            'ImageUrl'
-          ].contains(e.key);
-          return isTextField
-              ? _buildTextField(e.key, TextEditingController(text: e.value))
-              : _buildTextLock(e.key, e.value);
-        })
+        .map((e) =>
+            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
+                ? _buildTextField(
+                    e.key, TextEditingController(text: e.value), event)
+                : _buildTextLock(e.key, e.value, event))
         .expand((widget) => [widget, const SizedBox(height: 10)])
         .toList();
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
+  Widget _buildTextField(
+      String label, TextEditingController controller, Event event) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black),
-          fillColor: white,
-          filled: true,
-          border: const OutlineInputBorder(),
-        ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black),
+                fillColor: white,
+                filled: true,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              setState(() {
+                _editState[label] = false;
+                _updateFirebase(
+                    label, controller.text, event); // Mettre à jour Firebase
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => setState(() {
+              _editState[label] = false;
+            }),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildTextLock(String label, String value) {
+  void _updateFirebase(String label, String newValue, Event event) {
+    // Identifier le champ à mettre à jour et créer une nouvelle instance de l'événement
+    Event updatedEvent;
+    switch (label) {
+      case 'Caption':
+        updatedEvent = event.copyWith(caption: newValue);
+        break;
+      case 'Title':
+        updatedEvent = event.copyWith(title: newValue);
+        break;
+      // Ajoutez des cas pour d'autres champs modifiables
+      default:
+        debugPrint("Champ non reconnu pour la mise à jour : $label");
+        return;
+    }
+
+    // Convertir l'événement mis à jour en document Firestore
+    Map<String, dynamic> updatedData = updatedEvent.toDocument();
+
+    // Mise à jour de l'événement dans Firestore
+    _firebaseFirestore
+        .collection('events')
+        .doc(event.id)
+        .update(updatedData)
+        .then((_) => debugPrint(
+            "_updateFirebase : Événement mis à jour avec succès dans Firestore."))
+        .catchError((error) => debugPrint(
+            "_updateFirebase : Erreur lors de la mise à jour de l'événement : $error"));
+  }
+
+  Widget _buildTextLock(String label, String value, Event event) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: TextField(
-        controller: TextEditingController(text: value),
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black54),
-          fillColor: Colors.grey[300],
-          filled: true,
-          border: const OutlineInputBorder(),
-          disabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: TextEditingController(text: value),
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black54),
+                fillColor: Colors.grey[300],
+                filled: true,
+                border: const OutlineInputBorder(),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              enabled: false,
+              style: const TextStyle(color: Colors.black54),
+            ),
           ),
-        ),
-        enabled: false,
-        style: const TextStyle(color: Colors.black54),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () => setState(() {
+              _editState[label] = true;
+            }),
+          ),
+        ],
       ),
     );
   }
