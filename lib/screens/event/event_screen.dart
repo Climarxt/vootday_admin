@@ -118,7 +118,7 @@ class _EventScreenState extends State<EventScreen>
   Widget _buildButtonsCard(Event event) {
     return SizedBox(
       height: 120.0,
-      width: 237,
+      width: 244,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Padding(
@@ -126,10 +126,8 @@ class _EventScreenState extends State<EventScreen>
           child: Row(
             children: [
               Expanded(
-                // Envelopper la première colonne dans un Expanded
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Pour un espacement uniforme
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildShowFeedButton(context, event),
                     _buildEditButton(context, event),
@@ -137,10 +135,8 @@ class _EventScreenState extends State<EventScreen>
                 ),
               ),
               Expanded(
-                // Envelopper la deuxième colonne dans un Expanded
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment
-                      .spaceBetween, // Pour un espacement uniforme
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildImportButton(context, event),
                     _buildExportButton(context, event),
@@ -253,6 +249,9 @@ class _EventScreenState extends State<EventScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: detailListBuilder(event, true),
           ),
+        ),
+        SizedBox(
+          width: kDefaultPadding,
         ),
         Expanded(
           child: Column(
