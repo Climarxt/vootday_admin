@@ -56,14 +56,20 @@ class _EventScreenState extends State<EventScreen>
       color: webBackgroundColor,
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeaderSection(context, event, size),
-              const SizedBox(height: 20),
-              _buildDetailRows(event),
-            ],
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeaderSection(context, event, size),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                  child: _buildDetailRows(event),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -71,10 +77,12 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
-    return Row(
+    return Wrap(
+      direction: Axis.horizontal,
+      spacing: kDefaultPadding,
+      runSpacing: kDefaultPadding,
       children: [
         _buildEventImageCard(event),
-        const SizedBox(width: 24),
         const SummaryCard(
           title: 'Likes',
           value: '523',
@@ -84,7 +92,15 @@ class _EventScreenState extends State<EventScreen>
           iconColor: Colors.black12,
           width: 256,
         ),
-        const SizedBox(width: 24),
+        const SummaryCard(
+          title: 'Participants',
+          value: '70',
+          icon: Icons.person,
+          backgroundColor: white,
+          textColor: black,
+          iconColor: Colors.black12,
+          width: 256,
+        ),
         const SummaryCard(
           title: 'Day left',
           value: '7',
@@ -94,9 +110,47 @@ class _EventScreenState extends State<EventScreen>
           iconColor: Colors.black12,
           width: 256,
         ),
-        const SizedBox(width: 24),
-        _buildShowFeedButton(context, event),
+        _buildButtonsCard(event),
       ],
+    );
+  }
+
+  Widget _buildButtonsCard(Event event) {
+    return SizedBox(
+      height: 120.0,
+      width: 237,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Row(
+            children: [
+              Expanded(
+                // Envelopper la première colonne dans un Expanded
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Pour un espacement uniforme
+                  children: [
+                    _buildShowFeedButton(context, event),
+                    _buildEditButton(context, event),
+                  ],
+                ),
+              ),
+              Expanded(
+                // Envelopper la deuxième colonne dans un Expanded
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment
+                      .spaceBetween, // Pour un espacement uniforme
+                  children: [
+                    _buildImportButton(context, event),
+                    _buildExportButton(context, event),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -152,7 +206,37 @@ class _EventScreenState extends State<EventScreen>
         backgroundColor: couleurBleuClair2,
       ),
       onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Show Feed'),
+      child: const Text('Feed'),
+    );
+  }
+
+  Widget _buildEditButton(BuildContext context, Event event) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: couleurBleuClair2,
+      ),
+      onPressed: () => _navigateToEventFeed(context, event),
+      child: const Text('Edit'),
+    );
+  }
+
+  Widget _buildImportButton(BuildContext context, Event event) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: couleurBleuClair2,
+      ),
+      onPressed: () => _navigateToEventFeed(context, event),
+      child: const Text('Import'),
+    );
+  }
+
+  Widget _buildExportButton(BuildContext context, Event event) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: couleurBleuClair2,
+      ),
+      onPressed: () => _navigateToEventFeed(context, event),
+      child: const Text('Export'),
     );
   }
 
