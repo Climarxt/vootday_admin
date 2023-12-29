@@ -93,7 +93,8 @@ class _EventScreenState extends State<EventScreen>
                                   const SizedBox(height: 4),
                                   Text(
                                     event.author.author,
-                                    style: Theme.of(context).textTheme.titleSmall,
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
                                   ),
                                 ],
                               ),
@@ -113,30 +114,51 @@ class _EventScreenState extends State<EventScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              _buildTextLock('ID', event.id),
-              const SizedBox(height: 10),
-              _buildTextLock('Author', event.author.author),
-              const SizedBox(height: 10),
-              _buildTextLock('Caption', event.caption),
-              const SizedBox(height: 10),
-              _buildTextLock('Participants', event.participants.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('Title', event.title),
-              const SizedBox(height: 10),
-              _buildTextLock('Date', event.date.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('Date Event', event.dateEvent.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('Date End', event.date.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('Tags', event.tags.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('Done', event.done.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('ImageUrl', event.imageUrl.toString()),
-              const SizedBox(height: 10),
-              _buildTextLock('LogoUrl', event.logoUrl.toString()),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        _buildTextLock('ID', event.id),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Author', event.author.author),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Caption', event.caption),
+                        const SizedBox(height: 10),
+                        _buildTextLock(
+                            'Participants', event.participants.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Title', event.title),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Date', event.date.toString()),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        _buildTextLock(
+                            'Date Event', event.dateEvent.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Date End', event.date.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Tags', event.tags.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('Done', event.done.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('ImageUrl', event.imageUrl.toString()),
+                        const SizedBox(height: 10),
+                        _buildTextLock('LogoUrl', event.logoUrl.toString()),
+                      ],
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),
@@ -158,20 +180,25 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildTextLock(String label, String value) {
-    return TextField(
-      controller: TextEditingController(text: value),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.black54),
-        fillColor: Colors.grey[300],
-        filled: true,
-        border: const OutlineInputBorder(),
-        disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: TextField(
+        controller: TextEditingController(text: value),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black54),
+          fillColor: Colors.grey[300],
+          filled: true,
+          border: const OutlineInputBorder(),
+          disabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
         ),
+        enabled: false,
+        style: const TextStyle(color: Colors.black54),
       ),
-      enabled: false,
-      style: const TextStyle(color: Colors.black54),
     );
   }
 
