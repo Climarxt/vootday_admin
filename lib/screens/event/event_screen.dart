@@ -58,107 +58,9 @@ class _EventScreenState extends State<EventScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    height: 120.0,
-                    width: 256,
-                    child: Card(
-                      clipBehavior: Clip.antiAlias,
-                      child: Row(
-                        children: [
-                          if (event.imageUrl.isNotEmpty)
-                            Image.network(
-                              event.imageUrl,
-                              fit: BoxFit.cover,
-                              width: 120.0,
-                              height: 120.0,
-                            ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(kDefaultPadding),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    event.title,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    event.author.author,
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 24),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: couleurBleuClair2,
-                    ),
-                    onPressed: () => _navigateToEventFeed(context, event),
-                    child: const Text('Show Feed'),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        _buildTextLock('ID', event.id),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Author', event.author.author),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Caption', event.caption),
-                        const SizedBox(height: 10),
-                        _buildTextLock(
-                            'Participants', event.participants.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Title', event.title),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Date', event.date.toString()),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        _buildTextLock(
-                            'Date Event', event.dateEvent.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Date End', event.date.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Tags', event.tags.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('Done', event.done.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('ImageUrl', event.imageUrl.toString()),
-                        const SizedBox(height: 10),
-                        _buildTextLock('LogoUrl', event.logoUrl.toString()),
-                      ],
-                    ),
-                  ),
-                ],
-              )
+              _buildHeaderSection(context, event, size),
+              const SizedBox(height: 20),
+              _buildDetailRows(event),
             ],
           ),
         ),
@@ -166,15 +68,178 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
+  Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
+    return Row(
+      children: [
+        _buildEventImageCard(event),
+        const SizedBox(width: 24),
+        _buildShowFeedButton(context, event),
+      ],
+    );
+  }
+
+  Widget _buildEventImageCard(Event event) {
+    return SizedBox(
+      height: 120.0,
+      width: 256,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          children: [
+            if (event.imageUrl.isNotEmpty)
+              Image.network(
+                event.imageUrl,
+                fit: BoxFit.cover,
+                width: 120.0,
+                height: 120.0,
+              ),
+            Expanded(
+              child: _buildEventTextInfo(context, event),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEventTextInfo(BuildContext context, Event event) {
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            event.title,
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            event.author.author,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShowFeedButton(BuildContext context, Event event) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: couleurBleuClair2,
+      ),
+      onPressed: () => _navigateToEventFeed(context, event),
+      child: const Text('Show Feed'),
+    );
+  }
+
+  Widget _buildDetailRows(Event event) {
+    // Utilisez _buildDetailList si event.done est false, sinon utilisez _buildDetailListLock
+    final detailListBuilder =
+        event.done ? _buildDetailListLock : _buildDetailList;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: detailListBuilder(event, true),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: detailListBuilder(event, false),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildDetailListLock(Event event, bool isFirstColumn) {
+    final details = {
+      'ID': event.id,
+      'Author': event.author.author,
+      'Caption': event.caption,
+      'Participants': event.participants.toString(),
+      'Title': event.title,
+      'Date': event.date.toString(),
+      'Date Event': event.dateEvent.toString(),
+      'Date End': event.date.toString(),
+      'Tags': event.tags.toString(),
+      'Done': event.done.toString(),
+      'ImageUrl': event.imageUrl.toString(),
+      'LogoUrl': event.logoUrl.toString(),
+    };
+
+    final int splitIndex = details.length ~/ 2;
+    final entries = isFirstColumn
+        ? details.entries.take(splitIndex)
+        : details.entries.skip(splitIndex);
+
+    return entries
+        .map((e) => _buildTextLock(e.key, e.value))
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
+  }
+
+  List<Widget> _buildDetailList(Event event, bool isFirstColumn) {
+    final details = {
+      'ID': event.id,
+      'Author': event.author.author,
+      'LogoUrl': event.logoUrl.toString(),
+      'Participants': event.participants.toString(),
+      'Done': event.done.toString(),
+      'Date': event.date.toString(),
+      'Date Event': event.dateEvent.toString(),
+      'Date End': event.date.toString(),
+      'Title': event.title,
+      'Tags': event.tags.toString(),
+      'ImageUrl': event.imageUrl.toString(),
+      'Caption': event.caption,
+    };
+
+    final int splitIndex = details.length ~/ 2;
+    final entries = isFirstColumn
+        ? details.entries.take(splitIndex)
+        : details.entries.skip(splitIndex);
+
+    return entries
+        .map((e) {
+          final isTextField = [
+            'Caption',
+            'Title',
+            'Date Event',
+            'Date End',
+            'Tags',
+            'ImageUrl'
+          ].contains(e.key);
+          return isTextField
+              ? _buildTextField(e.key, TextEditingController(text: e.value))
+              : _buildTextLock(e.key, e.value);
+        })
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
+  }
+
   Widget _buildTextField(String label, TextEditingController controller) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.black),
-        fillColor: white,
-        filled: true,
-        border: const OutlineInputBorder(),
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          fillColor: white,
+          filled: true,
+          border: const OutlineInputBorder(),
+        ),
       ),
     );
   }
