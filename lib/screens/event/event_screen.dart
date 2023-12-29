@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
+import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class EventScreen extends StatefulWidget {
   final String eventId;
@@ -73,6 +75,26 @@ class _EventScreenState extends State<EventScreen>
       children: [
         _buildEventImageCard(event),
         const SizedBox(width: 24),
+        const SummaryCard(
+          title: 'Likes',
+          value: '523',
+          icon: Icons.ssid_chart_rounded,
+          backgroundColor: white,
+          textColor: black,
+          iconColor: Colors.black12,
+          width: 256,
+        ),
+        const SizedBox(width: 24),
+        const SummaryCard(
+          title: 'Day left',
+          value: '7',
+          icon: Icons.calendar_month,
+          backgroundColor: white,
+          textColor: black,
+          iconColor: Colors.black12,
+          width: 256,
+        ),
+        const SizedBox(width: 24),
         _buildShowFeedButton(context, event),
       ],
     );
@@ -84,19 +106,22 @@ class _EventScreenState extends State<EventScreen>
       width: 256,
       child: Card(
         clipBehavior: Clip.antiAlias,
-        child: Row(
-          children: [
-            if (event.imageUrl.isNotEmpty)
-              Image.network(
-                event.imageUrl,
-                fit: BoxFit.cover,
-                width: 120.0,
-                height: 120.0,
+        child: Padding(
+          padding: const EdgeInsets.all(kDefaultPadding),
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildEventTextInfo(context, event),
               ),
-            Expanded(
-              child: _buildEventTextInfo(context, event),
-            ),
-          ],
+              if (event.imageUrl.isNotEmpty)
+                SvgPicture.network(
+                  event.logoUrl,
+                  fit: BoxFit.cover,
+                  width: 100.0,
+                  height: 100.0,
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -115,11 +140,6 @@ class _EventScreenState extends State<EventScreen>
                 .textTheme
                 .titleLarge!
                 .copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            event.author.author,
-            style: Theme.of(context).textTheme.titleSmall,
           ),
         ],
       ),

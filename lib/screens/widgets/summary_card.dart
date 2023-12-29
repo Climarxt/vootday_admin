@@ -46,6 +46,7 @@ class SummaryCard extends StatelessWidget {
               padding: const EdgeInsets.all(kDefaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding:
