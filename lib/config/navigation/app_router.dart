@@ -180,19 +180,40 @@ GoRouter createRouter(BuildContext context) {
                 },
                 routes: [
                   GoRoute(
-                    path: 'event/:eventId',
-                    pageBuilder: (BuildContext context, GoRouterState state) {
-                      final eventId = RouteConfig.getEventId(state);
-                      String currentPath = RouteConfig.getCurrentPath(state);
-                      return MaterialPage<void>(
-                        key: state.pageKey,
-                        child: EventScreen(
-                          fromPath: currentPath,
-                          eventId: eventId,
+                      path: 'event/:eventId',
+                      pageBuilder: (BuildContext context, GoRouterState state) {
+                        final eventId = RouteConfig.getEventId(state);
+                        String currentPath = RouteConfig.getCurrentPath(state);
+                        return MaterialPage<void>(
+                          key: state.pageKey,
+                          child: EventScreen(
+                            fromPath: currentPath,
+                            eventId: eventId,
+                          ),
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          path: 'feedevent',
+                          pageBuilder:
+                              (BuildContext context, GoRouterState state) {
+                            final eventId = RouteConfig.getEventId(state);
+                            final title = RouteConfig.getTitle(state);
+                            final logoUrl = RouteConfig.getLogoUrl(state);
+                            return MaterialPage<void>(
+                              key: state.pageKey,
+                              child:
+                                  BlocProviderConfig.getFeedEventBlocProvider(
+                                context,
+                                FeedEvent(
+                                    eventId: eventId,
+                                    title: title,
+                                    logoUrl: logoUrl),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ]),
                 ],
               ),
             ],

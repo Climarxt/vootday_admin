@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print, unrelated_type_equality_checks
+import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 
@@ -40,7 +41,7 @@ class _FeedEventState extends State<FeedEvent>
           feedEventBloc.add(FeedEventFetchPostsEvents(eventId: widget.eventId));
         }
         return Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+          padding: const EdgeInsets.all(kDefaultPadding),
           child: Scaffold(
             body: _buildBody(state),
           ),
@@ -50,35 +51,28 @@ class _FeedEventState extends State<FeedEvent>
   }
 
   Widget _buildBody(FeedEventState state) {
-    return Stack(
-      children: [
-        ListView.separated(
-          physics: const BouncingScrollPhysics(),
-          cacheExtent: 10000,
-          itemCount: state.posts.length + 1,
-          separatorBuilder: (BuildContext context, int index) =>
-              const SizedBox(height: 10),
-          itemBuilder: (BuildContext context, int index) {
-            if (index == state.posts.length) {
-              return state.status == FeedEventStatus.paginating
-                  ? const Center(child: CircularProgressIndicator())
-                  : const SizedBox.shrink();
-            } else {
-              final Post post = state.posts[index] ?? Post.empty;
-              return PostView(
-                post: post,
-              );
-            }
-          },
-        ),
-        if (state.status == FeedEventStatus.paginating)
-          const Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-      ],
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        childAspectRatio: 1 / 1.2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+      ),
+      physics: const BouncingScrollPhysics(),
+      cacheExtent: 10000,
+      itemCount: state.posts.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == state.posts.length) {
+          return state.status == FeedEventStatus.paginating
+              ? const Center(child: CircularProgressIndicator())
+              : const SizedBox.shrink();
+        } else {
+          final Post post = state.posts[index] ?? Post.empty;
+          return PostView(
+            post: post,
+          );
+        }
+      },
     );
   }
 

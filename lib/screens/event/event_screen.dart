@@ -217,11 +217,8 @@ class _EventScreenState extends State<EventScreen>
   }
 
   void _navigateToEventFeed(BuildContext context, Event event) {
-    final encodedTitle = Uri.encodeComponent(event.title);
-    final encodedLogoUrl = Uri.encodeComponent(event.logoUrl);
-
-    GoRouter.of(context).push(
-      '/feedevent/${widget.eventId}?title=$encodedTitle&logoUrl=$encodedLogoUrl',
+    GoRouter.of(context).go(
+      '/calendar/event/${widget.eventId}/feedevent',
     );
   }
 
