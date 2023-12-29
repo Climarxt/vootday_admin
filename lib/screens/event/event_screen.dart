@@ -50,92 +50,95 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildEvent(BuildContext context, Event event, Size size) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  height: 120.0,
-                  width: 256,
-                  child: Card(
-                    clipBehavior: Clip.antiAlias,
-                    child: Row(
-                      children: [
-                        if (event.imageUrl.isNotEmpty)
-                          Image.network(
-                            event.imageUrl,
-                            fit: BoxFit.cover,
-                            width: 120.0,
-                            height: 120.0,
-                          ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(kDefaultPadding),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  event.title,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge!
-                                      .copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  event.author.author,
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ],
+    return Container(
+      color: webBackgroundColor,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SizedBox(
+                    height: 120.0,
+                    width: 256,
+                    child: Card(
+                      clipBehavior: Clip.antiAlias,
+                      child: Row(
+                        children: [
+                          if (event.imageUrl.isNotEmpty)
+                            Image.network(
+                              event.imageUrl,
+                              fit: BoxFit.cover,
+                              width: 120.0,
+                              height: 120.0,
+                            ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(kDefaultPadding),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    event.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    event.author.author,
+                                    style: Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 24),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: couleurBleuClair2,
+                  const SizedBox(width: 24),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: couleurBleuClair2,
+                    ),
+                    onPressed: () => _navigateToEventFeed(context, event),
+                    child: const Text('Show Feed'),
                   ),
-                  onPressed: () => _navigateToEventFeed(context, event),
-                  child: const Text('Show Feed'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            _buildTextLock('ID', event.id),
-            const SizedBox(height: 10),
-            _buildTextLock('Author', event.author.author),
-            const SizedBox(height: 10),
-            _buildTextLock('Caption', event.caption),
-            const SizedBox(height: 10),
-            _buildTextLock('Participants', event.participants.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('Title', event.title),
-            const SizedBox(height: 10),
-            _buildTextLock('Date', event.date.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('Date Event', event.dateEvent.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('Date End', event.date.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('Tags', event.tags.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('Done', event.done.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('ImageUrl', event.imageUrl.toString()),
-            const SizedBox(height: 10),
-            _buildTextLock('LogoUrl', event.logoUrl.toString()),
-          ],
+                ],
+              ),
+              const SizedBox(height: 20),
+              _buildTextLock('ID', event.id),
+              const SizedBox(height: 10),
+              _buildTextLock('Author', event.author.author),
+              const SizedBox(height: 10),
+              _buildTextLock('Caption', event.caption),
+              const SizedBox(height: 10),
+              _buildTextLock('Participants', event.participants.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('Title', event.title),
+              const SizedBox(height: 10),
+              _buildTextLock('Date', event.date.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('Date Event', event.dateEvent.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('Date End', event.date.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('Tags', event.tags.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('Done', event.done.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('ImageUrl', event.imageUrl.toString()),
+              const SizedBox(height: 10),
+              _buildTextLock('LogoUrl', event.logoUrl.toString()),
+            ],
+          ),
         ),
       ),
     );

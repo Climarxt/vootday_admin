@@ -10,6 +10,7 @@ import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/firebase_options.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
+import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 
 void main() async {
@@ -45,12 +46,12 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<FeedRepository>(
           create: (context) => FeedRepository(),
         ),
+        RepositoryProvider<PostRepository>(
+          create: (context) => PostRepository(),
+        ),
         /*
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(),
-        ),
-        RepositoryProvider<PostRepository>(
-          create: (context) => PostRepository(),
         ),
         RepositoryProvider<StorageRepository>(
           create: (context) => StorageRepository(),
@@ -80,6 +81,12 @@ class MyApp extends StatelessWidget {
               return eventBloc;
             },
           ),
+          BlocProvider<CommentsBloc>(
+            create: (context) => CommentsBloc(
+              authBloc: context.read<AuthBloc>(),
+              postRepository: context.read<PostRepository>(),
+            ),
+          ),
           /*
           BlocProvider<DeletePostsCubit>(
             create: (context) =>
@@ -92,12 +99,6 @@ class MyApp extends StatelessWidget {
           BlocProvider<CreateCollectionCubit>(
             create: (context) => CreateCollectionCubit(
               firebaseFirestore: FirebaseFirestore.instance,
-            ),
-          ),
-          BlocProvider<CommentsBloc>(
-            create: (context) => CommentsBloc(
-              authBloc: context.read<AuthBloc>(),
-              postRepository: context.read<PostRepository>(),
             ),
           ),
           BlocProvider(

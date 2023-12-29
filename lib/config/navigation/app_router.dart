@@ -8,10 +8,13 @@ import 'package:vootday_admin/config/navigation/scaffold_with_navbar.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/about/abouts.dart';
 import 'package:vootday_admin/screens/calendar/calendars.dart';
+import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
+import 'package:vootday_admin/screens/comment/comments.dart';
 import 'package:vootday_admin/screens/event/events.dart';
 import 'package:vootday_admin/screens/event/feed_event.dart';
 import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
 import 'package:vootday_admin/screens/login/logins.dart';
+import 'package:vootday_admin/screens/post/posts.dart';
 import 'package:vootday_admin/screens/screens.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -77,6 +80,36 @@ GoRouter createRouter(BuildContext context) {
             ),
           );
         },
+      ),
+      // Post
+      GoRoute(
+        path: '/post/:postId',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final postId = RouteConfig.getPostId(state);
+          final fromPath = state.extra as String? ?? 'defaultFromPath';
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: PostScreen(postId: postId, fromPath: fromPath),
+          );
+        },
+        routes: [
+          GoRoute(
+            path: 'comment',
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              final postId = RouteConfig.getPostIdUri(state);
+              return MaterialPage<void>(
+                key: state.pageKey,
+                child: BlocProvider<CommentsBloc>(
+                  create: (_) => CommentsBloc(
+                    postRepository: context.read<PostRepository>(),
+                    authBloc: context.read<AuthBloc>(),
+                  )..add(CommentsFetchComments(postId: postId)),
+                  child: CommentScreen(postId: postId),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       // StatefulShellBranch
       StatefulShellRoute.indexedStack(
