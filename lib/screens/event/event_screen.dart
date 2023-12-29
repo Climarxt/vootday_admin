@@ -63,24 +63,21 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildEvent(BuildContext context, Event event, Size size) {
-    return Container(
-      color: webBackgroundColor,
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(kDefaultPadding),
         child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeaderSection(context, event, size),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: _buildDetailRows(event),
-                ),
-              ],
-            ),
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection(context, event, size),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                child: _buildDetailRows(event),
+              ),
+            ],
           ),
         ),
       ),
@@ -129,7 +126,7 @@ class _EventScreenState extends State<EventScreen>
   Widget _buildButtonsCard(Event event) {
     return SizedBox(
       height: 120.0,
-      width: 244,
+      width: 238,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Padding(

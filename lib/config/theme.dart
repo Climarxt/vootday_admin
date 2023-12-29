@@ -7,7 +7,13 @@ ThemeData theme() {
       TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
       TargetPlatform.android: CupertinoPageTransitionsBuilder(),
     }),
-    primaryColor: couleurBleuClair2,
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: couleurBleuClair2,
+        foregroundColor: Colors.white,
+      ),
+    ),
+    primaryColor: white,
     scaffoldBackgroundColor: Colors.white,
     primaryIconTheme: const IconThemeData(color: Colors.black),
     iconTheme: const IconThemeData(color: Colors.black),

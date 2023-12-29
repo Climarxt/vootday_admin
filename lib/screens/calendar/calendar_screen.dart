@@ -25,31 +25,64 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Container(
-      color: webBackgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Scaffold(
-          floatingActionButton: _buildFloatingActionButton(context),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          backgroundColor: webBackgroundColor,
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeaderSection(context, size),
-                const SizedBox(height: kDefaultPadding),
-                // Events Done
-                Card(
-                    child: Stack(
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Scaffold(
+        floatingActionButton: _buildFloatingActionButton(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        backgroundColor: white,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection(context, size),
+              const SizedBox(height: kDefaultPadding),
+              // Events Done
+              Card(
+                  child: Stack(
+                children: [
+                  buildSectionTitle('Ended events'),
+                  BlocBuilder<CalendarEndedBloc, CalendarEndedState>(
+                    builder: (context, state) {
+                      switch (state.status) {
+                        case CalendarEndedStatus.loaded:
+                          return SizedBox(
+                            width: double.infinity,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    buildEventsTable(state.thisWeekEvents),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        case CalendarEndedStatus.loading:
+                        default:
+                          return Container(color: white);
+                      }
+                    },
+                  ),
+                ],
+              )),
+              const SizedBox(height: kDefaultPadding),
+              // Coming Soon Events Section
+              Card(
+                child: Stack(
                   children: [
-                    buildSectionTitle('Ended events'),
-                    BlocBuilder<CalendarEndedBloc, CalendarEndedState>(
+                    buildSectionTitle('Coming soon'),
+                    BlocBuilder<CalendarComingSoonBloc,
+                        CalendarComingSoonState>(
                       builder: (context, state) {
                         switch (state.status) {
-                          case CalendarEndedStatus.loaded:
+                          case CalendarComingSoonStatus.loaded:
                             return SizedBox(
                               width: double.infinity,
                               child: SingleChildScrollView(
@@ -61,60 +94,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                       const SizedBox(
                                         height: 18,
                                       ),
-                                      buildEventsTable(state.thisWeekEvents),
+                                      buildEventsTable(
+                                          state.thisComingSoonEvents),
                                     ],
                                   ),
                                 ),
                               ),
                             );
-                          case CalendarEndedStatus.loading:
+                          case CalendarComingSoonStatus.loading:
                           default:
                             return Container(color: white);
                         }
                       },
                     ),
                   ],
-                )),
-                const SizedBox(height: kDefaultPadding),
-                // Coming Soon Events Section
-                Card(
-                  child: Stack(
-                    children: [
-                      buildSectionTitle('Coming soon'),
-                      BlocBuilder<CalendarComingSoonBloc,
-                          CalendarComingSoonState>(
-                        builder: (context, state) {
-                          switch (state.status) {
-                            case CalendarComingSoonStatus.loaded:
-                              return SizedBox(
-                                width: double.infinity,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(
-                                          height: 18,
-                                        ),
-                                        buildEventsTable(
-                                            state.thisComingSoonEvents),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            case CalendarComingSoonStatus.loading:
-                            default:
-                              return Container(color: white);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -171,7 +167,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildButtonsCard() {
     return SizedBox(
       height: 120.0,
-      width: 246,
+      width: 238,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Padding(
@@ -270,7 +266,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   children: [
                     IconButton(
                       icon: Icon(Icons.visibility),
-                      onPressed: () => _navigateToEventScreen(context, event.id),
+                      onPressed: () =>
+                          _navigateToEventScreen(context, event.id),
                     ),
                   ],
                 )),
@@ -279,7 +276,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 DataCell(Text(event.title)),
                 DataCell(Text(DateFormat('yyyy-MM-dd').format(event.date))),
                 DataCell(Text(DateFormat('yyyy-MM-dd').format(event.dateEnd))),
-                DataCell(Text(DateFormat('yyyy-MM-dd').format(event.dateEvent))),
+                DataCell(
+                    Text(DateFormat('yyyy-MM-dd').format(event.dateEvent))),
                 DataCell(Text(event.participants.toString())),
                 DataCell(Text(event.reward.toString())),
                 DataCell(Text(event.user_ref.id.toString())),

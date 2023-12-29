@@ -24,96 +24,93 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      color: webBackgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeaderSection(context, size),
-                const SizedBox(height: kDefaultPadding),
-                Card(
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CardHeader(
-                        title: 'Titre',
-                        showDivider: false,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final double dataTableWidth =
-                                max(kScreenWidthMd, constraints.maxWidth);
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Scaffold(
+        backgroundColor: white,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderSection(context, size),
+              const SizedBox(height: kDefaultPadding),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CardHeader(
+                      title: 'Titre',
+                      showDivider: false,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double dataTableWidth =
+                              max(kScreenWidthMd, constraints.maxWidth);
 
-                            return Scrollbar(
+                          return Scrollbar(
+                            controller: _dataTableHorizontalScrollController,
+                            thumbVisibility: true,
+                            trackVisibility: true,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
                               controller: _dataTableHorizontalScrollController,
-                              thumbVisibility: true,
-                              trackVisibility: true,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                controller:
-                                    _dataTableHorizontalScrollController,
-                                child: SizedBox(
-                                  width: dataTableWidth,
-                                  child: DataTable(
-                                    showCheckboxColumn: false,
-                                    showBottomBorder: true,
-                                    columns: const [
-                                      DataColumn(
-                                          label: Text('No.'), numeric: true),
-                                      DataColumn(label: Text('Date')),
-                                      DataColumn(label: Text('Item')),
-                                      DataColumn(
-                                          label: Text('Price'), numeric: true),
-                                    ],
-                                    rows: List.generate(5, (index) {
-                                      return DataRow.byIndex(
-                                        index: index,
-                                        cells: [
-                                          DataCell(Text('#${index + 1}')),
-                                          const DataCell(Text('2022-06-30')),
-                                          DataCell(Text('Item ${index + 1}')),
-                                          DataCell(Text(
-                                              '${Random().nextInt(10000)}')),
-                                        ],
-                                      );
-                                    }),
-                                  ),
+                              child: SizedBox(
+                                width: dataTableWidth,
+                                child: DataTable(
+                                  showCheckboxColumn: false,
+                                  showBottomBorder: true,
+                                  columns: const [
+                                    DataColumn(
+                                        label: Text('No.'), numeric: true),
+                                    DataColumn(label: Text('Date')),
+                                    DataColumn(label: Text('Item')),
+                                    DataColumn(
+                                        label: Text('Price'), numeric: true),
+                                  ],
+                                  rows: List.generate(5, (index) {
+                                    return DataRow.byIndex(
+                                      index: index,
+                                      cells: [
+                                        DataCell(Text('#${index + 1}')),
+                                        const DataCell(Text('2022-06-30')),
+                                        DataCell(Text('Item ${index + 1}')),
+                                        DataCell(
+                                            Text('${Random().nextInt(10000)}')),
+                                      ],
+                                    );
+                                  }),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.all(kDefaultPadding),
-                          child: SizedBox(
-                            height: 40.0,
-                            width: 120.0,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: couleurBleuClair2,
-                              ),
-                              onPressed: () {},
-                              child: const Text('View All'),
                             ),
+                          );
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.all(kDefaultPadding),
+                        child: SizedBox(
+                          height: 40.0,
+                          width: 120.0,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: couleurBleuClair2,
+                            ),
+                            onPressed: () {},
+                            child: const Text('View All'),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -170,7 +167,7 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget _buildButtonsCard() {
     return SizedBox(
       height: 120.0,
-      width: 246,
+      width: 238,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Padding(

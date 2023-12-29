@@ -23,12 +23,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: Row(
         children: <Widget>[
           NavigationRail(
+            backgroundColor: webBackgroundColor,
             groupAlignment: 0,
+            indicatorColor: couleurBleuClair2,
             selectedIndex: navigationShell.currentIndex,
             labelType: NavigationRailLabelType.selected,
             onDestinationSelected: (int index) => _onTap(context, index),
-            selectedIconTheme: const IconThemeData(color: couleurBleuClair2),
-            selectedLabelTextStyle: const TextStyle(color: couleurBleuClair2),
+            selectedIconTheme: const IconThemeData(color: white),
+            selectedLabelTextStyle: const TextStyle(color: black),
             destinations: const <NavigationRailDestination>[
               NavigationRailDestination(
                   icon: Icon(Icons.home), label: Text('Home')),
