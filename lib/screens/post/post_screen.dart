@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously, no_leading_underscores_for_local_identifiers
-
-import 'package:vootday_admin/blocs/auth/auth_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
@@ -31,12 +29,7 @@ class _PostScreenState extends State<PostScreen>
   Post? _post;
   User? _user;
   bool _isLoading = true;
-  bool _isUserTheAuthor = false;
-  List<String> _imageUrls = [];
-  final Map<String, bool> _postInCollectionMap = {};
   ValueNotifier<bool> isPublicNotifier = ValueNotifier(true);
-  final TextEditingController _collectionNameController =
-      TextEditingController();
 
   late AnimationController _controller;
   late Animation<double> _animation;
