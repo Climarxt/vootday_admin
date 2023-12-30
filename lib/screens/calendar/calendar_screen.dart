@@ -58,7 +58,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     const SizedBox(
                                       height: 18,
                                     ),
-                                    buildEventsTable(state.thisWeekEvents),
+                                    buildEventsTable(state.thisEndedEvents),
                                   ],
                                 ),
                               ),

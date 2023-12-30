@@ -25,25 +25,25 @@ class CalendarEndedBloc
   ) async {
     try {
       print('CalendarEndedFetchEvent : Fetching this week events...');
-      final thisWeekEvents = await _eventRepository.getThisWeekEvents();
+      final thisEndedEvents = await _eventRepository.getThisEndedEvents();
 
-      if (thisWeekEvents.isNotEmpty) {
+      if (thisEndedEvents.isNotEmpty) {
         print(
             'CalendarEndedFetchEvent : This week events fetched successfully.');
         emit(state.copyWith(
-            thisWeekEvents: thisWeekEvents,
+            thisEndedEvents: thisEndedEvents,
             status: CalendarEndedStatus.loaded));
       } else {
         print('CalendarEndedFetchEvent : No events found for this week.');
         emit(state.copyWith(
-            thisWeekEvents: [], status: CalendarEndedStatus.noEvents));
+            thisEndedEvents: [], status: CalendarEndedStatus.noEvents));
       }
     } catch (err) {
       print('CalendarEndedFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarEndedStatus.error,
         failure: const Failure(message: 'Unable to load the events'),
-        thisWeekEvents: [],
+        thisEndedEvents: [],
       ));
     }
   }

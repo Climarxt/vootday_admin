@@ -189,11 +189,11 @@ class EventRepository {
     }
   }
 
-  Future<List<Event>> getThisWeekEvents() async {
+  Future<List<Event>> getThisEndedEvents() async {
     List<Event> eventsList = [];
     try {
       debugPrint(
-          'getThisWeekEvents: Attempting to fetch events from Firestore for the current week.');
+          'getThisEndedEvents: Attempting to fetch events from Firestore for the current week.');
 
       QuerySnapshot eventSnap = await FirebaseFirestore.instance
           .collection('events')
@@ -208,13 +208,13 @@ class EventRepository {
             eventsList.add(event);
           }
         }
-        debugPrint('getThisWeekEvents: Events fetched successfully.');
+        debugPrint('getThisEndedEvents: Events fetched successfully.');
       } else {
-        debugPrint('getThisWeekEvents: No events found for the current week.');
+        debugPrint('getThisEndedEvents: No events found for the current week.');
       }
     } catch (e) {
       debugPrint(
-          'getThisWeekEvents: Error occurred while fetching events - $e');
+          'getThisEndedEvents: Error occurred while fetching events - $e');
     }
     return eventsList;
   }
