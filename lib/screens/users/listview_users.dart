@@ -30,6 +30,46 @@ class _DataPageState extends State<DataPage> {
         text: "username",
         value: "username",
       ),
+      DatatableHeader(
+        text: "firstName",
+        value: "firstName",
+      ),
+      DatatableHeader(
+        text: "lastName",
+        value: "lastName",
+      ),
+      DatatableHeader(
+        text: "email",
+        value: "email",
+      ),
+      DatatableHeader(
+        text: "username",
+        value: "username",
+      ),
+      DatatableHeader(
+        text: "location",
+        value: "location",
+      ),
+      DatatableHeader(
+        text: "followers",
+        value: "followers",
+      ),
+      DatatableHeader(
+        text: "following",
+        value: "following",
+      ),
+      DatatableHeader(
+        text: "bio",
+        value: "bio",
+      ),
+      DatatableHeader(
+        text: "selectedGender",
+        value: "selectedGender",
+      ),
+      DatatableHeader(
+        text: "username_lowercase",
+        value: "username_lowercase",
+      ),
     ];
     _loadData();
   }
@@ -52,13 +92,13 @@ class _DataPageState extends State<DataPage> {
         },
         child: _isLoading
             ? const CircularProgressIndicator()
-            : ResponsiveDatatable(
-                headers: _headers,
-                selecteds: _selecteds,
-                expanded: List.filled(_source.length, false),
-                source: _source.isNotEmpty
-                    ? _source
-                    : null, // Ajout d'une vérification ici
+            : SingleChildScrollView(
+                child: ResponsiveDatatable(
+                  headers: _headers,
+                  selecteds: _selecteds,
+                  expanded: List.filled(_source.length, false),
+                  source: _source.isNotEmpty ? _source : null,
+                ),
               ),
       ),
     );

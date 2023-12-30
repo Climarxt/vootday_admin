@@ -41,14 +41,17 @@ class _UsersScreenState extends State<UsersScreen> {
         backgroundColor: white,
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-          child: ListView(
-            children: [
-              _buildHeaderSection(context, size),
-              const SizedBox(height: kDefaultPadding),
-              SizedBox(
-                width: size.width,
-                height: size.width / 2,
-                child: const DataPage(),
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 136.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: _buildHeaderSection(context, size),
+                ),
+              ),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: DataPage(), // Utilisation de DataPage ici
               ),
             ],
           ),

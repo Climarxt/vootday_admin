@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import '/blocs/blocs.dart';
 import '/models/models.dart';
 import '/repositories/repositories.dart';
@@ -73,9 +72,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
-      final List<Map<String, dynamic>> allUsers = await _userRepository.getAllUsers();
-      // Vous pouvez émettre un nouvel état ici avec la liste des utilisateurs
-      debugPrint("DEBUG 2: $allUsers");
+      final List<Map<String, dynamic>> allUsers =
+          await _userRepository.getAllUsers();
       emit(state.copyWith(allUsers: allUsers, status: ProfileStatus.loaded));
     } catch (e) {
       emit(state.copyWith(

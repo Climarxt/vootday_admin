@@ -275,6 +275,15 @@ class UserRepository extends BaseUserRepository {
         return {
           'id': user.id,
           'username': user.username,
+          'email': user.email,
+          'firstName': user.firstName,
+          'lastName': user.lastName,
+          'location': user.location,
+          'followers': user.followers,
+          'following': user.following,
+          'bio': user.bio,
+          'selectedGender': user.selectedGender,
+          'username_lowercase': user.username_lowercase,
         };
       }).toList();
 
