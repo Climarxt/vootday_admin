@@ -77,39 +77,42 @@ class _DataPageState extends State<DataPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<ProfileBloc, ProfileState>(
-        listener: (context, state) {
-          if (state.status == ProfileStatus.loaded) {
-            setState(() {
-              _source = state.allUsers;
-              _isLoading = false;
-            });
-          }
-        },
-        child: _isLoading
-            ? const CircularProgressIndicator()
-            : SingleChildScrollView(
-                child: ResponsiveDatatable(
-                  headers: _headers,
-                  selecteds: _selecteds,
-                  expanded: List.filled(_source.length, false),
-                  source: _source.isNotEmpty ? _source : null,
-                  headerDecoration: BoxDecoration(
-                    border: Border.all(color: grey),
-                    color: lightBleu,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(10)),
-                  ),
-                  headerTextStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: black,
-                  ),
-                  rowDecoration: BoxDecoration(
-                    border: Border.all(color: grey),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Scaffold(
+        body: BlocListener<ProfileBloc, ProfileState>(
+          listener: (context, state) {
+            if (state.status == ProfileStatus.loaded) {
+              setState(() {
+                _source = state.allUsers;
+                _isLoading = false;
+              });
+            }
+          },
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : SingleChildScrollView(
+                  child: ResponsiveDatatable(
+                    headerDecoration: BoxDecoration(
+                      border: Border.all(color: grey),
+                      color: lightBleu,
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(10)),
+                    ),
+                    headerTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: black,
+                    ),
+                    rowDecoration: BoxDecoration(
+                      border: Border.all(color: grey),
+                    ),
+                    headers: _headers,
+                    selecteds: _selecteds,
+                    expanded: List.filled(_source.length, false),
+                    source: _source.isNotEmpty ? _source : null,
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }
