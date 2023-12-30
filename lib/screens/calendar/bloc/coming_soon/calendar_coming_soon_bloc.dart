@@ -25,27 +25,27 @@ class CalendarComingSoonBloc
     Emitter<CalendarComingSoonState> emit,
   ) async {
     try {
-      debugPrint('CalendarComingSoonFetchEvent : Fetching this week events...');
+      debugPrint('_mapCalendarComingSoonFetchEvent : Fetching this coming soon events...');
       final thisComingSoonEvents = await _eventRepository.getComingSoonEvents();
 
       if (thisComingSoonEvents.isNotEmpty) {
         debugPrint(
-            'CalendarComingSoonFetchEvent : This week events fetched successfully.');
+            '_mapCalendarComingSoonFetchEvent : This coming soon events fetched successfully.');
         emit(state.copyWith(
             thisComingSoonEvents: thisComingSoonEvents,
             status: CalendarComingSoonStatus.loaded));
       } else {
         debugPrint(
-            'CalendarComingSoonFetchEvent : No events found for this week.');
+            '_mapCalendarComingSoonFetchEvent : No events found');
         emit(state.copyWith(
             thisComingSoonEvents: [],
             status: CalendarComingSoonStatus.noEvents));
       }
     } catch (err) {
-      debugPrint('CalendarComingSoonFetchEvent : Error fetching events - $err');
+      debugPrint('_mapCalendarComingSoonFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarComingSoonStatus.error,
-        failure: const Failure(message: 'Unable to load the events'),
+        failure: const Failure(message: '_mapCalendarComingSoonFetchEvent : Unable to load the events'),
         thisComingSoonEvents: [],
       ));
     }

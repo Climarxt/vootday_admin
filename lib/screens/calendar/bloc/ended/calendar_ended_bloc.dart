@@ -24,25 +24,25 @@ class CalendarEndedBloc
     Emitter<CalendarEndedState> emit,
   ) async {
     try {
-      print('CalendarEndedFetchEvent : Fetching this week events...');
+      print('_mapCalendarEndedFetchEvent : Fetching this ended events...');
       final thisEndedEvents = await _eventRepository.getThisEndedEvents();
 
       if (thisEndedEvents.isNotEmpty) {
         print(
-            'CalendarEndedFetchEvent : This week events fetched successfully.');
+            '_mapCalendarEndedFetchEvent : This ended events fetched successfully.');
         emit(state.copyWith(
             thisEndedEvents: thisEndedEvents,
             status: CalendarEndedStatus.loaded));
       } else {
-        print('CalendarEndedFetchEvent : No events found for this week.');
+        print('_mapCalendarEndedFetchEvent : No events found.');
         emit(state.copyWith(
             thisEndedEvents: [], status: CalendarEndedStatus.noEvents));
       }
     } catch (err) {
-      print('CalendarEndedFetchEvent : Error fetching events - $err');
+      print('_mapCalendarEndedFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarEndedStatus.error,
-        failure: const Failure(message: 'Unable to load the events'),
+        failure: const Failure(message: '_mapCalendarEndedFetchEvent : Unable to load the events'),
         thisEndedEvents: [],
       ));
     }

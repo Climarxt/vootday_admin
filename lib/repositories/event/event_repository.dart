@@ -290,4 +290,27 @@ class EventRepository {
 
     return totalLikes;
   }
+
+  Future<int> getCountEndedEvents() async {
+    try {
+      debugPrint(
+          'getCountEndedEvents : Récupération du nombre d\'événements terminés...');
+
+      // Requête pour filtrer les événements où 'done' est vrai
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection(Paths.events)
+          .where('done', isEqualTo: true)
+          .get();
+
+      // Le nombre de documents correspondants représente le nombre d'événements terminés
+      int count = querySnapshot.docs.length;
+
+      debugPrint('getCountEndedEvents : Nombre d\'événements terminés: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountEndedEvents : Erreur lors du comptage des événements - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
 }

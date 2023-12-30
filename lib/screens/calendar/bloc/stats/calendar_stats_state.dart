@@ -1,10 +1,46 @@
 part of 'calendar_stats_bloc.dart';
 
-sealed class CalendarStatsState extends Equatable {
-  const CalendarStatsState();
-  
-  @override
-  List<Object> get props => [];
-}
+enum CalendarStatsStatus { initial, loading, loaded, noEvents, error }
 
-final class CalendarStatsInitial extends CalendarStatsState {}
+class CalendarStatsState extends Equatable {
+  final int endedEventsCount;
+  final CalendarStatsStatus status;
+  final Failure failure;
+
+  const CalendarStatsState({
+    required this.endedEventsCount,
+    required this.status,
+    required this.failure,
+  });
+
+  factory CalendarStatsState.initial() {
+    return const CalendarStatsState(
+      endedEventsCount: 0,
+      status: CalendarStatsStatus.initial,
+      failure: Failure(),
+    );
+  }
+
+  factory CalendarStatsState.loading() {
+    return const CalendarStatsState(
+      endedEventsCount: 0,
+      status: CalendarStatsStatus.loading, // Change this to `.loading`
+      failure: Failure(),
+    );
+  }
+
+  @override
+  List<Object?> get props => [endedEventsCount, status, failure];
+
+  CalendarStatsState copyWith({
+    required int endedEventsCount,
+    CalendarStatsStatus? status,
+    Failure? failure,
+  }) {
+    return CalendarStatsState(
+      endedEventsCount: endedEventsCount,
+      status: status ?? this.status,
+      failure: failure ?? this.failure,
+    );
+  }
+}
