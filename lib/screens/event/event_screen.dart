@@ -55,7 +55,7 @@ class _EventScreenState extends State<EventScreen>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     super.build(context);
-    return BlocBuilder<EventBloc, EventState>(
+    return BlocConsumer<EventBloc, EventState>(
       builder: (context, state) {
         if (state.status == EventStatus.loading) {
           return _buildLoadingIndicator();
@@ -65,6 +65,7 @@ class _EventScreenState extends State<EventScreen>
           return _buildLoadingIndicator();
         }
       },
+      listener: (BuildContext context, EventState state) {},
     );
   }
 
@@ -88,6 +89,140 @@ class _EventScreenState extends State<EventScreen>
         ),
       ),
     );
+  }
+
+  Widget _buildDetailRows(Event event) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildDetailListLock(event, true),
+          ),
+        ),
+        const SizedBox(width: kDefaultPadding),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildDetailListLock(event, false),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildDetailListLock(Event event, bool isFirstColumn) {
+    final details = {
+      'ID': event.id,
+      'Author': event.author.author,
+      'Caption': event.caption,
+      'Participants': event.participants.toString(),
+      'Title': event.title,
+      'Date': event.date.toString(),
+      'Date Event': event.dateEvent.toString(),
+      'Date End': event.dateEnd.toString(),
+      'Tags': event.tags.toString(),
+      'Done': event.done.toString(),
+      'ImageUrl': event.imageUrl.toString(),
+      'LogoUrl': event.logoUrl.toString(),
+    };
+
+    final editableDetails = {
+      'Caption',
+      'Title',
+      'Date Event',
+      'Date End',
+      'Tags',
+      'ImageUrl',
+      'LogoUrl',
+      'Done',
+    };
+
+    final int splitIndex = details.length ~/ 2;
+    final entries = isFirstColumn
+        ? details.entries.take(splitIndex)
+        : details.entries.skip(splitIndex);
+
+    return entries
+        .map((e) =>
+            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
+                ? _buildTextField(
+                    e.key, TextEditingController(text: e.value), event)
+                : _buildTextLock(e.key, e.value, event))
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
+  }
+
+  Widget _buildTextField(
+      String label, TextEditingController controller, Event event) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black),
+                fillColor: white,
+                filled: true,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              setState(() {
+                _editState[label] = false;
+                _updateFirebase(
+                    label, controller.text, event); // Mettre à jour Firebase
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => setState(() {
+              _editState[label] = false;
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _updateFirebase(String label, String newValue, Event event) {
+    // Identifier le champ à mettre à jour et créer une nouvelle instance de l'événement
+    Event updatedEvent;
+    switch (label) {
+      case 'Caption':
+        updatedEvent = event.copyWith(caption: newValue);
+        break;
+      case 'Title':
+        updatedEvent = event.copyWith(title: newValue);
+        break;
+      // Ajoutez des cas pour d'autres champs modifiables
+      default:
+        debugPrint("Champ non reconnu pour la mise à jour : $label");
+        return;
+    }
+
+    // Convertir l'événement mis à jour en document Firestore
+    Map<String, dynamic> updatedData = updatedEvent.toDocument();
+
+    // Mise à jour de l'événement dans Firestore
+    _firebaseFirestore
+        .collection('events')
+        .doc(event.id)
+        .update(updatedData)
+        .then((_) => debugPrint(
+            "_updateFirebase : Événement mis à jour avec succès dans Firestore."))
+        .catchError((error) => debugPrint(
+            "_updateFirebase : Erreur lors de la mise à jour de l'événement : $error"));
   }
 
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
@@ -262,142 +397,6 @@ class _EventScreenState extends State<EventScreen>
       onPressed: () => _navigateToEventFeed(context, event),
       child: const Text('Export'),
     );
-  }
-
-  Widget _buildDetailRows(Event event) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event, true),
-          ),
-        ),
-        SizedBox(
-          width: kDefaultPadding,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event, false),
-          ),
-        ),
-      ],
-    );
-  }
-
-  List<Widget> _buildDetailListLock(Event event, bool isFirstColumn) {
-    final details = {
-      'ID': event.id,
-      'Author': event.author.author,
-      'Caption': event.caption,
-      'Participants': event.participants.toString(),
-      'Title': event.title,
-      'Date': event.date.toString(),
-      'Date Event': event.dateEvent.toString(),
-      'Date End': event.date.toString(),
-      'Tags': event.tags.toString(),
-      'Done': event.done.toString(),
-      'ImageUrl': event.imageUrl.toString(),
-      'LogoUrl': event.logoUrl.toString(),
-    };
-
-    final editableDetails = {
-      'Caption',
-      'Title',
-      'Date Event',
-      'Date End',
-      'Tags',
-      'ImageUrl',
-      'LogoUrl',
-      'Done',
-    };
-
-    final int splitIndex = details.length ~/ 2;
-    final entries = isFirstColumn
-        ? details.entries.take(splitIndex)
-        : details.entries.skip(splitIndex);
-
-    return entries
-        .map((e) =>
-            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
-                ? _buildTextField(
-                    e.key, TextEditingController(text: e.value), event)
-                : _buildTextLock(e.key, e.value, event))
-        .expand((widget) => [widget, const SizedBox(height: 10)])
-        .toList();
-  }
-
-  Widget _buildTextField(
-      String label, TextEditingController controller, Event event) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black),
-                fillColor: white,
-                filled: true,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () {
-              setState(() {
-                _editState[label] = false;
-                _updateFirebase(
-                    label, controller.text, event); // Mettre à jour Firebase
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: () => setState(() {
-              _editState[label] = false;
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _updateFirebase(String label, String newValue, Event event) {
-    // Identifier le champ à mettre à jour et créer une nouvelle instance de l'événement
-    Event updatedEvent;
-    switch (label) {
-      case 'Caption':
-        updatedEvent = event.copyWith(caption: newValue);
-        break;
-      case 'Title':
-        updatedEvent = event.copyWith(title: newValue);
-        break;
-      // Ajoutez des cas pour d'autres champs modifiables
-      default:
-        debugPrint("Champ non reconnu pour la mise à jour : $label");
-        return;
-    }
-
-    // Convertir l'événement mis à jour en document Firestore
-    Map<String, dynamic> updatedData = updatedEvent.toDocument();
-
-    // Mise à jour de l'événement dans Firestore
-    _firebaseFirestore
-        .collection('events')
-        .doc(event.id)
-        .update(updatedData)
-        .then((_) => debugPrint(
-            "_updateFirebase : Événement mis à jour avec succès dans Firestore."))
-        .catchError((error) => debugPrint(
-            "_updateFirebase : Erreur lors de la mise à jour de l'événement : $error"));
   }
 
   Widget _buildTextLock(String label, String value, Event event) {
