@@ -185,7 +185,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildShowFeedButton(context),
+                    _buildRefreshButton(context),
                     _buildStatsButton(context),
                   ],
                 ),
@@ -206,13 +206,24 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildShowFeedButton(BuildContext context) {
+  Widget _buildRefreshButton(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: couleurBleuClair2,
       ),
-      onPressed: () {},
-      child: const Text('Test1'),
+      onPressed: () {
+        context.read<CalendarEndedBloc>().add(CalendarEndedFetchEvent());
+        context
+            .read<CalendarComingSoonBloc>()
+            .add(CalendarComingSoonFetchEvent());
+        context
+            .read<CalendarStatsBloc>()
+            .add(CalendarStatsCountComingFetchEvent());
+        context
+            .read<CalendarStatsBloc>()
+            .add(CalendarStatsCountEndedFetchEvent());
+      },
+      child: Text('Refresh', style: AppTextStyles.bodySmallStyleWhite(context)),
     );
   }
 

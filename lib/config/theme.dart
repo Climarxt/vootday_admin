@@ -1,5 +1,6 @@
 import 'package:vootday_admin/config/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:vootday_admin/config/configs.dart';
 
 ThemeData theme() {
   return ThemeData(

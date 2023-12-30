@@ -14,6 +14,13 @@ class AppTextStyles {
     return Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey);
   }
 
+  static TextStyle bodySmallStyleWhite(BuildContext context) {
+    return Theme.of(context)
+        .textTheme
+        .bodySmall!
+        .copyWith(color: white, fontWeight: FontWeight.bold);
+  }
+
   static TextStyle bodyLinkBold(BuildContext context) {
     return Theme.of(context)
         .textTheme
