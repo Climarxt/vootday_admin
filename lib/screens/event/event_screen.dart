@@ -35,6 +35,10 @@ class _EventScreenState extends State<EventScreen>
     super.initState();
     BlocProvider.of<EventBloc>(context)
         .add(EventFetchEvent(eventId: widget.eventId));
+    context
+        .read<EventStatsBloc>()
+        .add(EventStatsCountLikesFetchEvent(eventId: widget.eventId));
+
     _fetchTotalLikes();
     for (var detail in [
       'Caption',
@@ -98,49 +102,53 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
-    return Wrap(
-      direction: Axis.horizontal,
-      spacing: kDefaultPadding,
-      runSpacing: kDefaultPadding,
-      children: [
-        SummaryCard(
-          title: event.title,
-          value: event.author.author,
-          icon: Icons.abc,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        SummaryCard(
-          title: 'Likes',
-          value: totalLikes.toString(),
-          icon: Icons.ssid_chart_rounded,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Participants',
-          value: '70',
-          icon: Icons.person,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Day left',
-          value: '7',
-          icon: Icons.calendar_month,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        _buildButtonsCard(event),
-      ],
+    return BlocBuilder<EventStatsBloc, EventStatsState>(
+      builder: (context, state) {
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            SummaryCard(
+              title: event.title,
+              value: event.author.author,
+              icon: Icons.abc,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: 'Likes',
+              value: state.likesEventCount.toString(),
+              icon: Icons.ssid_chart_rounded,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Participants',
+              value: '70',
+              icon: Icons.person,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Day left',
+              value: '7',
+              icon: Icons.calendar_month,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            _buildButtonsCard(event),
+          ],
+        );
+      },
     );
   }
 

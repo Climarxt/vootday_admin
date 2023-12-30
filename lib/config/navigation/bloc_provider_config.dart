@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
+import 'package:vootday_admin/screens/event/bloc/stats/event_stats_bloc.dart';
 
 class BlocProviderConfig {
   static MultiBlocProvider getCalendarMultiBlocProvider(
@@ -52,6 +53,19 @@ class BlocProviderConfig {
           authBloc: context.read<AuthBloc>(),
         );
         return feedEventBloc;
+      },
+      child: child,
+    );
+  }
+
+  static BlocProvider getEventBlocProvider(BuildContext context, Widget child) {
+    return BlocProvider<EventStatsBloc>(
+      create: (context) {
+        final statsEventBloc = EventStatsBloc(
+          eventRepository: context.read<EventRepository>(),
+          authBloc: context.read<AuthBloc>(),
+        );
+        return statsEventBloc;
       },
       child: child,
     );
