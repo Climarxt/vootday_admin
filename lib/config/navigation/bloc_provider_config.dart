@@ -5,6 +5,7 @@ import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/event/bloc/stats/event_stats_bloc.dart';
+import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 
 class BlocProviderConfig {
   static MultiBlocProvider getCalendarMultiBlocProvider(
@@ -79,6 +80,29 @@ class BlocProviderConfig {
             return eventBloc;
           },
         ),
+      ],
+      child: child,
+    );
+  }
+
+  static MultiBlocProvider getProfileMultiBlocProvider(
+      BuildContext context, Widget child) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ProfileBloc>(
+          create: (context) => ProfileBloc(
+            authBloc: context.read<AuthBloc>(),
+            userRepository: context.read<UserRepository>(),
+            postRepository: context.read<PostRepository>(),
+          ),
+        ),
+        /*
+        BlocProvider<YourCollectionBloc>(
+          create: (context) => YourCollectionBloc(
+            postRepository: context.read<PostRepository>(),
+          ),
+        ),
+        */
       ],
       child: child,
     );
@@ -187,27 +211,6 @@ class BlocProviderConfig {
         ),
         BlocProvider<RecentPostImageUrlCubit>(
           create: (context) => RecentPostImageUrlCubit(),
-        ),
-      ],
-      child: child,
-    );
-  }
-
-  static MultiBlocProvider getProfileMultiBlocProvider(
-      BuildContext context, Widget child) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<ProfileBloc>(
-          create: (context) => ProfileBloc(
-            authBloc: context.read<AuthBloc>(),
-            userRepository: context.read<UserRepository>(),
-            postRepository: context.read<PostRepository>(),
-          ),
-        ),
-        BlocProvider<YourCollectionBloc>(
-          create: (context) => YourCollectionBloc(
-            postRepository: context.read<PostRepository>(),
-          ),
         ),
       ],
       child: child,

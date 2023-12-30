@@ -49,6 +49,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<PostRepository>(
           create: (context) => PostRepository(),
         ),
+        RepositoryProvider<UserRepository>(
+          create: (context) => UserRepository(),
+        ),
         /*
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(),
