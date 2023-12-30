@@ -22,28 +22,32 @@ class ScaffoldWithNavBar extends StatelessWidget {
       appBar: appBar,
       body: Row(
         children: <Widget>[
-          NavigationRail(
-            backgroundColor: lightBleu,
-            groupAlignment: 0,
-            indicatorColor: couleurBleuClair2,
-            selectedIndex: navigationShell.currentIndex,
-            labelType: NavigationRailLabelType.selected,
-            onDestinationSelected: (int index) => _onTap(context, index),
-            selectedIconTheme: const IconThemeData(color: white),
-            selectedLabelTextStyle: const TextStyle(color: black),
-            destinations: const <NavigationRailDestination>[
-              NavigationRailDestination(
-                  icon: Icon(Icons.home), label: Text('Home')),
-              NavigationRailDestination(
-                  icon: Icon(Icons.calendar_month), label: Text('Calendar')),
-              NavigationRailDestination(
-                  icon: Icon(Icons.people), label: Text('Users')),
-              NavigationRailDestination(
-                  icon: Icon(Icons.account_circle), label: Text('Profile')),
-              NavigationRailDestination(
-                  icon: Icon(Icons.question_mark_outlined),
-                  label: Text('Settings')),
-            ],
+          Card(
+            clipBehavior: Clip.antiAlias,
+            elevation: 4,
+            child: NavigationRail(
+              backgroundColor: lightBleu,
+              groupAlignment: 0,
+              indicatorColor: couleurBleuClair2,
+              selectedIndex: navigationShell.currentIndex,
+              labelType: NavigationRailLabelType.selected,
+              onDestinationSelected: (int index) => _onTap(context, index),
+              selectedIconTheme: const IconThemeData(color: white),
+              selectedLabelTextStyle: const TextStyle(color: black),
+              destinations: const <NavigationRailDestination>[
+                NavigationRailDestination(
+                    icon: Icon(Icons.home), label: Text('Home')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.calendar_month), label: Text('Calendar')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.people), label: Text('Users')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.account_circle), label: Text('Profile')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.question_mark_outlined),
+                    label: Text('Settings')),
+              ],
+            ),
           ),
           Expanded(
             child: navigationShell,

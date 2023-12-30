@@ -147,7 +147,7 @@ class _EventScreenState extends State<EventScreen>
   Widget _buildButtonsCard(Event event) {
     return SizedBox(
       height: 120.0,
-      width: 238,
+      width: 232,
       child: Card(
         clipBehavior: Clip.antiAlias,
         child: Padding(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/config/constants/dimens.dart';
 import 'package:vootday_admin/screens/home/widgets/chart/line_chart_sample1.dart';
 import 'package:vootday_admin/screens/home/widgets/chart/line_chart_sample2.dart';
@@ -10,18 +11,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Row(
-          children: [
-            SizedBox(width: kDefaultPadding),
-            Expanded(child: Card(child: LineChartSample1())),
-            SizedBox(width: kDefaultPadding),
-            Expanded(child: Card(child: LineChartSample2())),
-            SizedBox(width: kDefaultPadding),
-            Expanded(child: Card(child: PieChartSample2()))
-          ],
+    return const Padding(
+      padding: EdgeInsets.all(kDefaultPadding),
+      child: Scaffold(
+        backgroundColor: white,
+        body: Center(
+          child: Row(
+            children: [
+              SizedBox(width: kDefaultPadding),
+              Expanded(child: Card(child: LineChartSample1())),
+              SizedBox(width: kDefaultPadding),
+              Expanded(child: Card(child: LineChartSample2())),
+              SizedBox(width: kDefaultPadding),
+              Expanded(child: Card(child: PieChartSample2()))
+            ],
+          ),
         ),
       ),
     );

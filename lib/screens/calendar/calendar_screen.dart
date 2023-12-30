@@ -167,8 +167,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildButtonsCard() {
     return SizedBox(
       height: 120.0,
-      width: 238,
+      width: 232,
       child: Card(
+        color: white,
         clipBehavior: Clip.antiAlias,
         child: Padding(
           padding: const EdgeInsets.all(kDefaultPadding),
