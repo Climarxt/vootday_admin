@@ -304,10 +304,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       onPressed: () {},
       label: Text(
         'Add Event',
-        style: Theme.of(context)
-            .textTheme
-            .headlineMedium!
-            .copyWith(color: Colors.white),
       ),
     );
   }
