@@ -96,10 +96,11 @@ class _DataPageState extends State<DataPage> {
                   expanded: List.filled(_source.length, false),
                   source: _source.isNotEmpty ? _source : null,
                   headerDecoration: BoxDecoration(
-                      border: Border.all(color: grey),
-                      color: lightBleu,
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(10))),
+                    border: Border.all(color: grey),
+                    color: lightBleu,
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(10)),
+                  ),
                   headerTextStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: black,
