@@ -23,8 +23,6 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return SizedBox(
       height: 120.0,
       width: width,
@@ -51,20 +49,10 @@ class SummaryCard extends StatelessWidget {
                   Padding(
                     padding:
                         const EdgeInsets.only(bottom: kDefaultPadding * 0.5),
-                    child: Text(
-                      value,
-                      style: textTheme.headlineMedium!.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: Text(value,
+                        style: AppTextStyles.titleLargeBlackBold(context)),
                   ),
-                  Text(
-                    title,
-                    style: textTheme.labelLarge!.copyWith(
-                      color: textColor,
-                    ),
-                  ),
+                  Text(title, style: AppTextStyles.titleSmallGrey(context)),
                 ],
               ),
             ),

@@ -90,7 +90,15 @@ class _EventScreenState extends State<EventScreen>
       spacing: kDefaultPadding,
       runSpacing: kDefaultPadding,
       children: [
-        _buildEventImageCard(event),
+        SummaryCard(
+          title: event.title,
+          value: event.author.author,
+          icon: Icons.abc,
+          backgroundColor: white,
+          textColor: black,
+          iconColor: Colors.black12,
+          width: 256,
+        ),
         const SummaryCard(
           title: 'Likes',
           value: '523',
