@@ -25,29 +25,29 @@ class EventStatsBloc extends Bloc<EventStatsEvent, EventStatsState> {
   ) async {
     try {
       debugPrint(
-          '_mapEventStatsCountLikesFetchEvent : Fetching count events...');
+          '_mapEventStatsCountLikesFetchEvent : Fetching count likes...');
       final int likesEventCount = await _eventRepository.getTotalLikesForEventPosts(event.eventId);
 
       if (likesEventCount > 0) {
         debugPrint(
-            '_mapEventStatsCountLikesFetchEvent : This count events fetched successfully.');
+            '_mapEventStatsCountLikesFetchEvent : This count likes fetched successfully.');
         emit(state.copyWith(
             likesEventCount: likesEventCount,
             status: EventStatsStatus.loaded));
       } else {
-        debugPrint('_mapEventStatsCountLikesFetchEvent : No events found');
+        debugPrint('_mapEventStatsCountLikesFetchEvent : No likes found');
         emit(state.copyWith(
             likesEventCount: 0,
             status: EventStatsStatus.noEvents));
       }
     } catch (err) {
       debugPrint(
-          '_mapEventStatsCountLikesFetchEvent : Error fetching events - $err');
+          '_mapEventStatsCountLikesFetchEvent : Error fetching likes - $err');
       emit(state.copyWith(
         status: EventStatsStatus.error,
         failure: const Failure(
             message:
-                '_mapEventStatsCountLikesFetchEvent : Unable to load the events'),
+                '_mapEventStatsCountLikesFetchEvent : Unable to load the likes'),
         likesEventCount: 0,
       ));
     }
