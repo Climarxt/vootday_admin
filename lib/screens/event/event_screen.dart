@@ -24,8 +24,6 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen>
     with AutomaticKeepAliveClientMixin {
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-
   Map<String, bool> _editState = {};
   int totalLikes = 0;
 
@@ -195,41 +193,23 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-  void _updateFirebase(String label, String newValue, Event event) {
-    // Identifier le champ à mettre à jour et créer une nouvelle instance de l'événement
-    Event updatedEvent;
-    switch (label) {
-      case 'Caption':
-        updatedEvent = event.copyWith(caption: newValue);
-        break;
-      case 'Title':
-        updatedEvent = event.copyWith(title: newValue);
-        break;
-      // Ajoutez des cas pour d'autres champs modifiables
-      default:
-        debugPrint("Champ non reconnu pour la mise à jour : $label");
-        return;
+  void _updateFirebase(String label, dynamic newValue, Event event) {
+    String? firestoreField = fieldMappings[label];
+    if (firestoreField != null) {
+      context.read<EventBloc>().add(EventUpdateFieldEvent(
+            eventId: event.id,
+            field: firestoreField,
+            newValue: newValue,
+          ));
+    } else {
+      debugPrint('No mapping found for field: $label');
     }
-
-    // Convertir l'événement mis à jour en document Firestore
-    Map<String, dynamic> updatedData = updatedEvent.toDocument();
-
-    // Mise à jour de l'événement dans Firestore
-    _firebaseFirestore
-        .collection('events')
-        .doc(event.id)
-        .update(updatedData)
-        .then((_) => debugPrint(
-            "_updateFirebase : Événement mis à jour avec succès dans Firestore."))
-        .catchError((error) => debugPrint(
-            "_updateFirebase : Erreur lors de la mise à jour de l'événement : $error"));
   }
 
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
     return BlocConsumer<EventStatsBloc, EventStatsState>(
       listener: (BuildContext context, EventStatsState state) {},
       builder: (context, state) {
-        debugPrint("DEBUG : ${state.remainingDaysCount}");
         return Wrap(
           direction: Axis.horizontal,
           spacing: kDefaultPadding,
@@ -277,6 +257,19 @@ class _EventScreenState extends State<EventScreen>
       },
     );
   }
+
+  Map<String, String> fieldMappings = {
+    'Caption': 'caption',
+    'Participants': 'participants',
+    'Title': 'title',
+    'Date': 'date',
+    'Date Event': 'dateEvent',
+    'Date End': 'dateEnd',
+    'Tags': 'tags',
+    'Done': 'done',
+    'ImageUrl': 'imageUrl',
+    'LogoUrl': 'logoUrl',
+  };
 
   Widget _buildButtonsCard(Event event) {
     return SizedBox(

@@ -1,6 +1,6 @@
 part of 'event_bloc.dart';
 
-enum EventStatus { initial, loading, loaded, noEvents, error }
+enum EventStatus { initial, loading, loaded, success, noEvents, error }
 
 class EventState extends Equatable {
   final Event? event;

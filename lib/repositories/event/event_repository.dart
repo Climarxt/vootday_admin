@@ -346,11 +346,8 @@ class EventRepository {
       if (event != null) {
         final currentDate = DateTime.now();
         final endDate = event.dateEnd;
-        debugPrint("END DATE : $endDate");
-
         // Calcul de la différence en jours
         final difference = endDate.difference(currentDate).inDays;
-        debugPrint("DIFFERENCE : $difference");
 
         // Si la différence est négative, cela signifie que la date de fin est passée
         return difference < 0 ? 0 : difference;
@@ -362,6 +359,20 @@ class EventRepository {
     } catch (e) {
       debugPrint('getRemainingDaysForEvent : Erreur - ${e.toString()}');
       return 0; // Retourne 0 en cas d'erreur
+    }
+  }
+
+  Future<void> updateEventField(
+      String eventId, String field, dynamic newValue) async {
+    try {
+      await _firebaseFirestore
+          .collection(Paths.events)
+          .doc(eventId)
+          .update({field: newValue});
+      debugPrint('updateEventField: Event $eventId updated successfully.');
+    } catch (e) {
+      debugPrint('updateEventField: Error updating event - ${e.toString()}');
+      throw e;
     }
   }
 }

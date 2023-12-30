@@ -14,6 +14,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   })  : _eventRepository = eventRepository,
         super(EventState.initial()) {
     on<EventFetchEvent>(_mapEventFetchEvent);
+    on<EventUpdateFieldEvent>(_onEventUpdateFieldEvent);
   }
 
   Future<void> _mapEventFetchEvent(
@@ -36,6 +37,25 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       emit(state.copyWith(
         status: EventStatus.error,
         failure: Failure(message: 'Unable to load the event - $err'),
+      ));
+    }
+  }
+
+  Future<void> _onEventUpdateFieldEvent(
+    EventUpdateFieldEvent event,
+    Emitter<EventState> emit,
+  ) async {
+    try {
+      await _eventRepository.updateEventField(
+          event.eventId, event.field, event.newValue);
+      final Event? updatedEvent =
+          await _eventRepository.getEventById(event.eventId);
+      emit(state.copyWith(event: updatedEvent, status: EventStatus.loaded));
+    } catch (e) {
+      emit(state.copyWith(
+        status: EventStatus.error,
+        failure:
+            Failure(message: 'Unable to update the event - ${e.toString()}'),
       ));
     }
   }
