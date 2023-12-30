@@ -49,7 +49,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   background: _buildHeaderSection(context, size),
                 ),
               ),
-              SliverFillRemaining(
+              const SliverFillRemaining(
                 hasScrollBody: false,
                 child: DataPage(), // Utilisation de DataPage ici
               ),
