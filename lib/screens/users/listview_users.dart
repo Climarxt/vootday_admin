@@ -1,9 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_table/responsive_table.dart';
 import 'package:vootday_admin/config/colors.dart';
+import 'package:vootday_admin/config/constants/dimens.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 
 class DataPage extends StatefulWidget {
@@ -19,6 +19,11 @@ class _DataPageState extends State<DataPage> {
   final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
   String _searchTerm = '';
+
+  // Variables de pagination
+  int _currentPage = 1;
+  int _itemsPerPage = 3; // Modifiez ce nombre selon vos besoins
+  int _totalPages = 0;
 
   @override
   void initState() {
@@ -79,11 +84,60 @@ class _DataPageState extends State<DataPage> {
   void _filterData(String searchTerm) {
     setState(() {
       _searchTerm = searchTerm.toLowerCase();
+      _currentPage = 1;
     });
+  }
+
+  void _updateCurrentPage(int newPage) {
+    setState(() {
+      _currentPage = newPage;
+    });
+  }
+
+  Widget _buildPaginationControls() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('Page $_currentPage sur $_totalPages'),
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: _currentPage > 1
+                  ? () => _updateCurrentPage(_currentPage - 1)
+                  : null,
+            ),
+            IconButton(
+              icon: Icon(Icons.arrow_forward),
+              onPressed: _currentPage < _totalPages
+                  ? () => _updateCurrentPage(_currentPage + 1)
+                  : null,
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> filteredList = _source
+        .where((user) => user.values.any(
+            (value) => value.toString().toLowerCase().contains(_searchTerm)))
+        .toList();
+
+    _totalPages = (filteredList.length / _itemsPerPage).ceil();
+
+    List<Map<String, dynamic>> paginatedList;
+    if (filteredList.isEmpty) {
+      paginatedList = [];
+    } else {
+      int startRange = (_currentPage - 1) * _itemsPerPage;
+      int endRange =
+          (_currentPage * _itemsPerPage).clamp(0, filteredList.length);
+      paginatedList = filteredList.sublist(startRange, endRange);
+    }
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Scaffold(
@@ -93,6 +147,7 @@ class _DataPageState extends State<DataPage> {
               setState(() {
                 _source = state.allUsers;
                 _isLoading = false;
+                _totalPages = (_source.length / _itemsPerPage).ceil();
               });
             }
           },
@@ -106,11 +161,11 @@ class _DataPageState extends State<DataPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(
-                            width: 256,
+                            width: 230,
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 12),
+                                    vertical: 4, horizontal: kDefaultPadding),
                                 child: TextField(
                                   onChanged: _filterData,
                                   decoration: const InputDecoration(
@@ -128,35 +183,32 @@ class _DataPageState extends State<DataPage> {
                     ),
                     Expanded(
                       child: SingleChildScrollView(
-                        child: ResponsiveDatatable(
-                          headerDecoration: BoxDecoration(
-                            border: Border.all(color: grey),
-                            color: lightBleu,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(10)),
-                          ),
-                          headerTextStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: black,
-                          ),
-                          rowDecoration: BoxDecoration(
-                            border: Border.all(color: grey),
-                          ),
-                          headers: _headers,
-                          selecteds: _selecteds,
-                          expanded: List.filled(_source.length, false),
-                          source: _source.isNotEmpty
-                              ? _source
-                                  .where((user) => user.values.any((value) =>
-                                      value
-                                          .toString()
-                                          .toLowerCase()
-                                          .contains(_searchTerm)))
-                                  .toList()
-                              : null,
-                        ),
+                        child: paginatedList.isEmpty
+                            ? Center(
+                                child: Text(
+                                    "No result")) // Ou un message personnalisé
+                            : ResponsiveDatatable(
+                                headerDecoration: BoxDecoration(
+                                  border: Border.all(color: grey),
+                                  color: lightBleu,
+                                  borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(10)),
+                                ),
+                                headerTextStyle: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: black,
+                                ),
+                                rowDecoration: BoxDecoration(
+                                  border: Border.all(color: grey),
+                                ),
+                                headers: _headers,
+                                selecteds: _selecteds,
+                                expanded: List.filled(_source.length, false),
+                                source: paginatedList,
+                              ),
                       ),
                     ),
+                    _buildPaginationControls(),
                   ],
                 ),
         ),
