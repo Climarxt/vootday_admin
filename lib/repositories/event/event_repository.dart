@@ -248,4 +248,46 @@ class EventRepository {
     }
     return eventsList;
   }
+
+  Future<int> getTotalLikesForEventPosts(String eventId) async {
+    int totalLikes = 0;
+
+    try {
+      debugPrint(
+          'getTotalLikesForEventPosts : Fetching posts for event: $eventId...');
+
+      // Accéder à la sous-collection 'feed_event'
+      QuerySnapshot feedEventSnap = await _firebaseFirestore
+          .collection(Paths.events)
+          .doc(eventId)
+          .collection(
+              'feed_event') // Assurez-vous que le nom de la sous-collection est correct
+          .get();
+
+      // Additionner les likes de chaque post
+      for (var doc in feedEventSnap.docs) {
+        var postData = doc.data() as Map<String, dynamic>;
+        var likes = postData['likes'];
+
+        // Vérifier le type de la valeur 'likes' et la convertir en int
+        if (likes is int) {
+          totalLikes += likes;
+        } else if (likes is double) {
+          totalLikes += likes.toInt();
+        } else {
+          // Gérer le cas où 'likes' n'est ni un int ni un double
+          debugPrint(
+              'getTotalLikesForEventPosts : Unexpected type for likes in document ${doc.id}');
+        }
+      }
+
+      debugPrint(
+          'getTotalLikesForEventPosts : Total likes for event $eventId: $totalLikes');
+    } catch (e) {
+      debugPrint(
+          'getTotalLikesForEventPosts : Error occurred - ${e.toString()}');
+    }
+
+    return totalLikes;
+  }
 }

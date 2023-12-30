@@ -5,6 +5,7 @@ import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
@@ -27,12 +28,14 @@ class _EventScreenState extends State<EventScreen>
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   Map<String, bool> _editState = {};
+  int totalLikes = 0;
 
   @override
   void initState() {
     super.initState();
     BlocProvider.of<EventBloc>(context)
         .add(EventFetchEvent(eventId: widget.eventId));
+    _fetchTotalLikes();
     for (var detail in [
       'Caption',
       'Title',
@@ -43,6 +46,16 @@ class _EventScreenState extends State<EventScreen>
     ]) {
       _editState[detail] = false;
     }
+  }
+
+  void _fetchTotalLikes() async {
+    EventRepository eventRepository =
+        EventRepository(); // Créer une instance de EventRepository
+    int likes =
+        await eventRepository.getTotalLikesForEventPosts(widget.eventId);
+    setState(() {
+      totalLikes = likes; // Mettre à jour le total des likes
+    });
   }
 
   @override
@@ -99,9 +112,9 @@ class _EventScreenState extends State<EventScreen>
           iconColor: Colors.black12,
           width: 256,
         ),
-        const SummaryCard(
+        SummaryCard(
           title: 'Likes',
-          value: '523',
+          value: totalLikes.toString(),
           icon: Icons.ssid_chart_rounded,
           backgroundColor: white,
           textColor: black,
