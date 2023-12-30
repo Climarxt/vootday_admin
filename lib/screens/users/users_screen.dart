@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
+import 'package:vootday_admin/screens/users/bloc/stats/users_stats_bloc.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -13,6 +15,12 @@ class UsersScreen extends StatefulWidget {
 
 class _UsersScreenState extends State<UsersScreen> {
   final _dataTableHorizontalScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<UsersStatsBloc>().add(UsersStatsManFetchEvent());
+  }
 
   @override
   void dispose() {
@@ -118,49 +126,53 @@ class _UsersScreenState extends State<UsersScreen> {
   }
 
   Widget _buildHeaderSection(BuildContext context, Size size) {
-    return Wrap(
-      direction: Axis.horizontal,
-      spacing: kDefaultPadding,
-      runSpacing: kDefaultPadding,
-      children: [
-        const SummaryCard(
-          title: 'Nombre Utilisateurs',
-          value: '4362',
-          icon: Icons.people,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Nombre de femmes',
-          value: '2680',
-          icon: Icons.woman,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Nombre d\'homme',
-          value: '1682',
-          icon: Icons.man,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Taux de nouveaux inscrits',
-          value: '70%',
-          icon: Icons.calendar_month,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        _buildButtonsCard(),
-      ],
+    return BlocBuilder<UsersStatsBloc, UsersStatsState>(
+      builder: (context, state) {
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            const SummaryCard(
+              title: 'Nombre Utilisateurs',
+              value: '4362',
+              icon: Icons.people,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Nombre de femmes',
+              value: '2680',
+              icon: Icons.woman,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: 'Nombre d\'homme',
+              value: state.manUsersCount.toString(),
+              icon: Icons.man,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Taux de nouveaux inscrits',
+              value: '70%',
+              icon: Icons.calendar_month,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            _buildButtonsCard(),
+          ],
+        );
+      },
     );
   }
 
