@@ -163,8 +163,8 @@ class _UsersScreenState extends State<UsersScreen> {
               width: 256,
             ),
             const SummaryCard(
-              title: 'Taux de nouveaux inscrits',
-              value: '70%',
+              title: 'Inscriptions des 7 derniers jours',
+              value: '**',
               icon: Icons.calendar_month,
               backgroundColor: white,
               textColor: black,
