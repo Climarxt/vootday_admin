@@ -20,6 +20,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     super.initState();
     context.read<CalendarEndedBloc>().add(CalendarEndedFetchEvent());
     context.read<CalendarComingSoonBloc>().add(CalendarComingSoonFetchEvent());
+    context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
   }
 
   @override
@@ -118,49 +119,53 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildHeaderSection(BuildContext context, Size size) {
-    return Wrap(
-      direction: Axis.horizontal,
-      spacing: kDefaultPadding,
-      runSpacing: kDefaultPadding,
-      children: [
-        const SummaryCard(
-          title: 'Taux de likes ',
-          value: '47%',
-          icon: Icons.ssid_chart_rounded,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Taux de participations',
-          value: '70%',
-          icon: Icons.person,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Ended Events',
-          value: '7',
-          icon: Icons.calendar_today,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        const SummaryCard(
-          title: 'Next Events',
-          value: '2',
-          icon: Icons.calendar_month,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        _buildButtonsCard(),
-      ],
+    return BlocBuilder<CalendarStatsBloc, CalendarStatsState>(
+      builder: (context, state) {
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            const SummaryCard(
+              title: 'Taux de likes ',
+              value: '47%',
+              icon: Icons.ssid_chart_rounded,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Taux de participations',
+              value: '70%',
+              icon: Icons.person,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: 'Ended Events',
+              value: state.endedEventsCount.toString(),
+              icon: Icons.calendar_today,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: 'Next Events',
+              value: '2',
+              icon: Icons.calendar_month,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            _buildButtonsCard(),
+          ],
+        );
+      },
     );
   }
 

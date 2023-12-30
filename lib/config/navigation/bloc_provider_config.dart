@@ -12,11 +12,11 @@ class BlocProviderConfig {
       providers: [
         BlocProvider(
           create: (context) {
-            final thisWeekEventsBloc = CalendarEndedBloc(
+            final thisEndedEventsBloc = CalendarEndedBloc(
               eventRepository: context.read<EventRepository>(),
               authBloc: context.read<AuthBloc>(),
             );
-            return thisWeekEventsBloc;
+            return thisEndedEventsBloc;
           },
         ),
         BlocProvider(
@@ -26,6 +26,15 @@ class BlocProviderConfig {
               authBloc: context.read<AuthBloc>(),
             );
             return thisComignSoonEventsBloc;
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            final thisStatsEventsBloc = CalendarStatsBloc(
+              eventRepository: context.read<EventRepository>(),
+              authBloc: context.read<AuthBloc>(),
+            );
+            return thisStatsEventsBloc;
           },
         ),
       ],
