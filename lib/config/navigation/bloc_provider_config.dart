@@ -10,15 +10,6 @@ class BlocProviderConfig {
       BuildContext context, Widget child) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CalendarLatestBloc>(
-          create: (context) {
-            final latestEventBloc = CalendarLatestBloc(
-              eventRepository: context.read<EventRepository>(),
-              authBloc: context.read<AuthBloc>(),
-            );
-            return latestEventBloc;
-          },
-        ),
         BlocProvider(
           create: (context) {
             final thisWeekEventsBloc = CalendarEndedBloc(
