@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_table/responsive_table.dart';
+import 'package:vootday_admin/config/colors.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 
 class DataPage extends StatefulWidget {
@@ -59,10 +60,6 @@ class _DataPageState extends State<DataPage> {
         value: "following",
       ),
       DatatableHeader(
-        text: "bio",
-        value: "bio",
-      ),
-      DatatableHeader(
         text: "selectedGender",
         value: "selectedGender",
       ),
@@ -98,6 +95,18 @@ class _DataPageState extends State<DataPage> {
                   selecteds: _selecteds,
                   expanded: List.filled(_source.length, false),
                   source: _source.isNotEmpty ? _source : null,
+                  headerDecoration: BoxDecoration(
+                      border: Border.all(color: grey),
+                      color: lightBleu,
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(10))),
+                  headerTextStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: black,
+                  ),
+                  rowDecoration: BoxDecoration(
+                    border: Border.all(color: grey),
+                  ),
                 ),
               ),
       ),

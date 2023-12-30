@@ -281,7 +281,6 @@ class UserRepository extends BaseUserRepository {
           'location': user.location,
           'followers': user.followers,
           'following': user.following,
-          'bio': user.bio,
           'selectedGender': user.selectedGender,
           'username_lowercase': user.username_lowercase,
         };
