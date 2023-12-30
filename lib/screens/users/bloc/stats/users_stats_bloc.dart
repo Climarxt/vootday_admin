@@ -36,7 +36,7 @@ class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
     UsersStatsWomanFetchEvent event,
     Emitter<UsersStatsState> emit,
   ) async {
-    _womanUsersCount = await _userRepository.getCountManUsers();
+    _womanUsersCount = await _userRepository.getCountWomanUsers();
     _updateStateIfDataReady(emit);
   }
 
@@ -44,7 +44,7 @@ class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
     UsersStatsAllFetchEvent event,
     Emitter<UsersStatsState> emit,
   ) async {
-    _allUsersCount = await _userRepository.getCountManUsers();
+    _allUsersCount = await _userRepository.getCountAllUsers();
     _updateStateIfDataReady(emit);
   }
 

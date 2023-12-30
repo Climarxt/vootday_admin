@@ -212,4 +212,52 @@ class UserRepository extends BaseUserRepository {
       return 0; // Retourne 0 en cas d'erreur
     }
   }
+
+  Future<int> getCountWomanUsers() async {
+    try {
+      debugPrint(
+          'getCountWomanUsers : Récupération du nombre d\'user masculin...');
+
+      // Requête pour filtrer les événements où 'done' est vrai
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection(Paths.users)
+          .where('selectedGender', isEqualTo: 'Féminin')
+          .get();
+
+      // Le nombre de documents correspondants représente le nombre d'événements terminés
+      int count = querySnapshot.docs.length;
+
+      debugPrint(
+          'getCountWomanUsers : Nombre d\'user féminin terminés: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountWomanUsers : Erreur lors du comptage des users - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
+
+  Future<int> getCountAllUsers() async {
+    try {
+      debugPrint(
+          'getCountAllUsers : Récupération du nombre d\'users...');
+
+      // Requête pour filtrer les événements où 'done' est vrai
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection(Paths.users)
+          .where('selectedGender', isNotEqualTo: 'Brand')
+          .get();
+
+      // Le nombre de documents correspondants représente le nombre d'événements terminés
+      int count = querySnapshot.docs.length;
+
+      debugPrint(
+          'getCountAllUsers : Nombre d\'user terminés: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountAllUsers : Erreur lors du comptage des users - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
 }

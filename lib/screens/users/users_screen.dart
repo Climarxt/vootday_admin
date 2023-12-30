@@ -20,6 +20,8 @@ class _UsersScreenState extends State<UsersScreen> {
   void initState() {
     super.initState();
     context.read<UsersStatsBloc>().add(UsersStatsManFetchEvent());
+    context.read<UsersStatsBloc>().add(UsersStatsWomanFetchEvent());
+    context.read<UsersStatsBloc>().add(UsersStatsAllFetchEvent());
   }
 
   @override
@@ -133,18 +135,18 @@ class _UsersScreenState extends State<UsersScreen> {
           spacing: kDefaultPadding,
           runSpacing: kDefaultPadding,
           children: [
-            const SummaryCard(
+            SummaryCard(
               title: 'Nombre Utilisateurs',
-              value: '4362',
+              value: state.allUsersCount.toString(),
               icon: Icons.people,
               backgroundColor: white,
               textColor: black,
               iconColor: Colors.black12,
               width: 256,
             ),
-            const SummaryCard(
+            SummaryCard(
               title: 'Nombre de femmes',
-              value: '2680',
+              value: state.womanUsersCount.toString(),
               icon: Icons.woman,
               backgroundColor: white,
               textColor: black,
