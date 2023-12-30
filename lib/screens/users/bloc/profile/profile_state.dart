@@ -4,7 +4,7 @@ enum ProfileStatus { initial, loading, loaded, error }
 
 class ProfileState extends Equatable {
   final User user;
-  final List<User> allUsers;
+  final List<Map<String, dynamic>> allUsers;
   final List<Post?> posts;
   final bool isCurrentUser;
   final bool isGridView;
@@ -51,7 +51,7 @@ class ProfileState extends Equatable {
   ProfileState copyWith({
     User? user,
     List<Post?>? posts,
-    List<User>? allUsers,
+    List<Map<String, dynamic>>? allUsers,
     bool? isCurrentUser,
     bool? isGridView,
     bool? isFollowing,

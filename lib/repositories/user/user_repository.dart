@@ -259,7 +259,7 @@ class UserRepository extends BaseUserRepository {
     }
   }
 
-  Future<List<User>> getAllUsers() async {
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
     try {
       debugPrint('getAllUsers : Fetching all users from Firestore...');
 
@@ -269,12 +269,18 @@ class UserRepository extends BaseUserRepository {
 
       debugPrint('getAllUsers : All user documents fetched.');
 
-      // Transformer chaque document en objet User
-      List<User> users =
-          usersSnapshot.docs.map((doc) => User.fromDocument(doc)).toList();
+      // Transformer chaque document en objet User, puis en Map<String, dynamic>
+      List<Map<String, dynamic>> users = usersSnapshot.docs.map((doc) {
+        User user = User.fromDocument(doc);
+        return {
+          'id': user.id,
+          'username': user.username,
+        };
+      }).toList();
 
       debugPrint(
-          'getAllUsers : User objects created. Total users: ${users.length}');
+          'getAllUsers : User objects transformed. Total users: ${users.length}');
+      debugPrint("DEBUG : $users");
 
       return users;
     } catch (e) {

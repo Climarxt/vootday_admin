@@ -123,7 +123,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   ],
                 ),
               ),
-              Container(width: size.width, height: 200, child: UsersListView()),
+              Container(width: size.width, height: 200, child: DataPage()),
             ],
           ),
         ),
