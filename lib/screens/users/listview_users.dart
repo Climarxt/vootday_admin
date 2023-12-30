@@ -18,6 +18,7 @@ class _DataPageState extends State<DataPage> {
   List<Map<String, dynamic>> _source = [];
   final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
+  String _searchTerm = '';
 
   @override
   void initState() {
@@ -75,6 +76,12 @@ class _DataPageState extends State<DataPage> {
     context.read<ProfileBloc>().add(ProfileLoadAllUsers());
   }
 
+  void _filterData(String searchTerm) {
+    setState(() {
+      _searchTerm = searchTerm.toLowerCase();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -91,26 +98,66 @@ class _DataPageState extends State<DataPage> {
           },
           child: _isLoading
               ? const CircularProgressIndicator()
-              : SingleChildScrollView(
-                  child: ResponsiveDatatable(
-                    headerDecoration: BoxDecoration(
-                      border: Border.all(color: grey),
-                      color: lightBleu,
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(10)),
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 256,
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 12),
+                                child: TextField(
+                                  onChanged: _filterData,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Recherche',
+                                    suffixIcon: Icon(Icons.search),
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    headerTextStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: black,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: ResponsiveDatatable(
+                          headerDecoration: BoxDecoration(
+                            border: Border.all(color: grey),
+                            color: lightBleu,
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(10)),
+                          ),
+                          headerTextStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: black,
+                          ),
+                          rowDecoration: BoxDecoration(
+                            border: Border.all(color: grey),
+                          ),
+                          headers: _headers,
+                          selecteds: _selecteds,
+                          expanded: List.filled(_source.length, false),
+                          source: _source.isNotEmpty
+                              ? _source
+                                  .where((user) => user.values.any((value) =>
+                                      value
+                                          .toString()
+                                          .toLowerCase()
+                                          .contains(_searchTerm)))
+                                  .toList()
+                              : null,
+                        ),
+                      ),
                     ),
-                    rowDecoration: BoxDecoration(
-                      border: Border.all(color: grey),
-                    ),
-                    headers: _headers,
-                    selecteds: _selecteds,
-                    expanded: List.filled(_source.length, false),
-                    source: _source.isNotEmpty ? _source : null,
-                  ),
+                  ],
                 ),
         ),
       ),
