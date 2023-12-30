@@ -26,6 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _postRepository = postRepository,
         super(ProfileState.initial()) {
     on<ProfileLoadUser>(_onProfileLoadUser);
+    on<ProfileLoadAllUsers>(_onProfileLoadAllUsers);
 
     _authSubscription = _authBloc.stream.listen((state) {
       if (state.user is AuthUserChanged) {
@@ -34,6 +35,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       }
     });
+  }
+
+  @override
+  Future<void> close() {
+    _postsSubscription?.cancel();
+    _authSubscription?.cancel();
+    return super.close();
   }
 
   void _onProfileLoadUser(
@@ -58,10 +66,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
   }
 
-  @override
-  Future<void> close() {
-    _postsSubscription?.cancel();
-    _authSubscription?.cancel();
-    return super.close();
+  void _onProfileLoadAllUsers(
+    ProfileLoadAllUsers event,
+    Emitter<ProfileState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: ProfileStatus.loading));
+      final List<User> allUsers = await _userRepository.getAllUsers();
+      // Vous pouvez émettre un nouvel état ici avec la liste des utilisateurs
+      emit(state.copyWith(allUsers: allUsers, status: ProfileStatus.loaded));
+    } catch (e) {
+      emit(state.copyWith(
+        status: ProfileStatus.error,
+        failure: Failure(message: e.toString()),
+      ));
+    }
   }
 }

@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
+import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/stats/users_stats_bloc.dart';
+import 'package:vootday_admin/screens/users/listview_users.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class UsersScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class _UsersScreenState extends State<UsersScreen> {
     context.read<UsersStatsBloc>().add(UsersStatsManFetchEvent());
     context.read<UsersStatsBloc>().add(UsersStatsWomanFetchEvent());
     context.read<UsersStatsBloc>().add(UsersStatsAllFetchEvent());
+    context.read<ProfileBloc>().add(ProfileLoadAllUsers());
   }
 
   @override
@@ -120,6 +123,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   ],
                 ),
               ),
+              Container(width: size.width, height: 200, child: UsersListView()),
             ],
           ),
         ),

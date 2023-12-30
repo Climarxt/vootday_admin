@@ -34,3 +34,8 @@ class UpdateProfile extends ProfileEvent {
   @override
   List<Object> get props => [user];
 }
+
+class ProfileLoadAllUsers extends ProfileEvent {
+  @override
+  List<Object> get props => [];
+}

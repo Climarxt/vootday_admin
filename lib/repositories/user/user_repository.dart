@@ -239,8 +239,7 @@ class UserRepository extends BaseUserRepository {
 
   Future<int> getCountAllUsers() async {
     try {
-      debugPrint(
-          'getCountAllUsers : Récupération du nombre d\'users...');
+      debugPrint('getCountAllUsers : Récupération du nombre d\'users...');
 
       // Requête pour filtrer les événements où 'done' est vrai
       QuerySnapshot querySnapshot = await _firebaseFirestore
@@ -251,13 +250,37 @@ class UserRepository extends BaseUserRepository {
       // Le nombre de documents correspondants représente le nombre d'événements terminés
       int count = querySnapshot.docs.length;
 
-      debugPrint(
-          'getCountAllUsers : Nombre d\'user terminés: $count');
+      debugPrint('getCountAllUsers : Nombre d\'user terminés: $count');
       return count;
     } catch (e) {
       debugPrint(
           'getCountAllUsers : Erreur lors du comptage des users - ${e.toString()}');
       return 0; // Retourne 0 en cas d'erreur
+    }
+  }
+
+  Future<List<User>> getAllUsers() async {
+    try {
+      debugPrint('getAllUsers : Fetching all users from Firestore...');
+
+      // Récupérer tous les documents de la collection 'users'
+      QuerySnapshot usersSnapshot =
+          await _firebaseFirestore.collection(Paths.users).get();
+
+      debugPrint('getAllUsers : All user documents fetched.');
+
+      // Transformer chaque document en objet User
+      List<User> users =
+          usersSnapshot.docs.map((doc) => User.fromDocument(doc)).toList();
+
+      debugPrint(
+          'getAllUsers : User objects created. Total users: ${users.length}');
+
+      return users;
+    } catch (e) {
+      debugPrint(
+          'getAllUsers : An error occurred while fetching users: ${e.toString()}');
+      return [];
     }
   }
 }
