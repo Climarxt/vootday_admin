@@ -15,12 +15,7 @@ class DataPage extends StatefulWidget {
 class _DataPageState extends State<DataPage> {
   late List<DatatableHeader> _headers;
   List<Map<String, dynamic>> _source = [];
-  List<Map<String, dynamic>> _selecteds = [];
-  List<Map<String, dynamic>> _sourceOriginal = [];
-  List<Map<String, dynamic>> _sourceFiltered = [];
-  List<bool>? _expanded;
-  int _total = 100;
-  int? _currentPerPage = 10;
+  final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
 
   @override
@@ -39,23 +34,6 @@ class _DataPageState extends State<DataPage> {
     _loadData();
   }
 
-  _initializeData() async {
-    _mockPullData();
-  }
-
-  _mockPullData() async {
-    _expanded = List.generate(_currentPerPage!, (index) => false);
-
-    setState(() => _isLoading = true);
-    Future.delayed(Duration(seconds: 3)).then((value) {
-      _sourceOriginal.clear();
-      _sourceFiltered = _sourceOriginal;
-      _total = _sourceFiltered.length;
-      _source = _sourceFiltered.getRange(0, _currentPerPage!).toList();
-      setState(() => _isLoading = false);
-    });
-  }
-
   void _loadData() {
     context.read<ProfileBloc>().add(ProfileLoadAllUsers());
   }
@@ -63,24 +41,13 @@ class _DataPageState extends State<DataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Responsive Data Table"),
-      ),
       body: BlocListener<ProfileBloc, ProfileState>(
         listener: (context, state) {
           if (state.status == ProfileStatus.loaded) {
-            // Ajout d'une vérification pour s'assurer que la liste n'est pas null
-            if (state.allUsers != null) {
-              setState(() {
-                _source = state.allUsers;
-                _isLoading = false;
-              });
-              debugPrint("DEBUG 3:$_source");
-              debugPrint("DEBUG 3:$_headers");
-            } else {
-              // Gérer le cas où state.allUsers est null
-              debugPrint("Error: allUsers is null");
-            }
+            setState(() {
+              _source = state.allUsers;
+              _isLoading = false;
+            });
           }
         },
         child: _isLoading
