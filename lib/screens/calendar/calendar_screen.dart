@@ -293,7 +293,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.all(kDefaultPadding),
-      child: Text(title, style: AppTextStyles.displaySmallBold(context)),
+      child: Text(title, style: AppTextStyles.titleLargeBlackBold(context)),
     );
   }
 

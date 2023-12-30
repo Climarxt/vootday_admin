@@ -23,7 +23,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
       body: Row(
         children: <Widget>[
           NavigationRail(
-            backgroundColor: webBackgroundColor,
+            backgroundColor: lightBleu,
             groupAlignment: 0,
             indicatorColor: couleurBleuClair2,
             selectedIndex: navigationShell.currentIndex,
