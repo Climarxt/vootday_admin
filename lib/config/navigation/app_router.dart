@@ -219,13 +219,12 @@ GoRouter createRouter(BuildContext context) {
                         String currentPath = RouteConfig.getCurrentPath(state);
                         return MaterialPage<void>(
                           key: state.pageKey,
-                          child:
-                              BlocProviderConfig.getEventBlocProvider(
-                                  context,
-                                  EventScreen(
-                                    fromPath: currentPath,
-                                    eventId: eventId,
-                                  )),
+                          child: BlocProviderConfig.getEventMultiBlocProvider(
+                              context,
+                              EventScreen(
+                                fromPath: currentPath,
+                                eventId: eventId,
+                              )),
                         );
                       },
                       routes: [

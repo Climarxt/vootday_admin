@@ -5,7 +5,6 @@ import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
@@ -33,13 +32,10 @@ class _EventScreenState extends State<EventScreen>
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<EventBloc>(context)
-        .add(EventFetchEvent(eventId: widget.eventId));
+    context.read<EventBloc>().add(EventFetchEvent(eventId: widget.eventId));
     context
         .read<EventStatsBloc>()
         .add(EventStatsCountLikesFetchEvent(eventId: widget.eventId));
-
-    _fetchTotalLikes();
     for (var detail in [
       'Caption',
       'Title',
@@ -50,16 +46,6 @@ class _EventScreenState extends State<EventScreen>
     ]) {
       _editState[detail] = false;
     }
-  }
-
-  void _fetchTotalLikes() async {
-    EventRepository eventRepository =
-        EventRepository(); // Créer une instance de EventRepository
-    int likes =
-        await eventRepository.getTotalLikesForEventPosts(widget.eventId);
-    setState(() {
-      totalLikes = likes; // Mettre à jour le total des likes
-    });
   }
 
   @override

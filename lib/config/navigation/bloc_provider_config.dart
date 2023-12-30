@@ -70,6 +70,33 @@ class BlocProviderConfig {
       child: child,
     );
   }
+
+  static MultiBlocProvider getEventMultiBlocProvider(
+      BuildContext context, Widget child) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<EventStatsBloc>(
+          create: (context) {
+            final statsEventBloc = EventStatsBloc(
+              eventRepository: context.read<EventRepository>(),
+              authBloc: context.read<AuthBloc>(),
+            );
+            return statsEventBloc;
+          },
+        ),
+        BlocProvider<EventBloc>(
+          create: (context) {
+            final eventBloc = EventBloc(
+              eventRepository: context.read<EventRepository>(),
+            );
+            return eventBloc;
+          },
+        ),
+      ],
+      child: child,
+    );
+  }
+
 /*
   static MultiBlocProvider getHomeMultiBlocProvider(
       BuildContext context, Widget child) {
