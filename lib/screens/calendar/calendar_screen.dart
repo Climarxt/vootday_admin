@@ -20,6 +20,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     super.initState();
     context.read<CalendarEndedBloc>().add(CalendarEndedFetchEvent());
     context.read<CalendarComingSoonBloc>().add(CalendarComingSoonFetchEvent());
+    context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
     context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
   }
 
@@ -153,9 +154,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
               iconColor: Colors.black12,
               width: 256,
             ),
-            const SummaryCard(
+            SummaryCard(
               title: 'Next Events',
-              value: '2',
+              value: state.comingEventsCount.toString(),
               icon: Icons.calendar_month,
               backgroundColor: white,
               textColor: black,

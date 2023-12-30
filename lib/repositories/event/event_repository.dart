@@ -313,4 +313,28 @@ class EventRepository {
       return 0; // Retourne 0 en cas d'erreur
     }
   }
+
+  Future<int> getCountComingEvents() async {
+    try {
+      debugPrint(
+          'getCountComingEvents : Récupération du nombre d\'événements terminés...');
+
+      // Requête pour filtrer les événements où 'done' est vrai
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection(Paths.events)
+          .where('done', isEqualTo: false)
+          .get();
+
+      // Le nombre de documents correspondants représente le nombre d'événements terminés
+      int count = querySnapshot.docs.length;
+
+      debugPrint(
+          'getCountComingEvents : Nombre d\'événements terminés: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountComingEvents : Erreur lors du comptage des événements - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
 }

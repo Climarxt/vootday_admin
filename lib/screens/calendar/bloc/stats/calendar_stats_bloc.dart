@@ -16,7 +16,10 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
     required AuthBloc authBloc,
   })  : _eventRepository = eventRepository,
         super(CalendarStatsState.initial()) {
-    on<CalendarStatsCountEndedFetchEvent>(_mapCalendarStatsCountEndedFetchEvent);
+    on<CalendarStatsCountEndedFetchEvent>(
+        _mapCalendarStatsCountEndedFetchEvent);
+    on<CalendarStatsCountComingFetchEvent>(
+        _mapCalendarStatsCountComingFetchEvent);
   }
 
   Future<void> _mapCalendarStatsCountEndedFetchEvent(
@@ -24,7 +27,8 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
     Emitter<CalendarStatsState> emit,
   ) async {
     try {
-      debugPrint('_mapCalendarStatsCountEndedFetchEvent : Fetching count events...');
+      debugPrint(
+          '_mapCalendarStatsCountEndedFetchEvent : Fetching count events...');
       final int endedEventsCount = await _eventRepository.getCountEndedEvents();
 
       if (endedEventsCount > 0) {
@@ -32,18 +36,63 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
             '_mapCalendarStatsCountEndedFetchEvent : This count events fetched successfully.');
         emit(state.copyWith(
             endedEventsCount: endedEventsCount,
+            comingEventsCount: state.comingEventsCount,
             status: CalendarStatsStatus.loaded));
       } else {
         debugPrint('_mapCalendarStatsCountEndedFetchEvent : No events found');
         emit(state.copyWith(
-            endedEventsCount: 0, status: CalendarStatsStatus.noEvents));
+            endedEventsCount: 0,
+            comingEventsCount: state.comingEventsCount,
+            status: CalendarStatsStatus.noEvents));
       }
     } catch (err) {
-      debugPrint('_mapCalendarStatsCountEndedFetchEvent : Error fetching events - $err');
+      debugPrint(
+          '_mapCalendarStatsCountEndedFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarStatsStatus.error,
-        failure: const Failure(message: '_mapCalendarStatsCountEndedFetchEvent : Unable to load the events'),
+        failure: const Failure(
+            message:
+                '_mapCalendarStatsCountEndedFetchEvent : Unable to load the events'),
         endedEventsCount: 0,
+        comingEventsCount: state.comingEventsCount,
+      ));
+    }
+  }
+
+  Future<void> _mapCalendarStatsCountComingFetchEvent(
+    CalendarStatsCountComingFetchEvent event,
+    Emitter<CalendarStatsState> emit,
+  ) async {
+    try {
+      debugPrint(
+          '_mapCalendarStatsCountEndedFetchEvent : Fetching count events...');
+      final int comingEventsCount =
+          await _eventRepository.getCountComingEvents();
+
+      if (comingEventsCount > 0) {
+        debugPrint(
+            '_mapCalendarStatsCountEndedFetchEvent : This count events fetched successfully.');
+        emit(state.copyWith(
+            comingEventsCount: comingEventsCount,
+            endedEventsCount: state.endedEventsCount,
+            status: CalendarStatsStatus.loaded));
+      } else {
+        debugPrint('_mapCalendarStatsCountEndedFetchEvent : No events found');
+        emit(state.copyWith(
+            comingEventsCount: 0,
+            endedEventsCount: state.endedEventsCount,
+            status: CalendarStatsStatus.noEvents));
+      }
+    } catch (err) {
+      debugPrint(
+          '_mapCalendarStatsCountEndedFetchEvent : Error fetching events - $err');
+      emit(state.copyWith(
+        status: CalendarStatsStatus.error,
+        failure: const Failure(
+            message:
+                '_mapCalendarStatsCountEndedFetchEvent : Unable to load the events'),
+        comingEventsCount: 0,
+        endedEventsCount: state.endedEventsCount,
       ));
     }
   }

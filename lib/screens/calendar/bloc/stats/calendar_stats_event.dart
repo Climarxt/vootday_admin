@@ -8,3 +8,5 @@ abstract class CalendarStatsEvent extends Equatable {
 }
 
 class CalendarStatsCountEndedFetchEvent extends CalendarStatsEvent {}
+
+class CalendarStatsCountComingFetchEvent extends CalendarStatsEvent {}
