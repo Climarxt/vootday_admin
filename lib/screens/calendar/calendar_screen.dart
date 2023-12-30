@@ -40,41 +40,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
             children: [
               _buildHeaderSection(context, size),
               const SizedBox(height: kDefaultPadding),
-              // Events Done
-              Card(
-                  child: Stack(
-                children: [
-                  buildSectionTitle('Ended events'),
-                  BlocBuilder<CalendarEndedBloc, CalendarEndedState>(
-                    builder: (context, state) {
-                      switch (state.status) {
-                        case CalendarEndedStatus.loaded:
-                          return SizedBox(
-                            width: double.infinity,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 18,
-                                    ),
-                                    buildEventsTable(state.thisEndedEvents),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        case CalendarEndedStatus.loading:
-                        default:
-                          return Container(color: white);
-                      }
-                    },
-                  ),
-                ],
-              )),
-              const SizedBox(height: kDefaultPadding),
               // Coming Soon Events Section
               Card(
                 child: Stack(
@@ -112,6 +77,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: kDefaultPadding),
+              // Events Done
+              Card(
+                  child: Stack(
+                children: [
+                  buildSectionTitle('Ended events'),
+                  BlocBuilder<CalendarEndedBloc, CalendarEndedState>(
+                    builder: (context, state) {
+                      switch (state.status) {
+                        case CalendarEndedStatus.loaded:
+                          return SizedBox(
+                            width: double.infinity,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    buildEventsTable(state.thisEndedEvents),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        case CalendarEndedStatus.loading:
+                        default:
+                          return Container(color: white);
+                      }
+                    },
+                  ),
+                ],
+              )),
             ],
           ),
         ),
