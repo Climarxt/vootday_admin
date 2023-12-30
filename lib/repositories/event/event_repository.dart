@@ -337,4 +337,31 @@ class EventRepository {
       return 0; // Retourne 0 en cas d'erreur
     }
   }
+
+  Future<int> getRemainingDaysForEvent(String eventId) async {
+    try {
+      // Utiliser getEventById pour récupérer l'objet Event
+      final event = await getEventById(eventId);
+
+      if (event != null) {
+        final currentDate = DateTime.now();
+        final endDate = event.dateEnd;
+        debugPrint("END DATE : $endDate");
+
+        // Calcul de la différence en jours
+        final difference = endDate.difference(currentDate).inDays;
+        debugPrint("DIFFERENCE : $difference");
+
+        // Si la différence est négative, cela signifie que la date de fin est passée
+        return difference < 0 ? 0 : difference;
+      } else {
+        debugPrint(
+            'getRemainingDaysForEvent : Aucun événement trouvé pour l\'ID $eventId.');
+        return 0;
+      }
+    } catch (e) {
+      debugPrint('getRemainingDaysForEvent : Erreur - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
 }

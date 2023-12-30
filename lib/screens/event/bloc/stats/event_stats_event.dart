@@ -15,3 +15,12 @@ class EventStatsCountLikesFetchEvent extends EventStatsEvent {
   @override
   List<Object> get props => [eventId];
 }
+
+class EventStatsRemainingDaysFetchEvent extends EventStatsEvent {
+  final String eventId;
+
+  const EventStatsRemainingDaysFetchEvent({required this.eventId});
+
+  @override
+  List<Object> get props => [eventId];
+}

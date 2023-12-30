@@ -36,6 +36,9 @@ class _EventScreenState extends State<EventScreen>
     context
         .read<EventStatsBloc>()
         .add(EventStatsCountLikesFetchEvent(eventId: widget.eventId));
+    context
+        .read<EventStatsBloc>()
+        .add(EventStatsRemainingDaysFetchEvent(eventId: widget.eventId));
     for (var detail in [
       'Caption',
       'Title',
@@ -88,8 +91,10 @@ class _EventScreenState extends State<EventScreen>
   }
 
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
-    return BlocBuilder<EventStatsBloc, EventStatsState>(
+    return BlocConsumer<EventStatsBloc, EventStatsState>(
+      listener: (BuildContext context, EventStatsState state) {},
       builder: (context, state) {
+        debugPrint("DEBUG : ${state.remainingDaysCount}");
         return Wrap(
           direction: Axis.horizontal,
           spacing: kDefaultPadding,
@@ -122,9 +127,9 @@ class _EventScreenState extends State<EventScreen>
               iconColor: Colors.black12,
               width: 256,
             ),
-            const SummaryCard(
+            SummaryCard(
               title: 'Day left',
-              value: '7',
+              value: state.remainingDaysCount.toString(),
               icon: Icons.calendar_month,
               backgroundColor: white,
               textColor: black,

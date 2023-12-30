@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
 import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
@@ -10,6 +9,9 @@ part 'calendar_stats_state.dart';
 
 class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
   final EventRepository _eventRepository;
+
+  int? _endedEventsCount;
+  int? _comingEventsCount;
 
   CalendarStatsBloc({
     required EventRepository eventRepository,
@@ -26,74 +28,29 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
     CalendarStatsCountEndedFetchEvent event,
     Emitter<CalendarStatsState> emit,
   ) async {
-    try {
-      debugPrint(
-          '_mapCalendarStatsCountEndedFetchEvent : Fetching count events...');
-      final int endedEventsCount = await _eventRepository.getCountEndedEvents();
-
-      if (endedEventsCount > 0) {
-        debugPrint(
-            '_mapCalendarStatsCountEndedFetchEvent : This count events fetched successfully.');
-        emit(state.copyWith(
-            endedEventsCount: endedEventsCount,
-            comingEventsCount: state.comingEventsCount,
-            status: CalendarStatsStatus.loaded));
-      } else {
-        debugPrint('_mapCalendarStatsCountEndedFetchEvent : No events found');
-        emit(state.copyWith(
-            endedEventsCount: 0,
-            comingEventsCount: state.comingEventsCount,
-            status: CalendarStatsStatus.noEvents));
-      }
-    } catch (err) {
-      debugPrint(
-          '_mapCalendarStatsCountEndedFetchEvent : Error fetching events - $err');
-      emit(state.copyWith(
-        status: CalendarStatsStatus.error,
-        failure: const Failure(
-            message:
-                '_mapCalendarStatsCountEndedFetchEvent : Unable to load the events'),
-        endedEventsCount: 0,
-        comingEventsCount: state.comingEventsCount,
-      ));
-    }
+    _endedEventsCount = await _eventRepository.getCountEndedEvents();
+    _updateStateIfDataReady(emit);
   }
 
   Future<void> _mapCalendarStatsCountComingFetchEvent(
     CalendarStatsCountComingFetchEvent event,
     Emitter<CalendarStatsState> emit,
   ) async {
-    try {
-      debugPrint(
-          '_mapCalendarStatsCountEndedFetchEvent : Fetching count events...');
-      final int comingEventsCount =
-          await _eventRepository.getCountComingEvents();
+    _comingEventsCount = await _eventRepository.getCountComingEvents();
+    _updateStateIfDataReady(emit);
+  }
 
-      if (comingEventsCount > 0) {
-        debugPrint(
-            '_mapCalendarStatsCountEndedFetchEvent : This count events fetched successfully.');
-        emit(state.copyWith(
-            comingEventsCount: comingEventsCount,
-            endedEventsCount: state.endedEventsCount,
-            status: CalendarStatsStatus.loaded));
-      } else {
-        debugPrint('_mapCalendarStatsCountEndedFetchEvent : No events found');
-        emit(state.copyWith(
-            comingEventsCount: 0,
-            endedEventsCount: state.endedEventsCount,
-            status: CalendarStatsStatus.noEvents));
-      }
-    } catch (err) {
-      debugPrint(
-          '_mapCalendarStatsCountEndedFetchEvent : Error fetching events - $err');
-      emit(state.copyWith(
-        status: CalendarStatsStatus.error,
-        failure: const Failure(
-            message:
-                '_mapCalendarStatsCountEndedFetchEvent : Unable to load the events'),
-        comingEventsCount: 0,
-        endedEventsCount: state.endedEventsCount,
+  void _updateStateIfDataReady(Emitter<CalendarStatsState> emit) {
+    if (_endedEventsCount != null && _comingEventsCount != null) {
+      emit(CalendarStatsState(
+        endedEventsCount: _endedEventsCount!,
+        comingEventsCount: _comingEventsCount!,
+        status: CalendarStatsStatus.loaded,
+        failure: Failure(),
       ));
+      // Réinitialiser les valeurs pour les prochaines utilisations
+      _endedEventsCount = null;
+      _comingEventsCount = null;
     }
   }
 }

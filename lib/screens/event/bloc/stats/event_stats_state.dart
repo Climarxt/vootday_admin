@@ -4,13 +4,13 @@ enum EventStatsStatus { initial, loading, loaded, noEvents, error }
 
 class EventStatsState extends Equatable {
   final int likesEventCount;
-  final int comingEventsCount;
+  final int remainingDaysCount;
   final EventStatsStatus status;
   final Failure failure;
 
   const EventStatsState({
     required this.likesEventCount,
-    required this.comingEventsCount,
+    required this.remainingDaysCount,
     required this.status,
     required this.failure,
   });
@@ -18,7 +18,7 @@ class EventStatsState extends Equatable {
   factory EventStatsState.initial() {
     return const EventStatsState(
       likesEventCount: 0,
-      comingEventsCount: 0,
+      remainingDaysCount: 0,
       status: EventStatsStatus.initial,
       failure: Failure(),
     );
@@ -27,7 +27,7 @@ class EventStatsState extends Equatable {
   factory EventStatsState.loading() {
     return const EventStatsState(
       likesEventCount: 0,
-      comingEventsCount: 0,
+      remainingDaysCount: 0,
       status: EventStatsStatus.loading, // Change this to `.loading`
       failure: Failure(),
     );
@@ -38,13 +38,13 @@ class EventStatsState extends Equatable {
 
   EventStatsState copyWith({
     int? likesEventCount,
-    int? comingEventsCount,
+    int? remainingDaysCount,
     EventStatsStatus? status,
     Failure? failure,
   }) {
     return EventStatsState(
       likesEventCount: likesEventCount ?? this.likesEventCount,
-      comingEventsCount: comingEventsCount ?? this.comingEventsCount,
+      remainingDaysCount: remainingDaysCount ?? this.remainingDaysCount,
       status: status ?? this.status,
       failure: failure ?? this.failure,
     );
