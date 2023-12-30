@@ -26,19 +26,18 @@ class EventStatsBloc extends Bloc<EventStatsEvent, EventStatsState> {
     try {
       debugPrint(
           '_mapEventStatsCountLikesFetchEvent : Fetching count likes...');
-      final int likesEventCount = await _eventRepository.getTotalLikesForEventPosts(event.eventId);
+      final int likesEventCount =
+          await _eventRepository.getTotalLikesForEventPosts(event.eventId);
 
       if (likesEventCount > 0) {
         debugPrint(
             '_mapEventStatsCountLikesFetchEvent : This count likes fetched successfully.');
         emit(state.copyWith(
-            likesEventCount: likesEventCount,
-            status: EventStatsStatus.loaded));
+            likesEventCount: likesEventCount, status: EventStatsStatus.loaded));
       } else {
         debugPrint('_mapEventStatsCountLikesFetchEvent : No likes found');
         emit(state.copyWith(
-            likesEventCount: 0,
-            status: EventStatsStatus.noEvents));
+            likesEventCount: 0, status: EventStatsStatus.noEvents));
       }
     } catch (err) {
       debugPrint(
