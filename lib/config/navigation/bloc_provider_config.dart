@@ -58,19 +58,6 @@ class BlocProviderConfig {
     );
   }
 
-  static BlocProvider getEventBlocProvider(BuildContext context, Widget child) {
-    return BlocProvider<EventStatsBloc>(
-      create: (context) {
-        final statsEventBloc = EventStatsBloc(
-          eventRepository: context.read<EventRepository>(),
-          authBloc: context.read<AuthBloc>(),
-        );
-        return statsEventBloc;
-      },
-      child: child,
-    );
-  }
-
   static MultiBlocProvider getEventMultiBlocProvider(
       BuildContext context, Widget child) {
     return MultiBlocProvider(
