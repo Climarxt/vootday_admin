@@ -45,7 +45,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
                   label: Text('Settings')),
             ],
           ),
-          const VerticalDivider(thickness: 1, width: 1),
           Expanded(
             child: navigationShell,
           ),

@@ -5,7 +5,7 @@ const webBackgroundColor = Color.fromRGBO(250, 250, 250, 1);
 const mobileSearchColor = Color.fromRGBO(38, 38, 38, 1);
 const primaryColor = Color.fromARGB(255, 0, 0, 0);
 const secondaryColor = Colors.grey;
-const lightBleu = Color.fromARGB(243,249,254,255);
+const lightBleu = Color.fromARGB(255, 243, 249, 254);
 
 const couleurBleu = Color.fromARGB(255, 0, 91, 161);
 const couleurBleu1 = Color.fromARGB(255, 1, 55, 117);
