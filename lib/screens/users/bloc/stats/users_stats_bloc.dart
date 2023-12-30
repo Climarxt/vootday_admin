@@ -8,16 +8,16 @@ part 'users_stats_event.dart';
 part 'users_stats_state.dart';
 
 class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
-  final EventRepository _eventRepository;
+  final UserRepository _userRepository;
 
   int? _manUsersCount;
   int? _womanUsersCount;
   int? _allUsersCount;
 
   UsersStatsBloc({
-    required EventRepository eventRepository,
+    required UserRepository userRepository,
     required AuthBloc authBloc,
-  })  : _eventRepository = eventRepository,
+  })  : _userRepository = userRepository,
         super(UsersStatsState.initial()) {
     on<UsersStatsManFetchEvent>(_mapUsersStatsManFetchEvent);
     on<UsersStatsWomanFetchEvent>(_mapUsersStatsWomanFetchEvent);
@@ -28,7 +28,7 @@ class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
     UsersStatsManFetchEvent event,
     Emitter<UsersStatsState> emit,
   ) async {
-    _manUsersCount = await _eventRepository.getCountEndedEvents();
+    _manUsersCount = await _userRepository.getCountManUsers();
     _updateStateIfDataReady(emit);
   }
 
@@ -36,7 +36,7 @@ class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
     UsersStatsWomanFetchEvent event,
     Emitter<UsersStatsState> emit,
   ) async {
-    _womanUsersCount = await _eventRepository.getCountComingEvents();
+    _womanUsersCount = await _userRepository.getCountManUsers();
     _updateStateIfDataReady(emit);
   }
 
@@ -44,7 +44,7 @@ class UsersStatsBloc extends Bloc<UsersStatsEvent, UsersStatsState> {
     UsersStatsAllFetchEvent event,
     Emitter<UsersStatsState> emit,
   ) async {
-    _allUsersCount = await _eventRepository.getCountComingEvents();
+    _allUsersCount = await _userRepository.getCountManUsers();
     _updateStateIfDataReady(emit);
   }
 

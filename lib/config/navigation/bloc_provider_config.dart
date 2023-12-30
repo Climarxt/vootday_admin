@@ -5,6 +5,7 @@ import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/event/bloc/stats/event_stats_bloc.dart';
+import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 
 class BlocProviderConfig {
@@ -94,6 +95,12 @@ class BlocProviderConfig {
             authBloc: context.read<AuthBloc>(),
             userRepository: context.read<UserRepository>(),
             postRepository: context.read<PostRepository>(),
+          ),
+        ),
+        BlocProvider<UsersStatsBloc>(
+          create: (context) => UsersStatsBloc(
+            authBloc: context.read<AuthBloc>(),
+            userRepository: context.read<UserRepository>(),
           ),
         ),
         /*
