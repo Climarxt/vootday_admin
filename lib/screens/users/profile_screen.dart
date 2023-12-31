@@ -38,12 +38,15 @@ class _ProfileScreenState extends State<ProfileScreen>
     });
 
     for (var detail in [
-      'Caption',
-      'Title',
-      'Date Event',
-      'Date End',
-      'Tags',
-      'ImageUrl'
+      'username',
+      'email',
+      'firstName',
+      'lastName',
+      'profileImageUrl',
+      'location',
+      'bio',
+      'selectedGender',
+      'username_lowercase',
     ]) {
       _editState[detail] = false;
     }
@@ -78,11 +81,10 @@ class _ProfileScreenState extends State<ProfileScreen>
             children: [
               _buildHeaderSection(context, user, size),
               const SizedBox(height: 20),
-              /* Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: _buildDetailRows(event),
+                child: _buildDetailRows(user),
               ),
-              */
             ],
           ),
         ),
@@ -142,52 +144,53 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  Widget _buildDetailRows(Event event) {
+  Widget _buildDetailRows(User user) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event, true),
+            children: _buildDetailListLock(user, true),
           ),
         ),
         const SizedBox(width: kDefaultPadding),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event, false),
+            children: _buildDetailListLock(user, false),
           ),
         ),
       ],
     );
   }
 
-  List<Widget> _buildDetailListLock(Event event, bool isFirstColumn) {
+  List<Widget> _buildDetailListLock(User user, bool isFirstColumn) {
     final details = {
-      'ID': event.id,
-      'Author': event.author.author,
-      'Caption': event.caption,
-      'Participants': event.participants.toString(),
-      'Title': event.title,
-      'Date': event.date.toString(),
-      'Date Event': event.dateEvent.toString(),
-      'Date End': event.dateEnd.toString(),
-      'Tags': event.tags.toString(),
-      'Done': event.done.toString(),
-      'ImageUrl': event.imageUrl.toString(),
-      'LogoUrl': event.logoUrl.toString(),
+      'id': user.id,
+      'username': user.username,
+      'email': user.email,
+      'firstName': user.firstName,
+      'lastName': user.lastName,
+      'profileImageUrl': user.profileImageUrl,
+      'location': user.location,
+      'followers': user.followers.toString(),
+      'following': user.following.toString(),
+      'bio': user.bio,
+      'selectedGender': user.selectedGender,
+      'username_lowercase': user.username_lowercase,
     };
 
     final editableDetails = {
-      'Caption',
-      'Title',
-      'Date Event',
-      'Date End',
-      'Tags',
-      'ImageUrl',
-      'LogoUrl',
-      'Done',
+      'username',
+      'email',
+      'firstName',
+      'lastName',
+      'profileImageUrl',
+      'location',
+      'bio',
+      'selectedGender',
+      'username_lowercase',
     };
 
     final int splitIndex = details.length ~/ 2;
@@ -196,17 +199,16 @@ class _ProfileScreenState extends State<ProfileScreen>
         : details.entries.skip(splitIndex);
 
     return entries
-        .map((e) =>
-            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
-                ? _buildTextField(
-                    e.key, TextEditingController(text: e.value), event)
-                : _buildTextLock(e.key, e.value, event))
+        .map((e) => editableDetails.contains(e.key) &&
+                (_editState[e.key] ?? false)
+            ? _buildTextField(e.key, TextEditingController(text: e.value), user)
+            : _buildTextLock(e.key, e.value, user))
         .expand((widget) => [widget, const SizedBox(height: 10)])
         .toList();
   }
 
   Widget _buildTextField(
-      String label, TextEditingController controller, Event event) {
+      String label, TextEditingController controller, User user) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
@@ -230,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             onPressed: () {
               setState(() {
                 _editState[label] = false;
-                _updateFirebase(label, controller.text, event);
+                _updateFirebase(label, controller.text, user);
               });
             },
           ),
@@ -245,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  Widget _buildTextLock(String label, String value, Event event) {
+  Widget _buildTextLock(String label, String value, User user) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
@@ -280,11 +282,11 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
-  void _updateFirebase(String label, dynamic newValue, Event event) {
+  void _updateFirebase(String label, dynamic newValue, User user) {
     String? firestoreField = fieldMappings[label];
     if (firestoreField != null) {
       context.read<EventBloc>().add(EventUpdateFieldEvent(
-            eventId: event.id,
+            eventId: user.id,
             field: firestoreField,
             newValue: newValue,
           ));
