@@ -28,7 +28,6 @@ class _DataPageState extends State<DataPage> {
   int _totalPages = 0;
 
   String? _selectedRowId;
-  bool _showSelect = true;
 
   void _onRowTap(Map<String, dynamic> rowData) {
     setState(() {
@@ -189,33 +188,19 @@ class _DataPageState extends State<DataPage> {
                                 ),
                                 headers: _headers,
                                 selecteds: _selecteds,
-                                showSelect: _showSelect,
                                 expanded: List.filled(_source.length, false),
                                 source: paginatedList.map((data) {
                                   final bool isSelected =
                                       data['id'] == _selectedRowId;
                                   return {
                                     ...data,
-                                    'selected':
-                                        isSelected, // Indicateur de sélection
+                                    'selected': isSelected,
                                   };
                                 }).toList(),
                                 onTabRow: (data) {
                                   debugPrint("ligne cliqué");
-                                  _onRowTap(
-                                      data); // Gérer l'appui sur une ligne
+                                  _onRowTap(data);
                                 },
-                                rowTextStyle: TextStyle(
-                                  color: Colors.black,
-                                ),
-                                selectedTextStyle: TextStyle(
-                                  color: Colors.white,
-                                ),
-                                selectedDecoration: BoxDecoration(
-                                  color: Colors.blue[
-                                      100], // Style pour la ligne sélectionnée
-                                ),
-                                // ...autres propriétés...
                               ),
                       ),
                     ),
