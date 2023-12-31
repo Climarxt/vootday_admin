@@ -219,7 +219,7 @@ GoRouter createRouter(BuildContext context) {
                     pageBuilder: (BuildContext context, GoRouterState state) {
                       return MaterialPage<void>(
                         key: state.pageKey,
-                        child: BlocProviderConfig.getProfileMultiBlocProvider(
+                        child: BlocProviderConfig.getCreateEventBlocProvider(
                             context, CreateEventScreen()),
                       );
                     },

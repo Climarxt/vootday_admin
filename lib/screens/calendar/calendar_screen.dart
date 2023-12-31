@@ -318,7 +318,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton.extended(
       backgroundColor: couleurBleuClair2,
-      onPressed: () {},
+      onPressed: () => _navigateToCreateEventScreen(context),
       label: Text(
         'Add Event',
       ),
@@ -327,5 +327,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   void _navigateToEventScreen(BuildContext context, String eventId) {
     GoRouter.of(context).go('/calendar/event/$eventId', extra: eventId);
+  }
+
+  void _navigateToCreateEventScreen(BuildContext context) {
+    GoRouter.of(context).go('/calendar/createevent');
   }
 }

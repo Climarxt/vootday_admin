@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
-import 'package:vootday_admin/models/models.dart';
-import 'package:vootday_admin/screens/event/bloc/blocs.dart';
-import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({
@@ -49,21 +45,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return BlocConsumer<EventBloc, EventState>(
-      builder: (context, state) {
-        if (state.status == EventStatus.loading) {
-          return buildLoadingIndicator();
-        } else if (state.status == EventStatus.loaded) {
-          return _buildEvent(context, state.event ?? Event.empty, size);
-        } else {
-          return buildLoadingIndicator();
-        }
-      },
-      listener: (BuildContext context, EventState state) {},
-    );
+    return _buildEvent(context, size);
   }
 
-  Widget _buildEvent(BuildContext context, Event event, Size size) {
+  Widget _buildEvent(BuildContext context, Size size) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
@@ -72,11 +57,11 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // _buildHeaderSection(context, event, size),
+              // _buildHeaderSection(context, size),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: _buildDetailRows(event),
+                child: _buildDetailRows(),
               ),
             ],
           ),
@@ -85,47 +70,46 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  Widget _buildDetailRows(Event event) {
+  Widget _buildDetailRows() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(event),
+            children: _buildDetailList(),
           ),
         ),
         const SizedBox(width: kDefaultPadding),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(event),
+            children: _buildDetailList(),
           ),
         ),
       ],
     );
   }
 
-  List<Widget> _buildDetailList(Event event) {
+  List<Widget> _buildDetailList() {
     return [
-      _buildTextField('ID', _idController, event),
-      _buildTextField('Author', _authorController, event),
-      _buildTextField('Image URL', _imageUrlController, event),
-      _buildTextField('Caption', _captionController, event),
-      _buildTextField('Participants', _participantsController, event),
-      _buildTextField('Title', _titleController, event),
-      _buildTextField('Date', _dateController, event),
-      _buildTextField('Event Date', _dateEventController, event),
-      _buildTextField('End Date', _dateEndController, event),
-      _buildTextField('Tags (comma separated)', _tagsController, event),
-      _buildTextField('Reward', _rewardController, event),
-      _buildTextField('Logo URL', _logoUrlController, event),
+      _buildTextField('ID', _idController),
+      _buildTextField('Author', _authorController),
+      _buildTextField('Image URL', _imageUrlController),
+      _buildTextField('Caption', _captionController),
+      _buildTextField('Participants', _participantsController),
+      _buildTextField('Title', _titleController),
+      _buildTextField('Date', _dateController),
+      _buildTextField('Event Date', _dateEventController),
+      _buildTextField('End Date', _dateEndController),
+      _buildTextField('Tags (comma separated)', _tagsController),
+      _buildTextField('Reward', _rewardController),
+      _buildTextField('Logo URL', _logoUrlController),
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
   }
 
-  Widget _buildTextField(
-      String label, TextEditingController controller, Event event) {
+  Widget _buildTextField(String label, TextEditingController controller) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
