@@ -2,10 +2,9 @@ import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vootday_admin/screens/event/bloc/blocs.dart';
-import 'package:vootday_admin/screens/event/config/constants.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
+import 'package:vootday_admin/screens/users/config/constants.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -285,8 +284,8 @@ class _ProfileScreenState extends State<ProfileScreen>
   void _updateFirebase(String label, dynamic newValue, User user) {
     String? firestoreField = fieldMappings[label];
     if (firestoreField != null) {
-      context.read<EventBloc>().add(EventUpdateFieldEvent(
-            eventId: user.id,
+      context.read<ProfileBloc>().add(ProfileUpdateFieldProfile(
+            userId: user.id,
             field: firestoreField,
             newValue: newValue,
           ));

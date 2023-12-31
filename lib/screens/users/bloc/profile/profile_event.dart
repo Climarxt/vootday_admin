@@ -16,6 +16,21 @@ class ProfileFetchProfile extends ProfileEvent {
   List<Object> get props => [userId];
 }
 
+class ProfileUpdateFieldProfile extends ProfileEvent {
+  final String userId;
+  final String field;
+  final dynamic newValue;
+
+  const ProfileUpdateFieldProfile({
+    required this.userId,
+    required this.field,
+    required this.newValue,
+  });
+
+  @override
+  List<Object> get props => [userId, field, newValue];
+}
+
 class ProfileLoadUser extends ProfileEvent {
   final String userId;
 

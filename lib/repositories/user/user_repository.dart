@@ -30,6 +30,20 @@ class UserRepository extends BaseUserRepository {
     }
   }
 
+  Future<void> updateUserField(
+      String userId, String field, dynamic newValue) async {
+    try {
+      await _firebaseFirestore
+          .collection(Paths.users)
+          .doc(userId)
+          .update({field: newValue});
+      debugPrint('updateUserField: Event $userId updated successfully.');
+    } catch (e) {
+      debugPrint('updateUserField: Error updating user - ${e.toString()}');
+      throw e;
+    }
+  }
+
   Future<List<User>> getUserFollowers({
     required String userId,
   }) async {

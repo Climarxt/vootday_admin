@@ -27,6 +27,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _postRepository = postRepository,
         super(ProfileState.initial()) {
     on<ProfileFetchProfile>(_mapProfileFetchProfile);
+    on<ProfileUpdateFieldProfile>(_onUserUpdateFieldEvent);
+
     on<ProfileLoadUser>(_onProfileLoadUser);
     on<ProfileLoadAllUsers>(_onProfileLoadAllUsers);
 
@@ -44,7 +46,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     Emitter<ProfileState> emit,
   ) async {
     try {
-      debugPrint('ProfileFetchProfile : Fetching profile ${fetchUser.userId}...');
+      debugPrint(
+          'ProfileFetchProfile : Fetching profile ${fetchUser.userId}...');
       final User? userDetails =
           await _userRepository.getUserById(fetchUser.userId);
       if (userDetails != null) {
@@ -61,6 +64,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(state.copyWith(
         status: ProfileStatus.error,
         failure: Failure(message: 'Unable to load the profile - $err'),
+      ));
+    }
+  }
+
+  Future<void> _onUserUpdateFieldEvent(
+    ProfileUpdateFieldProfile event,
+    Emitter<ProfileState> emit,
+  ) async {
+    try {
+      await _userRepository.updateUserField(
+          event.userId, event.field, event.newValue);
+      final User? updatedUser = await _userRepository.getUserById(event.userId);
+      emit(state.copyWith(user: updatedUser, status: ProfileStatus.loaded));
+    } catch (e) {
+      emit(state.copyWith(
+        status: ProfileStatus.error,
+        failure:
+            Failure(message: 'Unable to update the event - ${e.toString()}'),
       ));
     }
   }
