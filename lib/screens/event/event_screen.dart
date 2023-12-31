@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
+import 'package:vootday_admin/screens/event/config/constants.dart';
+import 'package:vootday_admin/screens/event/widgets/widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class EventScreen extends StatefulWidget {
@@ -56,11 +56,11 @@ class _EventScreenState extends State<EventScreen>
     return BlocConsumer<EventBloc, EventState>(
       builder: (context, state) {
         if (state.status == EventStatus.loading) {
-          return _buildLoadingIndicator();
+          return buildLoadingIndicator();
         } else if (state.status == EventStatus.loaded) {
           return _buildEvent(context, state.event ?? Event.empty, size);
         } else {
-          return _buildLoadingIndicator();
+          return buildLoadingIndicator();
         }
       },
       listener: (BuildContext context, EventState state) {},
@@ -193,19 +193,6 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-  void _updateFirebase(String label, dynamic newValue, Event event) {
-    String? firestoreField = fieldMappings[label];
-    if (firestoreField != null) {
-      context.read<EventBloc>().add(EventUpdateFieldEvent(
-            eventId: event.id,
-            field: firestoreField,
-            newValue: newValue,
-          ));
-    } else {
-      debugPrint('No mapping found for field: $label');
-    }
-  }
-
   Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
     return BlocConsumer<EventStatsBloc, EventStatsState>(
       listener: (BuildContext context, EventStatsState state) {},
@@ -251,144 +238,10 @@ class _EventScreenState extends State<EventScreen>
               iconColor: Colors.black12,
               width: 256,
             ),
-            _buildButtonsCard(event),
+            buildButtonsCard(context, event),
           ],
         );
       },
-    );
-  }
-
-  Map<String, String> fieldMappings = {
-    'Caption': 'caption',
-    'Participants': 'participants',
-    'Title': 'title',
-    'Date': 'date',
-    'Date Event': 'dateEvent',
-    'Date End': 'dateEnd',
-    'Tags': 'tags',
-    'Done': 'done',
-    'ImageUrl': 'imageUrl',
-    'LogoUrl': 'logoUrl',
-  };
-
-  Widget _buildButtonsCard(Event event) {
-    return SizedBox(
-      height: 120.0,
-      width: 232,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildShowFeedButton(context, event),
-                    _buildStatsButton(context, event),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildImportButton(context, event),
-                    _buildExportButton(context, event),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEventImageCard(Event event) {
-    return SizedBox(
-      height: 120.0,
-      width: 256,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Row(
-            children: [
-              Expanded(
-                child: _buildEventTextInfo(context, event),
-              ),
-              if (event.imageUrl.isNotEmpty)
-                SvgPicture.network(
-                  event.logoUrl,
-                  fit: BoxFit.cover,
-                  width: 100.0,
-                  height: 100.0,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEventTextInfo(BuildContext context, Event event) {
-    return Padding(
-      padding: const EdgeInsets.all(kDefaultPadding),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            event.title,
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildShowFeedButton(BuildContext context, Event event) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Feed'),
-    );
-  }
-
-  Widget _buildStatsButton(BuildContext context, Event event) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Stats'),
-    );
-  }
-
-  Widget _buildImportButton(BuildContext context, Event event) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Import'),
-    );
-  }
-
-  Widget _buildExportButton(BuildContext context, Event event) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () => _navigateToEventFeed(context, event),
-      child: const Text('Export'),
     );
   }
 
@@ -425,12 +278,6 @@ class _EventScreenState extends State<EventScreen>
         ],
       ),
     );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.transparent)));
   }
 
   Future<String> getMostLikedPostImageUrl(String eventId) async {
@@ -471,10 +318,17 @@ class _EventScreenState extends State<EventScreen>
     return '';
   }
 
-  void _navigateToEventFeed(BuildContext context, Event event) {
-    GoRouter.of(context).go(
-      '/calendar/event/${widget.eventId}/feedevent',
-    );
+  void _updateFirebase(String label, dynamic newValue, Event event) {
+    String? firestoreField = fieldMappings[label];
+    if (firestoreField != null) {
+      context.read<EventBloc>().add(EventUpdateFieldEvent(
+            eventId: event.id,
+            field: firestoreField,
+            newValue: newValue,
+          ));
+    } else {
+      debugPrint('No mapping found for field: $label');
+    }
   }
 
   @override

@@ -6,7 +6,7 @@ import 'package:responsive_table/responsive_table.dart';
 import 'package:vootday_admin/config/colors.dart';
 import 'package:vootday_admin/config/constants/dimens.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
-import 'package:vootday_admin/screens/users/widgets.dart/widgets.dart';
+import 'package:vootday_admin/screens/users/widgets/widgets.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});

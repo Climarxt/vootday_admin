@@ -5,7 +5,7 @@ import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/stats/users_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/listview_users.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
-import 'package:vootday_admin/screens/users/widgets.dart/widgets.dart';
+import 'package:vootday_admin/screens/users/widgets/widgets.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
