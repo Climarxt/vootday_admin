@@ -75,3 +75,29 @@ Widget _buildExportButton() {
     child: const Text('Test4'),
   );
 }
+
+Widget buildPaginationControls(
+    int currentPage, int totalPages, void Function(int) updateCurrentPage) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text('Page $currentPage sur $totalPages'),
+      Row(
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: currentPage > 1
+                ? () => updateCurrentPage(currentPage - 1)
+                : null,
+          ),
+          IconButton(
+            icon: Icon(Icons.arrow_forward),
+            onPressed: currentPage < totalPages
+                ? () => updateCurrentPage(currentPage + 1)
+                : null,
+          ),
+        ],
+      ),
+    ],
+  );
+}

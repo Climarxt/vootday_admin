@@ -5,6 +5,7 @@ import 'package:responsive_table/responsive_table.dart';
 import 'package:vootday_admin/config/colors.dart';
 import 'package:vootday_admin/config/constants/dimens.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
+import 'package:vootday_admin/screens/users/widgets.dart/widgets.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});
@@ -22,7 +23,7 @@ class _DataPageState extends State<DataPage> {
 
   // Variables de pagination
   int _currentPage = 1;
-  int _itemsPerPage = 3; // Modifiez ce nombre selon vos besoins
+  final int _itemsPerPage = 3;
   int _totalPages = 0;
 
   @override
@@ -94,31 +95,6 @@ class _DataPageState extends State<DataPage> {
     });
   }
 
-  Widget _buildPaginationControls() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text('Page $_currentPage sur $_totalPages'),
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: _currentPage > 1
-                  ? () => _updateCurrentPage(_currentPage - 1)
-                  : null,
-            ),
-            IconButton(
-              icon: Icon(Icons.arrow_forward),
-              onPressed: _currentPage < _totalPages
-                  ? () => _updateCurrentPage(_currentPage + 1)
-                  : null,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> filteredList = _source
@@ -185,9 +161,7 @@ class _DataPageState extends State<DataPage> {
                     Expanded(
                       child: SingleChildScrollView(
                         child: paginatedList.isEmpty
-                            ? Center(
-                                child: Text(
-                                    "No result")) // Ou un message personnalisé
+                            ? const Center(child: Text("No result"))
                             : ResponsiveDatatable(
                                 headerDecoration: BoxDecoration(
                                   border: Border.all(color: grey),
@@ -209,7 +183,8 @@ class _DataPageState extends State<DataPage> {
                               ),
                       ),
                     ),
-                    _buildPaginationControls(),
+                    buildPaginationControls(
+                        _currentPage, _totalPages, _updateCurrentPage),
                   ],
                 ),
         ),
