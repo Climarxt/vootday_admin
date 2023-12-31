@@ -128,9 +128,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               iconColor: Colors.black12,
               width: 256,
             ),
-            const SummaryCard(
-              title: '',
-              value: '',
+            SummaryCard(
+              title: 'Collection',
+              value: state.collectionCount.toString(),
               icon: Icons.ssid_chart_rounded,
               backgroundColor: white,
               textColor: black,

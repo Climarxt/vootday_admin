@@ -36,7 +36,7 @@ class ProfileStatsBloc extends Bloc<ProfileStatsEvent, ProfileStatsState> {
     ProfileStatsCollectionFetchEvent event,
     Emitter<ProfileStatsState> emit,
   ) async {
-    _collectionCount = await _userRepository.getCountPostUser(event.userId);
+    _collectionCount = await _userRepository.getCountCollectionUser(event.userId);
     _updateStateIfDataReady(emit);
   }
 
