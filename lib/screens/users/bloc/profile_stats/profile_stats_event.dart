@@ -16,6 +16,20 @@ class ProfileStatsPostFetchEvent extends ProfileStatsEvent {
   List<Object> get props => [userId];
 }
 
-class ProfileStatsCollectionFetchEvent extends ProfileStatsEvent {}
+class ProfileStatsCollectionFetchEvent extends ProfileStatsEvent {
+  final String userId;
 
-class ProfileStatsLikesFetchEvent extends ProfileStatsEvent {}
+  const ProfileStatsCollectionFetchEvent({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+}
+
+class ProfileStatsLikesFetchEvent extends ProfileStatsEvent {
+  final String userId;
+
+  const ProfileStatsLikesFetchEvent({required this.userId});
+
+  @override
+  List<Object> get props => [userId];
+}

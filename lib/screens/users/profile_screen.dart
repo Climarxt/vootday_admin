@@ -2,7 +2,6 @@ import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/profile_stats/profile_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/config/constants.dart';
@@ -32,6 +31,12 @@ class _ProfileScreenState extends State<ProfileScreen>
     context
         .read<ProfileStatsBloc>()
         .add(ProfileStatsPostFetchEvent(userId: widget.userId));
+    context
+        .read<ProfileStatsBloc>()
+        .add(ProfileStatsCollectionFetchEvent(userId: widget.userId));
+    context
+        .read<ProfileStatsBloc>()
+        .add(ProfileStatsLikesFetchEvent(userId: widget.userId));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
