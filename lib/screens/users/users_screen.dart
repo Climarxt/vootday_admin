@@ -5,6 +5,7 @@ import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/stats/users_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/listview_users.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
+import 'package:vootday_admin/screens/users/widgets.dart/widgets.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -100,85 +101,10 @@ class _UsersScreenState extends State<UsersScreen> {
               womanUsersCount: state.womanUsersCount,
               allUsersCount: state.allUsersCount,
             ),
-            _buildButtonsCard(),
+            buildButtonsCard(),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildButtonsCard() {
-    return SizedBox(
-      height: 120.0,
-      width: 232,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(kDefaultPadding),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildShowFeedButton(context),
-                    _buildStatsButton(context),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildImportButton(context),
-                    _buildExportButton(context),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShowFeedButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () {},
-      child: const Text('Test1'),
-    );
-  }
-
-  Widget _buildStatsButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () {},
-      child: const Text('Test2'),
-    );
-  }
-
-  Widget _buildImportButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () {},
-      child: const Text('Test3'),
-    );
-  }
-
-  Widget _buildExportButton(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: couleurBleuClair2,
-      ),
-      onPressed: () {},
-      child: const Text('Test4'),
     );
   }
 }

@@ -152,7 +152,8 @@ class _DataPageState extends State<DataPage> {
             }
           },
           child: _isLoading
-              ? const CircularProgressIndicator()
+              ? const CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.transparent))
               : Column(
                   children: [
                     Padding(
