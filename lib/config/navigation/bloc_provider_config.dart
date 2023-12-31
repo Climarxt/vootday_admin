@@ -5,7 +5,6 @@ import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
-import 'package:vootday_admin/screens/event/bloc/stats/event_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/profile_stats/profile_stats_bloc.dart';
@@ -127,7 +126,10 @@ class BlocProviderConfig {
       BuildContext context, Widget child) {
     return BlocProvider<CreateEventCubit>(
       create: (context) {
-        final createEventCubit = CreateEventCubit();
+        final createEventCubit = CreateEventCubit(
+          eventRepository: context.read<EventRepository>(),
+          storageRepository: context.read<StorageRepository>(),
+        );
         return createEventCubit;
       },
       child: child,

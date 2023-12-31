@@ -52,12 +52,12 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(),
         ),
+        RepositoryProvider<StorageRepository>(
+          create: (context) => StorageRepository(),
+        ),
         /*
         RepositoryProvider<UserRepository>(
           create: (context) => UserRepository(),
-        ),
-        RepositoryProvider<StorageRepository>(
-          create: (context) => StorageRepository(),
         ),
         RepositoryProvider<NotificationRepository>(
           create: (context) => NotificationRepository(),

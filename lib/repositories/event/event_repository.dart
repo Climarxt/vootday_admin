@@ -375,4 +375,8 @@ class EventRepository {
       throw e;
     }
   }
+
+  Future<void> createEvent({required Event event}) async {
+    await _firebaseFirestore.collection(Paths.events).add(event.toDocument());
+  }
 }

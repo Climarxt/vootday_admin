@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({
@@ -45,10 +47,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return _buildEvent(context, size);
+    return BlocConsumer<CreateEventCubit, CreateEventState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Scaffold(
+          floatingActionButton: _buildFloatingActionButton(context),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          body: _buildBody(context, size),
+        );
+      },
+    );
   }
 
-  Widget _buildEvent(BuildContext context, Size size) {
+  Widget _buildBody(BuildContext context, Size size) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
@@ -128,4 +140,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       ),
     );
   }
+
+  // Builds the post button
+  Widget _buildFloatingActionButton(BuildContext context) {
+    final state = context.watch<CreateEventCubit>().state;
+    return FloatingActionButton.extended(
+      backgroundColor: couleurBleuClair2,
+      onPressed: state.status != CreateEventStatus.submitting
+          ? () => _submitForm(context)
+          : null,
+      label: Text(AppLocalizations.of(context)!.translate('add'),
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Colors.white)),
+    );
+  }
+
+  // Submits the form
+  void _submitForm(BuildContext context) {}
 }
