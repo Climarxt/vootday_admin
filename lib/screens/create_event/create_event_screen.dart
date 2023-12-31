@@ -80,13 +80,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             children: _buildDetailList(),
           ),
         ),
-        const SizedBox(width: kDefaultPadding),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(),
-          ),
-        ),
       ],
     );
   }
@@ -114,29 +107,24 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black),
-                fillColor: white,
-                filled: true,
-                border: const OutlineInputBorder(),
+      child: Padding(
+        padding: const EdgeInsets.all(kDefaultPadding),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: label,
+                  labelStyle: const TextStyle(color: Colors.black),
+                  fillColor: white,
+                  filled: true,
+                  border: const OutlineInputBorder(),
+                ),
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {},
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
