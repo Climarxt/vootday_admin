@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class CreateEventScreen extends StatefulWidget {
   const CreateEventScreen({
@@ -91,16 +92,23 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(),
+            children: _buildDetailList(true), // Première colonne
+          ),
+        ),
+        const SizedBox(width: kDefaultPadding),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: _buildDetailList(false), // Deuxième colonne
           ),
         ),
       ],
     );
   }
 
-  List<Widget> _buildDetailList() {
-    return [
-      _buildTextField('ID', _idController),
+  List<Widget> _buildDetailList(bool isFirstColumn) {
+    List<Widget> fields = [
+      _buildTextLock('ID', generateRandomId(), _idController),
       _buildBrandInput(context),
       _buildTextField('Image URL', _imageUrlController),
       _buildTextField('Caption', _captionController),
@@ -114,28 +122,45 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       _buildTextField('Logo URL', _logoUrlController),
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
+
+    // Diviser la liste en deux pour les deux colonnes
+    int halfLength = (fields.length / 2).ceil();
+    return isFirstColumn
+        ? fields.take(halfLength).toList()
+        : fields.skip(halfLength).toList();
   }
 
-  // Builds the brand ListTile
   Widget _buildBrandInput(BuildContext context) {
-    return ListTile(
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            '(${context.read<CreateEventCubit>().state.tags.length})',
-            style: AppTextStyles.subtitleLargeGrey(context),
-          ), // Display the count
-          const SizedBox(
-            width: 8,
+    final tagCount = context
+        .read<CreateEventCubit>()
+        .state
+        .tags
+        .length; // Récupération du nombre de tags
+
+    return ConstrainedBox(
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2.2),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: GestureDetector(
+          onTap: () => GoRouter.of(context).go('/calendar/createevent/brand',
+              extra: context.read<CreateEventCubit>()),
+          child: AbsorbPointer(
+            child: TextField(
+              controller: TextEditingController(text: 'Brand Name'),
+              decoration: InputDecoration(
+                labelText:
+                    'Author (${tagCount})', // Affichage du nombre de tags
+                labelStyle: const TextStyle(color: Colors.black),
+                fillColor: white,
+                filled: true,
+                border: const OutlineInputBorder(),
+                suffixIcon: const Icon(Icons.arrow_forward),
+              ),
+            ),
           ),
-          const Icon(Icons.arrow_forward),
-        ],
+        ),
       ),
-      title: Text(AppLocalizations.of(context)!.translate('brand'),
-          style: AppTextStyles.titleLargeBlackBold(context)),
-      onTap: () => GoRouter.of(context)
-          .go('/calendar/createevent/brand', extra: context.read<CreateEventCubit>()),
     );
   }
 
@@ -145,7 +170,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
       child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
+        padding: const EdgeInsets.all(4),
         child: Row(
           children: [
             Expanded(
@@ -158,6 +183,39 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                   filled: true,
                   border: const OutlineInputBorder(),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextLock(
+      String label, String value, TextEditingController controller) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: TextEditingController(text: value),
+                decoration: InputDecoration(
+                  labelText: label,
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  fillColor: Colors.grey[300],
+                  filled: true,
+                  border: const OutlineInputBorder(),
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
+                enabled: false,
+                style: const TextStyle(color: Colors.black54),
               ),
             ),
           ],
