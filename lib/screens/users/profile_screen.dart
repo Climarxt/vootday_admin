@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/event/config/constants.dart';
-import 'package:vootday_admin/screens/event/widgets/widgets.dart';
+import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
@@ -68,12 +68,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   Widget _buildBody(BuildContext context, User user, Size size) {
-    return Center(
-      child: Text(user.username),
-    );
-  }
-
-  Widget _buildEvent(BuildContext context, Event event, Size size) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
@@ -82,16 +76,69 @@ class _ProfileScreenState extends State<ProfileScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeaderSection(context, event, size),
+              _buildHeaderSection(context, user, size),
               const SizedBox(height: 20),
-              Padding(
+              /* Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3.0),
                 child: _buildDetailRows(event),
               ),
+              */
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildHeaderSection(BuildContext context, User user, Size size) {
+    return BlocConsumer<UsersStatsBloc, UsersStatsState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            SummaryCard(
+              title: '${user.firstName} ${user.lastName}',
+              value: user.username,
+              icon: Icons.abc,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: '',
+              value: '',
+              icon: Icons.ssid_chart_rounded,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            const SummaryCard(
+              title: '',
+              value: '',
+              icon: Icons.ssid_chart_rounded,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: '',
+              value: '',
+              icon: Icons.ssid_chart_rounded,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            // buildButtonsCard(context, event),
+          ],
+        );
+      },
     );
   }
 
@@ -195,58 +242,6 @@ class _ProfileScreenState extends State<ProfileScreen>
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildHeaderSection(BuildContext context, Event event, Size size) {
-    return BlocConsumer<EventStatsBloc, EventStatsState>(
-      listener: (BuildContext context, EventStatsState state) {},
-      builder: (context, state) {
-        return Wrap(
-          direction: Axis.horizontal,
-          spacing: kDefaultPadding,
-          runSpacing: kDefaultPadding,
-          children: [
-            SummaryCard(
-              title: event.title,
-              value: event.author.author,
-              icon: Icons.abc,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            SummaryCard(
-              title: 'Likes',
-              value: state.likesEventCount.toString(),
-              icon: Icons.ssid_chart_rounded,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            const SummaryCard(
-              title: 'Participants',
-              value: '70',
-              icon: Icons.person,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            SummaryCard(
-              title: 'Day left',
-              value: state.remainingDaysCount.toString(),
-              icon: Icons.calendar_month,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            buildButtonsCard(context, event),
-          ],
-        );
-      },
     );
   }
 
