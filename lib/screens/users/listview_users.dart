@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:responsive_table/responsive_table.dart';
 import 'package:vootday_admin/config/colors.dart';
 import 'package:vootday_admin/config/constants/dimens.dart';
@@ -25,6 +26,16 @@ class _DataPageState extends State<DataPage> {
   int _currentPage = 1;
   final int _itemsPerPage = 3;
   int _totalPages = 0;
+
+  String? _selectedRowId;
+  bool _showSelect = true;
+
+  void _onRowTap(Map<String, dynamic> rowData) {
+    setState(() {
+      _selectedRowId = rowData['id'];
+      _navigateToUserScreen(context, _selectedRowId!);
+    });
+  }
 
   @override
   void initState() {
@@ -178,8 +189,33 @@ class _DataPageState extends State<DataPage> {
                                 ),
                                 headers: _headers,
                                 selecteds: _selecteds,
+                                showSelect: _showSelect,
                                 expanded: List.filled(_source.length, false),
-                                source: paginatedList,
+                                source: paginatedList.map((data) {
+                                  final bool isSelected =
+                                      data['id'] == _selectedRowId;
+                                  return {
+                                    ...data,
+                                    'selected':
+                                        isSelected, // Indicateur de sélection
+                                  };
+                                }).toList(),
+                                onTabRow: (data) {
+                                  debugPrint("ligne cliqué");
+                                  _onRowTap(
+                                      data); // Gérer l'appui sur une ligne
+                                },
+                                rowTextStyle: TextStyle(
+                                  color: Colors.black,
+                                ),
+                                selectedTextStyle: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                selectedDecoration: BoxDecoration(
+                                  color: Colors.blue[
+                                      100], // Style pour la ligne sélectionnée
+                                ),
+                                // ...autres propriétés...
                               ),
                       ),
                     ),
@@ -191,4 +227,8 @@ class _DataPageState extends State<DataPage> {
       ),
     );
   }
+}
+
+void _navigateToUserScreen(BuildContext context, String userId) {
+  GoRouter.of(context).push('/user/$userId');
 }
