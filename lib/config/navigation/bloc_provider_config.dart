@@ -1,3 +1,4 @@
+import 'package:vootday_admin/cubit/cubits.dart';
 import 'package:vootday_admin/screens/calendar/bloc/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -122,16 +123,28 @@ class BlocProviderConfig {
     );
   }
 
-  static BlocProvider getCreateEventBlocProvider(
+  static MultiBlocProvider getCreateEventMultiBlocProvider(
       BuildContext context, Widget child) {
-    return BlocProvider<CreateEventCubit>(
-      create: (context) {
-        final createEventCubit = CreateEventCubit(
-          eventRepository: context.read<EventRepository>(),
-          storageRepository: context.read<StorageRepository>(),
-        );
-        return createEventCubit;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CreateEventCubit>(
+          create: (context) {
+            final createEventCubit = CreateEventCubit(
+              eventRepository: context.read<EventRepository>(),
+              storageRepository: context.read<StorageRepository>(),
+            );
+            return createEventCubit;
+          },
+        ),
+        BlocProvider<BrandCubit>(
+          create: (context) {
+            final brandCubit = BrandCubit(
+              brandRepository: context.read<BrandRepository>(),
+            );
+            return brandCubit;
+          },
+        ),
+      ],
       child: child,
     );
   }

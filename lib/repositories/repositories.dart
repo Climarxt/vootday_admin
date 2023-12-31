@@ -7,3 +7,4 @@ export 'user/user_repository.dart';
 export 'user/base_user_repository.dart';
 export 'storage/base_storage_repository.dart';
 export 'storage/storage_repository.dart';
+export 'brand/brand_repository.dart';

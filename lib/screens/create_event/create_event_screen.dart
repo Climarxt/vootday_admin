@@ -159,7 +159,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   void _submitForm(BuildContext context) {
-    debugPrint("DEBUG : _submitForm appuyé");
     // Récupération des valeurs des contrôleurs
     final String id = _idController.text;
     final String author = _authorController.text;
