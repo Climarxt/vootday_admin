@@ -10,59 +10,57 @@ part 'profile_stats_state.dart';
 class ProfileStatsBloc extends Bloc<ProfileStatsEvent, ProfileStatsState> {
   final UserRepository _userRepository;
 
-  int? _manUsersCount;
-  int? _womanUsersCount;
-  int? _allUsersCount;
+  int? _postCount;
+  int? _collectionCount;
+  int? _likesCount;
 
   ProfileStatsBloc({
     required UserRepository userRepository,
     required AuthBloc authBloc,
   })  : _userRepository = userRepository,
         super(ProfileStatsState.initial()) {
-    on<ProfileStatsManFetchEvent>(_mapProfileStatsManFetchEvent);
-    on<ProfileStatsWomanFetchEvent>(_mapProfileStatsWomanFetchEvent);
-    on<ProfileStatsAllFetchEvent>(_mapProfileStatsAllFetchEvent);
+    on<ProfileStatsPostFetchEvent>(_mapProfileStatsPostFetchEvent);
+    on<ProfileStatsCollectionFetchEvent>(_mapProfileStatsCollectionFetchEvent);
+    on<ProfileStatsLikesFetchEvent>(_mapProfileStatsLikesFetchEvent);
   }
 
-  Future<void> _mapProfileStatsManFetchEvent(
-    ProfileStatsManFetchEvent event,
+  Future<void> _mapProfileStatsPostFetchEvent(
+    ProfileStatsPostFetchEvent event,
     Emitter<ProfileStatsState> emit,
   ) async {
-    _manUsersCount = await _userRepository.getCountManUsers();
+    _postCount = await _userRepository.getCountPostUser(event.userId);
     _updateStateIfDataReady(emit);
   }
 
-  Future<void> _mapProfileStatsWomanFetchEvent(
-    ProfileStatsWomanFetchEvent event,
+  Future<void> _mapProfileStatsCollectionFetchEvent(
+    ProfileStatsCollectionFetchEvent event,
     Emitter<ProfileStatsState> emit,
   ) async {
-    _womanUsersCount = await _userRepository.getCountWomanUsers();
+    _collectionCount = await _userRepository.getCountWomanUsers();
     _updateStateIfDataReady(emit);
   }
 
-  Future<void> _mapProfileStatsAllFetchEvent(
-    ProfileStatsAllFetchEvent event,
+  Future<void> _mapProfileStatsLikesFetchEvent(
+    ProfileStatsLikesFetchEvent event,
     Emitter<ProfileStatsState> emit,
   ) async {
-    _allUsersCount = await _userRepository.getCountAllUsers();
+    _likesCount = await _userRepository.getCountAllUsers();
     _updateStateIfDataReady(emit);
   }
 
   void _updateStateIfDataReady(Emitter<ProfileStatsState> emit) {
-    if (_manUsersCount != null &&
-        _womanUsersCount != null &&
-        _allUsersCount != null) {
+    if (_postCount != null && _collectionCount != null && _likesCount != null) {
       emit(ProfileStatsState(
-        postCount: _manUsersCount!,
-        collectionCount: _womanUsersCount!,
-        likesCount: _allUsersCount!,
+        postCount: _postCount!,
+        collectionCount: _collectionCount!,
+        likesCount: _likesCount!,
         status: ProfileStatsStatus.loaded,
         failure: const Failure(),
       ));
       // Réinitialiser les valeurs pour les prochaines utilisations
-      _manUsersCount = null;
-      _womanUsersCount = null;
-      _allUsersCount = null;
+      _postCount = null;
+      _collectionCount = null;
+      _likesCount = null;
     }
   }
 }

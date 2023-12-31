@@ -331,4 +331,27 @@ class UserRepository extends BaseUserRepository {
       return [];
     }
   }
+
+  Future<int> getCountPostUser(String userId) async {
+    try {
+      debugPrint(
+          'getCountPostUser : Récupération du nombre de posts de l\'utilisateur...');
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection('posts')
+          .where('author',
+              isEqualTo:
+                  FirebaseFirestore.instance.collection('users').doc(userId))
+          .get();
+
+      int count = querySnapshot.docs.length;
+
+      debugPrint(
+          'getCountPostUser : Nombre de posts de l\'utilisateur: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountPostUser : Erreur lors du comptage des posts - ${e.toString()}');
+      return 0;
+    }
+  }
 }

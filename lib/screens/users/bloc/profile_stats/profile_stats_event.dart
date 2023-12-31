@@ -7,8 +7,15 @@ abstract class ProfileStatsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class ProfileStatsManFetchEvent extends ProfileStatsEvent {}
+class ProfileStatsPostFetchEvent extends ProfileStatsEvent {
+  final String userId;
 
-class ProfileStatsWomanFetchEvent extends ProfileStatsEvent {}
+  const ProfileStatsPostFetchEvent({required this.userId});
 
-class ProfileStatsAllFetchEvent extends ProfileStatsEvent {}
+  @override
+  List<Object> get props => [userId];
+}
+
+class ProfileStatsCollectionFetchEvent extends ProfileStatsEvent {}
+
+class ProfileStatsLikesFetchEvent extends ProfileStatsEvent {}

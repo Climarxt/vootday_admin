@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
+import 'package:vootday_admin/screens/users/bloc/profile_stats/profile_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/config/constants.dart';
 import 'package:vootday_admin/screens/users/widgets/widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
@@ -28,6 +29,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   @override
   void initState() {
     super.initState();
+    context
+        .read<ProfileStatsBloc>()
+        .add(ProfileStatsPostFetchEvent(userId: widget.userId));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -93,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen>
   }
 
   Widget _buildHeaderSection(BuildContext context, User user, Size size) {
-    return BlocConsumer<UsersStatsBloc, UsersStatsState>(
+    return BlocConsumer<ProfileStatsBloc, ProfileStatsState>(
       listener: (context, state) {},
       builder: (context, state) {
         return Wrap(
@@ -111,8 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen>
               width: 256,
             ),
             SummaryCard(
-              title: '',
-              value: '',
+              title: 'OOTD',
+              value: state.postCount.toString(),
               icon: Icons.ssid_chart_rounded,
               backgroundColor: white,
               textColor: black,
@@ -137,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               iconColor: Colors.black12,
               width: 256,
             ),
-             buildButtonsCard(),
+            buildButtonsCard(),
           ],
         );
       },

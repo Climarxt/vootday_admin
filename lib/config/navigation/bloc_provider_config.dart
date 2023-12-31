@@ -7,6 +7,7 @@ import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/event/bloc/stats/event_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
+import 'package:vootday_admin/screens/users/bloc/profile_stats/profile_stats_bloc.dart';
 
 class BlocProviderConfig {
   static MultiBlocProvider getCalendarMultiBlocProvider(
@@ -99,6 +100,12 @@ class BlocProviderConfig {
         ),
         BlocProvider<UsersStatsBloc>(
           create: (context) => UsersStatsBloc(
+            authBloc: context.read<AuthBloc>(),
+            userRepository: context.read<UserRepository>(),
+          ),
+        ),
+        BlocProvider<ProfileStatsBloc>(
+          create: (context) => ProfileStatsBloc(
             authBloc: context.read<AuthBloc>(),
             userRepository: context.read<UserRepository>(),
           ),
