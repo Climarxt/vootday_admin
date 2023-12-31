@@ -92,42 +92,38 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(true), // Première colonne
+            children: _buildDetailList(), // Première colonne
           ),
         ),
         const SizedBox(width: kDefaultPadding),
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(false), // Deuxième colonne
-          ),
-        ),
+            child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: Card(
+                child: Image.asset('assets/images/placeholder-image.png'),
+              ),
+            ),
+            _buildTextFieldCaption('Caption', _captionController),
+          ],
+        )),
       ],
     );
   }
 
-  List<Widget> _buildDetailList(bool isFirstColumn) {
-    List<Widget> fields = [
+  List<Widget> _buildDetailList() {
+    return [
       _buildTextLock('ID', generateRandomId(), _idController),
       _buildBrandInput(context),
-      _buildTextField('Image URL', _imageUrlController),
-      _buildTextField('Caption', _captionController),
-      _buildTextField('Participants', _participantsController),
       _buildTextField('Title', _titleController),
       _buildTextField('Date', _dateController),
       _buildTextField('Event Date', _dateEventController),
       _buildTextField('End Date', _dateEndController),
       _buildTextField('Tags (comma separated)', _tagsController),
       _buildTextField('Reward', _rewardController),
-      _buildTextField('Logo URL', _logoUrlController),
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
-
-    // Diviser la liste en deux pour les deux colonnes
-    int halfLength = (fields.length / 2).ceil();
-    return isFirstColumn
-        ? fields.take(halfLength).toList()
-        : fields.skip(halfLength).toList();
   }
 
   Widget _buildBrandInput(BuildContext context) {
@@ -186,6 +182,31 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextFieldCaption(
+      String label, TextEditingController controller) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: TextField(
+          controller: controller,
+          keyboardType:
+              TextInputType.multiline, // Permettre le texte multiligne
+          maxLines: null, // Permettre un nombre illimité de lignes
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: const TextStyle(color: Colors.black),
+            fillColor: white,
+            filled: true,
+            border: const OutlineInputBorder(),
+          ),
         ),
       ),
     );
