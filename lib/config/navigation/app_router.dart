@@ -5,12 +5,15 @@ import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/config/navigation/bloc_provider_config.dart';
 import 'package:vootday_admin/config/navigation/route_config.dart';
 import 'package:vootday_admin/config/navigation/scaffold_with_navbar.dart';
+import 'package:vootday_admin/cubit/brands/brands_cubit.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/about/abouts.dart';
 import 'package:vootday_admin/screens/calendar/calendars.dart';
 import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/comment/comments.dart';
 import 'package:vootday_admin/screens/create_event/create_event_screen.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/search_brand_screen.dart';
 import 'package:vootday_admin/screens/event/events.dart';
 import 'package:vootday_admin/screens/event/feed_event.dart';
 import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
@@ -219,10 +222,35 @@ GoRouter createRouter(BuildContext context) {
                     pageBuilder: (BuildContext context, GoRouterState state) {
                       return MaterialPage<void>(
                         key: state.pageKey,
-                        child: BlocProviderConfig.getCreateEventMultiBlocProvider(
-                            context, CreateEventScreen()),
+                        child:
+                            BlocProviderConfig.getCreateEventMultiBlocProvider(
+                                context, CreateEventScreen()),
                       );
                     },
+                    routes: [
+                      // calendar/event/:eventId/create/brand
+                      GoRoute(
+                        path: 'brand',
+                        builder: (BuildContext context, GoRouterState state) {
+                          print('State extra value: ${state.extra}');
+
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(
+                                value: state.extra! as CreateEventCubit,
+                              ),
+                              BlocProvider<BrandCubit>(
+                                create: (context) => BrandCubit(
+                                  brandRepository:
+                                      context.read<BrandRepository>(),
+                                ),
+                              ),
+                            ],
+                            child: const BrandSearchScreen(),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   GoRoute(
                       path: 'event/:eventId',

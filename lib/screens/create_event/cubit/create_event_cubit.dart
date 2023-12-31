@@ -31,4 +31,18 @@ class CreateEventCubit extends Cubit<CreateEventState> {
           state.copyWith(status: CreateEventStatus.error, error: e.toString()));
     }
   }
+
+  void addTag(String tag) {
+    if (tag.isNotEmpty && !state.tags.contains(tag)) {
+      // Avoid adding empty or duplicate tags
+      final updatedTags = List<String>.from(state.tags)..add(tag);
+      emit(
+          state.copyWith(tags: updatedTags, status: CreateEventStatus.initial));
+    }
+  }
+
+  void removeTag(String tag) {
+    final updatedTags = List<String>.from(state.tags)..remove(tag);
+    emit(state.copyWith(tags: updatedTags, status: CreateEventStatus.initial));
+  }
 }

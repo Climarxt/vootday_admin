@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
@@ -100,7 +101,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   List<Widget> _buildDetailList() {
     return [
       _buildTextField('ID', _idController),
-      _buildTextField('Author', _authorController),
+      _buildBrandInput(context),
       _buildTextField('Image URL', _imageUrlController),
       _buildTextField('Caption', _captionController),
       _buildTextField('Participants', _participantsController),
@@ -113,6 +114,29 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       _buildTextField('Logo URL', _logoUrlController),
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
+  }
+
+  // Builds the brand ListTile
+  Widget _buildBrandInput(BuildContext context) {
+    return ListTile(
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            '(${context.read<CreateEventCubit>().state.tags.length})',
+            style: AppTextStyles.subtitleLargeGrey(context),
+          ), // Display the count
+          const SizedBox(
+            width: 8,
+          ),
+          const Icon(Icons.arrow_forward),
+        ],
+      ),
+      title: Text(AppLocalizations.of(context)!.translate('brand'),
+          style: AppTextStyles.titleLargeBlackBold(context)),
+      onTap: () => GoRouter.of(context)
+          .go('/calendar/createevent/brand', extra: context.read<CreateEventCubit>()),
+    );
   }
 
   Widget _buildTextField(String label, TextEditingController controller) {
@@ -142,7 +166,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  // Builds the post button
   Widget _buildFloatingActionButton(BuildContext context) {
     final state = context.watch<CreateEventCubit>().state;
     return FloatingActionButton.extended(
