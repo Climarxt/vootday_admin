@@ -10,6 +10,7 @@ import 'package:vootday_admin/screens/about/abouts.dart';
 import 'package:vootday_admin/screens/calendar/calendars.dart';
 import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/comment/comments.dart';
+import 'package:vootday_admin/screens/create_event/create_event_screen.dart';
 import 'package:vootday_admin/screens/event/events.dart';
 import 'package:vootday_admin/screens/event/feed_event.dart';
 import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
@@ -200,7 +201,7 @@ GoRouter createRouter(BuildContext context) {
               ),
             ],
           ),
-          // Events
+          // Calendar Event
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
@@ -213,6 +214,16 @@ GoRouter createRouter(BuildContext context) {
                   );
                 },
                 routes: [
+                  GoRoute(
+                    path: 'createevent',
+                    pageBuilder: (BuildContext context, GoRouterState state) {
+                      return MaterialPage<void>(
+                        key: state.pageKey,
+                        child: BlocProviderConfig.getProfileMultiBlocProvider(
+                            context, CreateEventScreen()),
+                      );
+                    },
+                  ),
                   GoRoute(
                       path: 'event/:eventId',
                       pageBuilder: (BuildContext context, GoRouterState state) {
