@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
+import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
 
 class CreateEventScreen extends StatefulWidget {
@@ -157,6 +158,42 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  // Submits the form
-  void _submitForm(BuildContext context) {}
+  void _submitForm(BuildContext context) {
+    debugPrint("DEBUG : _submitForm appuyé");
+    // Récupération des valeurs des contrôleurs
+    final String id = _idController.text;
+    final String author = _authorController.text;
+    final String imageUrl = _imageUrlController.text;
+    final String caption = _captionController.text;
+    final int participants = int.tryParse(_participantsController.text) ?? 0;
+    final String title = _titleController.text;
+    // Convertir les dates en DateTime
+    final DateTime? date = DateTime.tryParse(_dateController.text);
+    final DateTime? dateEvent = DateTime.tryParse(_dateEventController.text);
+    final DateTime? dateEnd = DateTime.tryParse(_dateEndController.text);
+    final List<String> tags =
+        _tagsController.text.split(',').map((tag) => tag.trim()).toList();
+    final String reward = _rewardController.text;
+    final String logoUrl = _logoUrlController.text;
+
+    // Création de l'objet Event
+    Event newEvent = Event(
+      id: id,
+      author: Brand.empty.copyWith(id: '8l6QjuTGFQpgBKscLkxp'),
+      imageUrl: imageUrl,
+      caption: caption,
+      participants: participants,
+      title: title,
+      date: date ?? DateTime.now(), // Utiliser une valeur par défaut si null
+      dateEvent: dateEvent ?? DateTime.now(),
+      dateEnd: dateEnd ?? DateTime.now(),
+      tags: tags,
+      reward: reward,
+      logoUrl: logoUrl,
+      user_ref: User.empty.copyWith(id: 'CTZ9T78S0N8Df2Bvy2dd'),
+    );
+
+    // Appel à createEvent du Cubit
+    context.read<CreateEventCubit>().createEvent(newEvent);
+  }
 }

@@ -377,6 +377,13 @@ class EventRepository {
   }
 
   Future<void> createEvent({required Event event}) async {
-    await _firebaseFirestore.collection(Paths.events).add(event.toDocument());
+    debugPrint('createEvent in Repository called with event: ${event.id}');
+    try {
+      await _firebaseFirestore.collection(Paths.events).add(event.toDocument());
+      debugPrint('Event successfully added to Firestore');
+    } catch (e) {
+      debugPrint('Error adding event to Firestore: $e');
+      throw e; // Pour propager l'erreur au Cubit
+    }
   }
 }
