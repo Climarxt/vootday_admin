@@ -44,7 +44,7 @@ class ProfileStatsBloc extends Bloc<ProfileStatsEvent, ProfileStatsState> {
     ProfileStatsLikesFetchEvent event,
     Emitter<ProfileStatsState> emit,
   ) async {
-    _likesCount = await _userRepository.getCountPostUser(event.userId);
+    _likesCount = await _userRepository.getCountLikesUser(event.userId);
     _updateStateIfDataReady(emit);
   }
 

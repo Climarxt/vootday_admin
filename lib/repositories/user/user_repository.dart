@@ -335,7 +335,7 @@ class UserRepository extends BaseUserRepository {
   Future<int> getCountPostUser(String userId) async {
     try {
       debugPrint(
-          'getCountPostUser : Récupération du nombre de posts de l\'utilisateur...');
+          'getCountPostUser : Récupération du nombre de posts de l\'utilisateur $userId...');
       QuerySnapshot querySnapshot = await _firebaseFirestore
           .collection(Paths.posts)
           .where('author',
@@ -346,7 +346,7 @@ class UserRepository extends BaseUserRepository {
       int count = querySnapshot.docs.length;
 
       debugPrint(
-          'getCountPostUser : Nombre de posts de l\'utilisateur: $count');
+          'getCountPostUser : Nombre de posts de l\'utilisateur $userId : $count');
       return count;
     } catch (e) {
       debugPrint(
@@ -358,24 +358,45 @@ class UserRepository extends BaseUserRepository {
   Future<int> getCountCollectionUser(String userId) async {
     try {
       debugPrint(
-          'getCountCollectionUser : Récupération du nombre de collection dans la sous-collection de l\'utilisateur...');
+          'getCountCollectionUser : Récupération du nombre de collection dans la sous-collection de l\'utilisateur $userId...');
 
-      // Requête pour compter les documents dans la sous-collection 'mycollection' de l'utilisateur spécifié
       QuerySnapshot querySnapshot = await _firebaseFirestore
           .collection(Paths.users)
           .doc(userId)
           .collection('mycollection')
           .get();
 
-      // Le nombre de documents dans la sous-collection
       int count = querySnapshot.docs.length;
 
       debugPrint(
-          'getCountCollectionUser : Nombre de documents dans la sous-collection pour l\'utilisateur: $count');
+          'getCountCollectionUser : Nombre de documents dans la sous-collection pour l\'utilisateur $userId: $count');
       return count;
     } catch (e) {
       debugPrint(
           'getCountCollectionUser : Erreur lors du comptage des documents - ${e.toString()}');
+      return 0; // Retourne 0 en cas d'erreur
+    }
+  }
+
+  Future<int> getCountLikesUser(String userId) async {
+    try {
+      debugPrint(
+          'getCountLikesUser : Récupération du nombre de likes dans la sous-collection de l\'utilisateur $userId...');
+
+      QuerySnapshot querySnapshot = await _firebaseFirestore
+          .collection(Paths.users)
+          .doc(userId)
+          .collection('likes')
+          .get();
+
+      int count = querySnapshot.docs.length;
+
+      debugPrint(
+          'getCountLikesUser : Nombre de likes dans la sous-collection pour l\'utilisateur $userId: $count');
+      return count;
+    } catch (e) {
+      debugPrint(
+          'getCountLikesUser : Erreur lors du comptage des documents - ${e.toString()}');
       return 0; // Retourne 0 en cas d'erreur
     }
   }

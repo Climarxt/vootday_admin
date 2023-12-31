@@ -138,8 +138,8 @@ class _ProfileScreenState extends State<ProfileScreen>
               width: 256,
             ),
             SummaryCard(
-              title: '',
-              value: '',
+              title: 'Likes',
+              value: state.likesCount.toString(),
               icon: Icons.ssid_chart_rounded,
               backgroundColor: white,
               textColor: black,
