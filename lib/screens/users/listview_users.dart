@@ -215,5 +215,5 @@ class _DataPageState extends State<DataPage> {
 }
 
 void _navigateToUserScreen(BuildContext context, String userId) {
-  GoRouter.of(context).push('/user/$userId');
+  GoRouter.of(context).go('/users/user/$userId', extra: userId);
 }

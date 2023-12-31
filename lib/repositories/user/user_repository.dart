@@ -10,6 +10,26 @@ class UserRepository extends BaseUserRepository {
   UserRepository({FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
+  Future<User?> getUserById(String userId) async {
+    try {
+      DocumentSnapshot userSnap =
+          await _firebaseFirestore.collection(Paths.users).doc(userId).get();
+
+      if (userSnap.exists) {
+        debugPrint(
+            'getUserById : User document found. Converting to User object...');
+        return User.fromDocument(userSnap);
+      } else {
+        debugPrint("getUserById : L'user n'existe pas.");
+        return null;
+      }
+    } catch (e) {
+      debugPrint(
+          'getUserById : Une erreur est survenue lors de la récupération de l\'user: ${e.toString()}');
+      return null;
+    }
+  }
+
   Future<List<User>> getUserFollowers({
     required String userId,
   }) async {

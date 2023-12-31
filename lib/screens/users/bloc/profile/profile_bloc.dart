@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import '/blocs/blocs.dart';
 import '/models/models.dart';
 import '/repositories/repositories.dart';
@@ -25,6 +26,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         _userRepository = userRepository,
         _postRepository = postRepository,
         super(ProfileState.initial()) {
+    on<ProfileFetchProfile>(_mapProfileFetchProfile);
     on<ProfileLoadUser>(_onProfileLoadUser);
     on<ProfileLoadAllUsers>(_onProfileLoadAllUsers);
 
@@ -35,6 +37,32 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         }
       }
     });
+  }
+
+  Future<void> _mapProfileFetchProfile(
+    ProfileFetchProfile fetchUser,
+    Emitter<ProfileState> emit,
+  ) async {
+    try {
+      debugPrint('ProfileFetchProfile : Fetching profile ${fetchUser.userId}...');
+      final User? userDetails =
+          await _userRepository.getUserById(fetchUser.userId);
+      if (userDetails != null) {
+        debugPrint(
+            'ProfileFetchProfile : Profile ${fetchUser.userId} fetched successfully.');
+        emit(state.copyWith(user: userDetails, status: ProfileStatus.loaded));
+      } else {
+        debugPrint(
+            'ProfileFetchProfile : Profile ${fetchUser.userId} not found.');
+        emit(state.copyWith(user: null, status: ProfileStatus.error));
+      }
+    } catch (err) {
+      debugPrint('ProfileFetchProfile : Error fetching profile - $err');
+      emit(state.copyWith(
+        status: ProfileStatus.error,
+        failure: Failure(message: 'Unable to load the profile - $err'),
+      ));
+    }
   }
 
   @override

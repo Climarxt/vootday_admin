@@ -16,6 +16,7 @@ import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
 import 'package:vootday_admin/screens/login/logins.dart';
 import 'package:vootday_admin/screens/post/posts.dart';
 import 'package:vootday_admin/screens/screens.dart';
+import 'package:vootday_admin/screens/users/profile_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -257,15 +258,30 @@ GoRouter createRouter(BuildContext context) {
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
-                path: '/users',
-                pageBuilder: (BuildContext context, GoRouterState state) {
-                  return MaterialPage<void>(
-                    key: state.pageKey,
-                    child: BlocProviderConfig.getProfileMultiBlocProvider(
-                        context, UsersScreen()),
-                  );
-                },
-              ),
+                  path: '/users',
+                  pageBuilder: (BuildContext context, GoRouterState state) {
+                    return MaterialPage<void>(
+                      key: state.pageKey,
+                      child: BlocProviderConfig.getProfileMultiBlocProvider(
+                          context, UsersScreen()),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'user/:userId',
+                      pageBuilder: (BuildContext context, GoRouterState state) {
+                        final userId = RouteConfig.getUserId(state);
+                        return MaterialPage<void>(
+                          key: state.pageKey,
+                          child: BlocProviderConfig.getProfileMultiBlocProvider(
+                              context,
+                              ProfileScreen(
+                                userId: userId,
+                              )),
+                        );
+                      },
+                    ),
+                  ]),
             ],
           ),
           // Profile
@@ -276,8 +292,7 @@ GoRouter createRouter(BuildContext context) {
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   return MaterialPage<void>(
                     key: state.pageKey,
-                    child: BlocProviderConfig.getProfileMultiBlocProvider(
-                        context, ProfileScreen()),
+                    child: const SettingsScreen(),
                   );
                 },
               ),
