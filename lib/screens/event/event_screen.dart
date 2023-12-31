@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:flutter/material.dart';
@@ -173,17 +172,16 @@ class _EventScreenState extends State<EventScreen>
             ),
           ),
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: () {
               setState(() {
                 _editState[label] = false;
-                _updateFirebase(
-                    label, controller.text, event); // Mettre à jour Firebase
+                _updateFirebase(label, controller.text, event);
               });
             },
           ),
           IconButton(
-            icon: Icon(Icons.close),
+            icon: const Icon(Icons.close),
             onPressed: () => setState(() {
               _editState[label] = false;
             }),
@@ -278,44 +276,6 @@ class _EventScreenState extends State<EventScreen>
         ],
       ),
     );
-  }
-
-  Future<String> getMostLikedPostImageUrl(String eventId) async {
-    try {
-      final feedEventRef = FirebaseFirestore.instance
-          .collection('events')
-          .doc(eventId)
-          .collection('feed_event');
-
-      final querySnapshot =
-          await feedEventRef.orderBy('likes', descending: true).limit(1).get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        final data = querySnapshot.docs.first.data() as Map<String, dynamic>?;
-        final DocumentReference? postRef =
-            data?['post_ref'] as DocumentReference?;
-
-        if (postRef != null) {
-          final postDoc = await postRef.get();
-
-          if (postDoc.exists) {
-            final postData =
-                postDoc.data() as Map<String, dynamic>?; // Cast as a map
-            return postData?['imageUrl'] as String? ?? ''; // Use the map
-          } else {
-            debugPrint(
-                "HomeEvent - getMostLikedPostImageUrl : Referenced post document does not exist.");
-          }
-        } else {
-          debugPrint(
-              "HomeEvent - getMostLikedPostImageUrl : Post reference is null.");
-        }
-      }
-    } catch (e) {
-      debugPrint(
-          "HomeEvent - getMostLikedPostImageUrl : An error occurred while fetching the most liked post image URL: $e");
-    }
-    return '';
   }
 
   void _updateFirebase(String label, dynamic newValue, Event event) {
