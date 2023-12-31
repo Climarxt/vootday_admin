@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/config/constants.dart';
+import 'package:vootday_admin/screens/users/widgets/widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -136,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               iconColor: Colors.black12,
               width: 256,
             ),
-            // buildButtonsCard(context, event),
+             buildButtonsCard(),
           ],
         );
       },
