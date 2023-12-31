@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
-import 'package:vootday_admin/screens/home/widgets/chart/pie_chart_sample2.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
 import 'package:vootday_admin/screens/users/bloc/stats/users_stats_bloc.dart';
 import 'package:vootday_admin/screens/users/listview_users.dart';
@@ -96,7 +95,11 @@ class _UsersScreenState extends State<UsersScreen> {
               iconColor: Colors.black12,
               width: 256,
             ),
-            PieChartSample2(),
+            UserPieChart(
+              manUsersCount: state.manUsersCount,
+              womanUsersCount: state.womanUsersCount,
+              allUsersCount: state.allUsersCount,
+            ),
             _buildButtonsCard(),
           ],
         );
