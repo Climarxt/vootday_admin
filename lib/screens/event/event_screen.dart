@@ -94,8 +94,16 @@ class _EventScreenState extends State<EventScreen>
       children: [
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event),
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildDetailListLock(event),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: _buildDetailListDate(event),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -112,8 +120,8 @@ class _EventScreenState extends State<EventScreen>
     final details = {
       'ID': event.id,
       'Author': event.author.author,
-      'Date': event.date.toString(),
       'Participants': event.participants.toString(),
+      'Date': event.date.toString(),
     };
 
     final entries = details.entries;
@@ -124,12 +132,39 @@ class _EventScreenState extends State<EventScreen>
         .toList();
   }
 
+  List<Widget> _buildDetailListDate(Event event) {
+    final details = {
+      'Date Event': event.dateEvent.toString(),
+      'Date End': event.dateEnd.toString(),
+    };
+
+    final editableDetails = {
+      'Caption',
+      'Title',
+      'Date Event',
+      'Date End',
+      'Tags',
+      'ImageUrl',
+      'LogoUrl',
+      'Done',
+    };
+
+    final entries = details.entries;
+
+    return entries
+        .map((e) =>
+            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
+                ? _buildTextField(
+                    e.key, TextEditingController(text: e.value), event)
+                : _buildTextLock(e.key, e.value, event))
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
+  }
+
   List<Widget> _buildDetailList(Event event) {
     final details = {
       'Title': event.title,
       'Caption': event.caption,
-      'Date Event': event.dateEvent.toString(),
-      'Date End': event.dateEnd.toString(),
       'Tags': event.tags.toString(),
       'Done': event.done.toString(),
       'ImageUrl': event.imageUrl.toString(),
@@ -198,35 +233,6 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-  Widget buildTextFullLock(String label, String value) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: TextEditingController(text: value),
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black54),
-                fillColor: Colors.grey[300],
-                filled: true,
-                border: const OutlineInputBorder(),
-                disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-              enabled: false,
-              style: const TextStyle(color: Colors.black54),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTextLock(String label, String value, Event event) {
     Size size = MediaQuery.of(context).size;
 
@@ -256,6 +262,35 @@ class _EventScreenState extends State<EventScreen>
             onPressed: () => setState(() {
               _editState[label] = true;
             }),
+          ),
+        ],
+      ),
+    );
+  }
+
+    Widget buildTextFullLock(String label, String value) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: TextEditingController(text: value),
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black54),
+                fillColor: Colors.grey[300],
+                filled: true,
+                border: const OutlineInputBorder(),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              enabled: false,
+              style: const TextStyle(color: Colors.black54),
+            ),
           ),
         ],
       ),
