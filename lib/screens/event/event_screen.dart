@@ -37,10 +37,11 @@ class _EventScreenState extends State<EventScreen>
         .read<EventStatsBloc>()
         .add(EventStatsRemainingDaysFetchEvent(eventId: widget.eventId));
     for (var detail in [
-      'Caption',
       'Title',
+      'Caption',
       'Date Event',
       'Date End',
+      'Done',
       'Tags',
       'ImageUrl'
     ]) {
@@ -170,25 +171,13 @@ class _EventScreenState extends State<EventScreen>
       'ImageUrl': event.imageUrl.toString(),
     };
 
-    final editableDetails = {
-      'Caption',
-      'Title',
-      'Date Event',
-      'Date End',
-      'Tags',
-      'ImageUrl',
-      'LogoUrl',
-      'Done',
-    };
-
     final entries = details.entries;
 
     return entries
-        .map((e) =>
-            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
-                ? _buildTextField(
-                    e.key, TextEditingController(text: e.value), event)
-                : _buildTextLock(e.key, e.value, event))
+        .map((e) => (_editState[e.key] ?? false)
+            ? _buildTextField(
+                e.key, TextEditingController(text: e.value), event)
+            : _buildTextLock(e.key, e.value, event))
         .expand((widget) => [widget, const SizedBox(height: 10)])
         .toList();
   }
@@ -268,7 +257,7 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-    Widget buildTextFullLock(String label, String value) {
+  Widget buildTextFullLock(String label, String value) {
     Size size = MediaQuery.of(context).size;
 
     return ConstrainedBox(
