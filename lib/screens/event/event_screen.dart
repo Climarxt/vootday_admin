@@ -150,21 +150,29 @@ class _EventScreenState extends State<EventScreen>
         .toList();
   }
 
+  List<Widget> _buildDetailList(Event event) {
+    final details = {
+      'Title': event.title,
+      'Caption': event.caption,
+      'Tags': event.tags.toString(),
+      'Done': event.done.toString(),
+      'ImageUrl': event.imageUrl.toString(),
+    };
+
+    final entries = details.entries;
+
+    return entries
+        .map((e) => (_editState[e.key] ?? false)
+            ? _buildTextField(
+                e.key, TextEditingController(text: e.value), event)
+            : _buildTextLock(e.key, e.value, event))
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
+  }
+
   Widget _buildTextField(
       String label, TextEditingController controller, Event event) {
     Size size = MediaQuery.of(context).size;
-
-    DateTime? parsedDate;
-
-    if (label == 'Date Event' || label == 'Date End') {
-      try {
-        // Try to parse the entered date string to DateTime
-        parsedDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle parsing error, you may want to show an error message
-        print('Error parsing date: $e');
-      }
-    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
@@ -187,16 +195,7 @@ class _EventScreenState extends State<EventScreen>
             onPressed: () {
               setState(() {
                 _editState[label] = false;
-
-                if (parsedDate != null) {
-                  // If date was successfully parsed, update the event
-                  if (label == 'Date Event') {
-                    event = event.copyWith(dateEvent: parsedDate);
-                  } else if (label == 'Date End') {
-                    event = event.copyWith(dateEnd: parsedDate);
-                  }
-                  _updateFirebase(label, controller.text, event);
-                }
+                _updateFirebase(label, controller.text, event);
               });
             },
           ),
@@ -244,26 +243,6 @@ class _EventScreenState extends State<EventScreen>
         ],
       ),
     );
-  }
-
-  List<Widget> _buildDetailList(Event event) {
-    final details = {
-      'Title': event.title,
-      'Caption': event.caption,
-      'Tags': event.tags.toString(),
-      'Done': event.done.toString(),
-      'ImageUrl': event.imageUrl.toString(),
-    };
-
-    final entries = details.entries;
-
-    return entries
-        .map((e) => (_editState[e.key] ?? false)
-            ? _buildTextField(
-                e.key, TextEditingController(text: e.value), event)
-            : _buildTextLock(e.key, e.value, event))
-        .expand((widget) => [widget, const SizedBox(height: 10)])
-        .toList();
   }
 
   Widget buildTextFullLock(String label, String value) {
