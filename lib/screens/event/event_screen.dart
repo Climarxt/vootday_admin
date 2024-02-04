@@ -154,6 +154,18 @@ class _EventScreenState extends State<EventScreen>
       String label, TextEditingController controller, Event event) {
     Size size = MediaQuery.of(context).size;
 
+    DateTime? parsedDate;
+
+    if (label == 'Date Event' || label == 'Date End') {
+      try {
+        // Try to parse the entered date string to DateTime
+        parsedDate = DateTime.parse(controller.text);
+      } catch (e) {
+        // Handle parsing error, you may want to show an error message
+        print('Error parsing date: $e');
+      }
+    }
+
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: size.width / 2.2),
       child: Row(
@@ -175,7 +187,16 @@ class _EventScreenState extends State<EventScreen>
             onPressed: () {
               setState(() {
                 _editState[label] = false;
-                _updateFirebase(label, controller.text, event);
+
+                if (parsedDate != null) {
+                  // If date was successfully parsed, update the event
+                  if (label == 'Date Event') {
+                    event = event.copyWith(dateEvent: parsedDate);
+                  } else if (label == 'Date End') {
+                    event = event.copyWith(dateEnd: parsedDate);
+                  }
+                  _updateFirebase(label, controller.text, event);
+                }
               });
             },
           ),
@@ -329,6 +350,11 @@ class _EventScreenState extends State<EventScreen>
   void _updateFirebase(String label, dynamic newValue, Event event) {
     String? firestoreField = fieldMappings[label];
     if (firestoreField != null) {
+      // Convert newValue to DateTime if the field is date-related
+      if (label == 'Date Event' || label == 'Date End') {
+        newValue = DateTime.parse(newValue);
+      }
+
       context.read<EventBloc>().add(EventUpdateFieldEvent(
             eventId: event.id,
             field: firestoreField,
