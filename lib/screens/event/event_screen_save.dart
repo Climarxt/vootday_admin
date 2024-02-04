@@ -7,21 +7,21 @@ import 'package:vootday_admin/screens/event/config/constants.dart';
 import 'package:vootday_admin/screens/event/widgets/widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
-class EventScreen extends StatefulWidget {
+class EventScreenSAVE extends StatefulWidget {
   final String eventId;
   final String fromPath;
 
-  const EventScreen({
+  const EventScreenSAVE({
     super.key,
     required this.eventId,
     required this.fromPath,
   });
 
   @override
-  State<EventScreen> createState() => _EventScreenState();
+  State<EventScreenSAVE> createState() => _EventScreenSAVEState();
 }
 
-class _EventScreenState extends State<EventScreen>
+class _EventScreenSAVEState extends State<EventScreenSAVE>
     with AutomaticKeepAliveClientMixin {
   final Map<String, bool> _editState = {};
   int totalLikes = 0;
@@ -57,7 +57,7 @@ class _EventScreenState extends State<EventScreen>
         if (state.status == EventStatus.loading) {
           return buildLoadingIndicator();
         } else if (state.status == EventStatus.loaded) {
-          return buildBody(context, state.event ?? Event.empty, size);
+          return _buildEvent(context, state.event ?? Event.empty, size);
         } else {
           return buildLoadingIndicator();
         }
@@ -66,7 +66,7 @@ class _EventScreenState extends State<EventScreen>
     );
   }
 
-  Widget buildBody(BuildContext context, Event event, Size size) {
+  Widget _buildEvent(BuildContext context, Event event, Size size) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
@@ -95,44 +95,34 @@ class _EventScreenState extends State<EventScreen>
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailListLock(event),
+            children: _buildDetailListLock(event, true),
           ),
         ),
+        const SizedBox(width: kDefaultPadding),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(event),
+            children: _buildDetailListLock(event, false),
           ),
         ),
       ],
     );
   }
 
-  List<Widget> _buildDetailListLock(Event event) {
+  List<Widget> _buildDetailListLock(Event event, bool isFirstColumn) {
     final details = {
       'ID': event.id,
       'Author': event.author.author,
-      'Date': event.date.toString(),
-      'Participants': event.participants.toString(),
-    };
-
-    final entries = details.entries;
-
-    return entries
-        .map((e) => buildTextFullLock(e.key, e.value))
-        .expand((widget) => [widget, const SizedBox(height: 10)])
-        .toList();
-  }
-
-  List<Widget> _buildDetailList(Event event) {
-    final details = {
-      'Title': event.title,
       'Caption': event.caption,
+      'Participants': event.participants.toString(),
+      'Title': event.title,
+      'Date': event.date.toString(),
       'Date Event': event.dateEvent.toString(),
       'Date End': event.dateEnd.toString(),
       'Tags': event.tags.toString(),
       'Done': event.done.toString(),
       'ImageUrl': event.imageUrl.toString(),
+      'LogoUrl': event.logoUrl.toString(),
     };
 
     final editableDetails = {
@@ -146,7 +136,10 @@ class _EventScreenState extends State<EventScreen>
       'Done',
     };
 
-    final entries = details.entries;
+    final int splitIndex = details.length ~/ 2;
+    final entries = isFirstColumn
+        ? details.entries.take(splitIndex)
+        : details.entries.skip(splitIndex);
 
     return entries
         .map((e) =>
@@ -191,70 +184,6 @@ class _EventScreenState extends State<EventScreen>
             icon: const Icon(Icons.close),
             onPressed: () => setState(() {
               _editState[label] = false;
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildTextFullLock(String label, String value) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: TextEditingController(text: value),
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black54),
-                fillColor: Colors.grey[300],
-                filled: true,
-                border: const OutlineInputBorder(),
-                disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-              enabled: false,
-              style: const TextStyle(color: Colors.black54),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextLock(String label, String value, Event event) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: TextEditingController(text: value),
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black54),
-                fillColor: Colors.grey[300],
-                filled: true,
-                border: const OutlineInputBorder(),
-                disabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-              enabled: false,
-              style: const TextStyle(color: Colors.black54),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () => setState(() {
-              _editState[label] = true;
             }),
           ),
         ],
@@ -311,6 +240,41 @@ class _EventScreenState extends State<EventScreen>
           ],
         );
       },
+    );
+  }
+
+  Widget _buildTextLock(String label, String value, Event event) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: TextEditingController(text: value),
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black54),
+                fillColor: Colors.grey[300],
+                filled: true,
+                border: const OutlineInputBorder(),
+                disabledBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+              ),
+              enabled: false,
+              style: const TextStyle(color: Colors.black54),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => setState(() {
+              _editState[label] = true;
+            }),
+          ),
+        ],
+      ),
     );
   }
 
