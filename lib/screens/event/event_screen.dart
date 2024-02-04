@@ -139,38 +139,6 @@ class _EventScreenState extends State<EventScreen>
       'Date End': event.dateEnd.toString(),
     };
 
-    final editableDetails = {
-      'Caption',
-      'Title',
-      'Date Event',
-      'Date End',
-      'Tags',
-      'ImageUrl',
-      'LogoUrl',
-      'Done',
-    };
-
-    final entries = details.entries;
-
-    return entries
-        .map((e) =>
-            editableDetails.contains(e.key) && (_editState[e.key] ?? false)
-                ? _buildTextField(
-                    e.key, TextEditingController(text: e.value), event)
-                : _buildTextLock(e.key, e.value, event))
-        .expand((widget) => [widget, const SizedBox(height: 10)])
-        .toList();
-  }
-
-  List<Widget> _buildDetailList(Event event) {
-    final details = {
-      'Title': event.title,
-      'Caption': event.caption,
-      'Tags': event.tags.toString(),
-      'Done': event.done.toString(),
-      'ImageUrl': event.imageUrl.toString(),
-    };
-
     final entries = details.entries;
 
     return entries
@@ -255,6 +223,26 @@ class _EventScreenState extends State<EventScreen>
         ],
       ),
     );
+  }
+
+  List<Widget> _buildDetailList(Event event) {
+    final details = {
+      'Title': event.title,
+      'Caption': event.caption,
+      'Tags': event.tags.toString(),
+      'Done': event.done.toString(),
+      'ImageUrl': event.imageUrl.toString(),
+    };
+
+    final entries = details.entries;
+
+    return entries
+        .map((e) => (_editState[e.key] ?? false)
+            ? _buildTextField(
+                e.key, TextEditingController(text: e.value), event)
+            : _buildTextLock(e.key, e.value, event))
+        .expand((widget) => [widget, const SizedBox(height: 10)])
+        .toList();
   }
 
   Widget buildTextFullLock(String label, String value) {
