@@ -49,7 +49,7 @@ class EventStatsBloc extends Bloc<EventStatsEvent, EventStatsState> {
         likesEventCount: _likesEventCount!,
         remainingDaysCount: _remainingDaysCount!,
         status: EventStatsStatus.loaded,
-        failure: Failure(),
+        failure: const Failure(),
       ));
       // Réinitialiser les valeurs pour les prochaines utilisations
       _likesEventCount = null;

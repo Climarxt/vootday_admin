@@ -11,7 +11,7 @@ pickImage(ImageSource source) async {
   if (file != null) {
     return await file.readAsBytes();
   }
-  print('No image selected');
+  debugPrint('No image selected');
 }
 
 showSnackBar(String content, BuildContext context) {

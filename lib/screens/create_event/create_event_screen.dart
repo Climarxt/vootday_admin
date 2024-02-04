@@ -146,7 +146,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               controller: TextEditingController(text: 'Brand Name'),
               decoration: InputDecoration(
                 labelText:
-                    'Author (${tagCount})', // Affichage du nombre de tags
+                    'Author ($tagCount)', // Affichage du nombre de tags
                 labelStyle: const TextStyle(color: Colors.black),
                 fillColor: white,
                 filled: true,
@@ -263,7 +263,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   void _submitForm(BuildContext context) {
     // Récupération des valeurs des contrôleurs
     final String id = _idController.text;
-    final String author = _authorController.text;
+    // final String author = _authorController.text;
     final String imageUrl = _imageUrlController.text;
     final String caption = _captionController.text;
     final int participants = int.tryParse(_participantsController.text) ?? 0;

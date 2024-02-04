@@ -40,7 +40,7 @@ class UserRepository extends BaseUserRepository {
       debugPrint('updateUserField: Event $userId updated successfully.');
     } catch (e) {
       debugPrint('updateUserField: Error updating user - ${e.toString()}');
-      throw e;
+      rethrow;
     }
   }
 

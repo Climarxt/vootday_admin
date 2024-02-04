@@ -276,14 +276,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
             // DataColumn(label: Text('Done')),
           ],
           rows: events.map((event) {
-            if (event == null) return DataRow(cells: [DataCell(Text('N/A'))]);
+            if (event == null) return const DataRow(cells: [DataCell(Text('N/A'))]);
             return DataRow(
               cells: [
                 DataCell(Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.visibility),
+                      icon: const Icon(Icons.visibility),
                       onPressed: () =>
                           _navigateToEventScreen(context, event.id),
                     ),
@@ -319,7 +319,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return FloatingActionButton.extended(
       backgroundColor: couleurBleuClair2,
       onPressed: () => _navigateToCreateEventScreen(context),
-      label: Text(
+      label: const Text(
         'Add Event',
       ),
     );

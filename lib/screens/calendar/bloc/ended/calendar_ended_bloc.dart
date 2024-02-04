@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
@@ -24,22 +25,22 @@ class CalendarEndedBloc
     Emitter<CalendarEndedState> emit,
   ) async {
     try {
-      print('_mapCalendarEndedFetchEvent : Fetching this ended events...');
+      debugPrint('_mapCalendarEndedFetchEvent : Fetching this ended events...');
       final thisEndedEvents = await _eventRepository.getThisEndedEvents();
 
       if (thisEndedEvents.isNotEmpty) {
-        print(
+        debugPrint(
             '_mapCalendarEndedFetchEvent : This ended events fetched successfully.');
         emit(state.copyWith(
             thisEndedEvents: thisEndedEvents,
             status: CalendarEndedStatus.loaded));
       } else {
-        print('_mapCalendarEndedFetchEvent : No events found.');
+        debugPrint('_mapCalendarEndedFetchEvent : No events found.');
         emit(state.copyWith(
             thisEndedEvents: [], status: CalendarEndedStatus.noEvents));
       }
     } catch (err) {
-      print('_mapCalendarEndedFetchEvent : Error fetching events - $err');
+      debugPrint('_mapCalendarEndedFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarEndedStatus.error,
         failure: const Failure(message: '_mapCalendarEndedFetchEvent : Unable to load the events'),

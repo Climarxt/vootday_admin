@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,7 +35,7 @@ class Post extends Equatable {
     caption: '',
     likes: 0,
     date: DateTime(0),
-    tags: [],
+    tags: const [],
 
   );
 
@@ -112,15 +113,15 @@ class Post extends Equatable {
             tags: (data['tags'] as List).map((item) => item as String).toList(),
           );
         } else {
-          print(
+          debugPrint(
               'Class POST fromDocument : Author document does not exist for doc ID: ${doc.id}');
         }
       } else {
-        print(
+        debugPrint(
             'Class POST fromDocument : Author reference is null for doc ID: ${doc.id}');
       }
     } catch (e) {
-      print(
+      debugPrint(
           'Class POST fromDocument : Error in fromDocument for doc ID: ${doc.id}: $e');
     }
 

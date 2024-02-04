@@ -1,4 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class EventFirestoreMethods {
@@ -25,10 +28,10 @@ class EventFirestoreMethods {
           'datePublished': DateTime.now(),
         });
       } else {
-        print('Text is empty');
+        debugPrint('Text is empty');
       }
     } catch (e) {
-      print(
+      debugPrint(
         e.toString(),
       );
     }

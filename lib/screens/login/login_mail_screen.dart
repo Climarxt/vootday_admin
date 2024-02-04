@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
 import 'package:vootday_admin/screens/login/widgets/widgets.dart';

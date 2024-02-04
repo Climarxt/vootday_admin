@@ -9,7 +9,6 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/firebase_options.dart';
-import 'package:vootday_admin/repositories/brand/brand_repository.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';

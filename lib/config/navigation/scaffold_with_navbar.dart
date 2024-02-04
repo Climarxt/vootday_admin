@@ -57,23 +57,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
     );
   }
 
-  // Méthode pour créer un widget personnalisé pour l'icône "Swipe"
-  Widget _buildSwipeIcon(BuildContext context) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [couleurBleu1, couleurBleuClair1],
-        ),
-      ),
-      child: Icon(Icons.swipe, color: white),
-    );
-  }
-
   void _onTap(BuildContext context, int index) {
     navigationShell.goBranch(
       index,

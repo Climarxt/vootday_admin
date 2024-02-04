@@ -85,13 +85,13 @@ Widget buildPaginationControls(
       Row(
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: currentPage > 1
                 ? () => updateCurrentPage(currentPage - 1)
                 : null,
           ),
           IconButton(
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             onPressed: currentPage < totalPages
                 ? () => updateCurrentPage(currentPage + 1)
                 : null,

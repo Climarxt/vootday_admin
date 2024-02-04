@@ -224,7 +224,7 @@ GoRouter createRouter(BuildContext context) {
                         key: state.pageKey,
                         child:
                             BlocProviderConfig.getCreateEventMultiBlocProvider(
-                                context, CreateEventScreen()),
+                                context, const CreateEventScreen()),
                       );
                     },
                     routes: [
@@ -232,7 +232,7 @@ GoRouter createRouter(BuildContext context) {
                       GoRoute(
                         path: 'brand',
                         builder: (BuildContext context, GoRouterState state) {
-                          print('State extra value: ${state.extra}');
+                          debugPrint('State extra value: ${state.extra}');
 
                           return MultiBlocProvider(
                             providers: [
@@ -302,7 +302,7 @@ GoRouter createRouter(BuildContext context) {
                     return MaterialPage<void>(
                       key: state.pageKey,
                       child: BlocProviderConfig.getProfileMultiBlocProvider(
-                          context, UsersScreen()),
+                          context, const UsersScreen()),
                     );
                   },
                   routes: [

@@ -46,7 +46,7 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
         endedEventsCount: _endedEventsCount!,
         comingEventsCount: _comingEventsCount!,
         status: CalendarStatsStatus.loaded,
-        failure: Failure(),
+        failure: const Failure(),
       ));
       // Réinitialiser les valeurs pour les prochaines utilisations
       _endedEventsCount = null;

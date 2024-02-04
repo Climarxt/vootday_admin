@@ -372,7 +372,7 @@ class EventRepository {
       debugPrint('updateEventField: Event $eventId updated successfully.');
     } catch (e) {
       debugPrint('updateEventField: Error updating event - ${e.toString()}');
-      throw e;
+      rethrow;
     }
   }
 
@@ -383,7 +383,7 @@ class EventRepository {
       debugPrint('Event successfully added to Firestore');
     } catch (e) {
       debugPrint('Error adding event to Firestore: $e');
-      throw e; // Pour propager l'erreur au Cubit
+      rethrow; 
     }
   }
 }

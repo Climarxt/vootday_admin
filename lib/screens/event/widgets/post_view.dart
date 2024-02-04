@@ -140,12 +140,6 @@ class _PostViewState extends State<PostView>
     GoRouter.of(context).push('/post/${widget.post.id}?username=$username');
   }
 
-  void _navigateToUserScreen(BuildContext context) {
-    GoRouter.of(context).push(
-        '/user/${widget.post.author.id}?username=${widget.post.author.username}');
-    ;
-  }
-
   @override
   bool get wantKeepAlive => true;
 }

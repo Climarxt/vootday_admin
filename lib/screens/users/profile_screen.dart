@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen>
     with AutomaticKeepAliveClientMixin {
-  Map<String, bool> _editState = {};
+  final Map<String, bool> _editState = {};
   int totalLikes = 0;
 
   @override
@@ -281,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             ),
           ),
           IconButton(
-            icon: Icon(Icons.edit),
+            icon: const Icon(Icons.edit),
             onPressed: () => setState(() {
               _editState[label] = true;
             }),

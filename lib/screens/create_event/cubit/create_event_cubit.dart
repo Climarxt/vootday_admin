@@ -8,13 +8,13 @@ part 'create_event_state.dart';
 
 class CreateEventCubit extends Cubit<CreateEventState> {
   final EventRepository _eventRepository;
-  final StorageRepository _storageRepository;
+  // final StorageRepository _storageRepository;
 
   CreateEventCubit({
     required EventRepository eventRepository,
     required StorageRepository storageRepository,
   })  : _eventRepository = eventRepository,
-        _storageRepository = storageRepository,
+        // _storageRepository = storageRepository,
         super(CreateEventState.initial());
 
   Future<void> createEvent(Event event) async {
