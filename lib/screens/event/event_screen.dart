@@ -107,6 +107,7 @@ class _EventScreenState extends State<EventScreen>
             ],
           ),
         ),
+        const SizedBox(width: kDefaultPadding),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,30 +175,34 @@ class _EventScreenState extends State<EventScreen>
       String label, TextEditingController controller, Event event) {
     Size size = MediaQuery.of(context).size;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Row(
+    // Si le champ est "Done", utilisez un Checkbox au lieu d'un champ TextField
+    if (label == 'Done') {
+      return Row(
         children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black),
-                fillColor: white,
-                filled: true,
-                border: const OutlineInputBorder(),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: size.width / 2.4),
+              child: DropdownButtonFormField<bool>(
+                value: event.done,
+                onChanged: (value) {
+                  setState(() {
+                    _editState[label] = false;
+                    _updateFirebase(label, value, event);
+                  });
+                },
+                items: const [
+                  DropdownMenuItem<bool>(
+                    value: true,
+                    child: Text('true'),
+                  ),
+                  DropdownMenuItem<bool>(
+                    value: false,
+                    child: Text('false'),
+                  ),
+                ],
               ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-              setState(() {
-                _editState[label] = false;
-                _updateFirebase(label, controller.text, event);
-              });
-            },
           ),
           IconButton(
             icon: const Icon(Icons.close),
@@ -206,8 +211,44 @@ class _EventScreenState extends State<EventScreen>
             }),
           ),
         ],
-      ),
-    );
+      );
+    } else {
+      // Pour les autres champs, utilisez un champ TextField comme précédemment
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: size.width / 2.2),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: label,
+                  labelStyle: const TextStyle(color: Colors.black),
+                  fillColor: white,
+                  filled: true,
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.check),
+              onPressed: () {
+                setState(() {
+                  _editState[label] = false;
+                  _updateFirebase(label, controller.text, event);
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => setState(() {
+                _editState[label] = false;
+              }),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Widget _buildTextLock(String label, String value, Event event) {
@@ -329,7 +370,12 @@ class _EventScreenState extends State<EventScreen>
   void _updateFirebase(String label, dynamic newValue, Event event) {
     String? firestoreField = fieldMappings[label];
     if (firestoreField != null) {
-      // Convert newValue to DateTime if the field is date-related
+      // Si le champ est "Tags", convertissez newValue en List<String>
+      if (label == 'Tags') {
+        newValue = _parseTags(newValue);
+      }
+
+      // Convertissez newValue en DateTime si le champ est lié à la date
       if (label == 'Date Event' || label == 'Date End') {
         newValue = DateTime.parse(newValue);
       }
@@ -340,8 +386,21 @@ class _EventScreenState extends State<EventScreen>
             newValue: newValue,
           ));
     } else {
-      debugPrint('No mapping found for field: $label');
+      debugPrint('Aucune correspondance trouvée pour le champ : $label');
     }
+  }
+
+  List<String> _parseTags(String newValue) {
+    // Supprimer les caractères "[" et "]"
+    newValue = newValue.replaceAll('[', '').replaceAll(']', '');
+
+    // Diviser la chaîne en utilisant la virgule comme séparateur
+    List<String> tagsList = newValue.split(',');
+
+    // Retirer les espaces superflus autour de chaque tag
+    tagsList = tagsList.map((tag) => tag.trim()).toList();
+
+    return tagsList;
   }
 
   @override
