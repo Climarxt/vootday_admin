@@ -12,15 +12,15 @@ class Event {
   final int participants;
   final String title;
   final DateTime date;
-  final DateTime dateEvent;
-  final DateTime dateEnd;
+  late final DateTime dateEvent;
+  late final DateTime dateEnd;
   final List<String> tags;
   final String reward;
   final bool done;
   final String logoUrl;
   final User user_ref;
 
-  const Event({
+  Event({
     required this.id,
     required this.author,
     required this.imageUrl,

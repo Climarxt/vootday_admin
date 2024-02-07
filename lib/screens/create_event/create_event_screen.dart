@@ -117,13 +117,59 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       _buildTextLock('ID', generateRandomId(), _idController),
       _buildBrandInput(context),
       _buildTextField('Title', _titleController),
-      _buildTextField('Date', _dateController),
-      _buildTextField('Event Date', _dateEventController),
-      _buildTextField('End Date', _dateEndController),
+      _buildTextLock('Date', DateTime.now().toString(), _dateController),
+      _buildDateSelector('Event Date', _dateEventController),
+      _buildDateSelector('End Date', _dateEndController),
       _buildTextField('Tags (comma separated)', _tagsController),
       _buildTextField('Reward', _rewardController),
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
+  }
+
+  Widget _buildDateSelector(String label, TextEditingController controller) {
+    Size size = MediaQuery.of(context).size;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: GestureDetector(
+          onTap: () {
+            // Afficher un sélecteur de date lorsqu'on appuie sur le champ de texte
+            _selectDate(context, controller);
+          },
+          child: AbsorbPointer(
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: label,
+                labelStyle: const TextStyle(color: Colors.black),
+                fillColor: white,
+                filled: true,
+                border: const OutlineInputBorder(),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2015, 8),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        controller.text = picked.toString();
+      });
+    }
   }
 
   Widget _buildBrandInput(BuildContext context) {
@@ -145,8 +191,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             child: TextField(
               controller: TextEditingController(text: 'Brand Name'),
               decoration: InputDecoration(
-                labelText:
-                    'Author ($tagCount)', // Affichage du nombre de tags
+                labelText: 'Author ($tagCount)', // Affichage du nombre de tags
                 labelStyle: const TextStyle(color: Colors.black),
                 fillColor: white,
                 filled: true,
