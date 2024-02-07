@@ -383,7 +383,17 @@ class EventRepository {
       debugPrint('Event successfully added to Firestore');
     } catch (e) {
       debugPrint('Error adding event to Firestore: $e');
-      rethrow; 
+      rethrow;
+    }
+  }
+
+  Future<void> deleteEvent(String eventId) async {
+    try {
+      await _firebaseFirestore.collection(Paths.events).doc(eventId).delete();
+      debugPrint('deleteEvent: Event $eventId deleted successfully.');
+    } catch (e) {
+      debugPrint('deleteEvent: Error deleting event - ${e.toString()}');
+      rethrow;
     }
   }
 }

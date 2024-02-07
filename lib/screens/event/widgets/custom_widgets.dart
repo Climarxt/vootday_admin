@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
+import 'package:vootday_admin/screens/event/bloc/event/event_bloc.dart';
 
 Widget buildButtonsCard(BuildContext context, Event event) {
   return SizedBox(
@@ -26,7 +28,7 @@ Widget buildButtonsCard(BuildContext context, Event event) {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildImportButton(),
+                  _buildDeleteButton(context, event),
                   _buildExportButton(),
                 ],
               ),
@@ -58,13 +60,41 @@ Widget _buildStatsButton() {
   );
 }
 
-Widget _buildImportButton() {
+Widget _buildDeleteButton(BuildContext context, Event event) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       backgroundColor: couleurBleuClair2,
     ),
-    onPressed: () {},
-    child: const Text('Import'),
+    onPressed: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Confirmation'),
+            content: Text('Êtes-vous sûr de vouloir supprimer cet événement ?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                },
+                child: Text('Annuler'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Appel de la méthode de suppression via l'EventBloc
+                  context
+                      .read<EventBloc>()
+                      .add(EventDeleteEvent(eventId: event.id));
+                  Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                },
+                child: Text('Supprimer'),
+              ),
+            ],
+          );
+        },
+      );
+    },
+    child: const Text('Delete'),
   );
 }
 

@@ -30,3 +30,12 @@ class EventUpdateFieldEvent extends EventEvent {
   @override
   List<Object> get props => [eventId, field, newValue];
 }
+
+class EventDeleteEvent extends EventEvent {
+  final String eventId;
+
+  const EventDeleteEvent({required this.eventId});
+
+  @override
+  List<Object> get props => [eventId];
+}

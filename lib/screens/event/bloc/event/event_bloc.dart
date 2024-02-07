@@ -16,6 +16,7 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         super(EventState.initial()) {
     on<EventFetchEvent>(_mapEventFetchEvent);
     on<EventUpdateFieldEvent>(_onEventUpdateFieldEvent);
+    on<EventDeleteEvent>(_mapDeleteEvent);
   }
 
   Future<void> _mapEventFetchEvent(
@@ -27,7 +28,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       final Event? eventDetails =
           await _eventRepository.getEventById(fetchEvent.eventId);
       if (eventDetails != null) {
-        debugPrint('EventBloc: Event ${fetchEvent.eventId} fetched successfully.');
+        debugPrint(
+            'EventBloc: Event ${fetchEvent.eventId} fetched successfully.');
         emit(state.copyWith(event: eventDetails, status: EventStatus.loaded));
       } else {
         debugPrint('EventBloc: Event ${fetchEvent.eventId} not found.');
@@ -57,6 +59,25 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         status: EventStatus.error,
         failure:
             Failure(message: 'Unable to update the event - ${e.toString()}'),
+      ));
+    }
+  }
+
+  // Méthode pour supprimer un événement
+  Future<void> _mapDeleteEvent(
+    EventDeleteEvent deleteEvent,
+    Emitter<EventState> emit,
+  ) async {
+    try {
+      await _eventRepository.deleteEvent(deleteEvent.eventId);
+      emit(state.copyWith(
+          status:
+              EventStatus.loaded)); // Mettre à jour l'état après la suppression
+    } catch (e) {
+      emit(state.copyWith(
+        status: EventStatus.error,
+        failure:
+            Failure(message: 'Unable to delete the event - ${e.toString()}'),
       ));
     }
   }
