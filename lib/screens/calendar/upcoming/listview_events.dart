@@ -21,6 +21,8 @@ class _DataPageState extends State<DataPage> {
   final List<Map<String, dynamic>> _selecteds = [];
   bool _isLoading = true;
   String _searchTerm = '';
+  String? _sortColumn;
+  bool _sortAscending = true;
 
   // Variables de pagination
   int _currentPage = 1;
@@ -43,30 +45,44 @@ class _DataPageState extends State<DataPage> {
       DatatableHeader(
         text: "id",
         value: "id",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "brandName",
         value: "brandName",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "title",
         value: "title",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "participants",
         value: "participants",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "reward",
         value: "reward",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "dateEnd",
         value: "dateEnd",
+        show: true,
+        sortable: true,
       ),
       DatatableHeader(
         text: "dateEvent",
         value: "dateEvent",
+        show: true,
+        sortable: true,
       ),
     ];
     _loadData();
@@ -87,6 +103,38 @@ class _DataPageState extends State<DataPage> {
     setState(() {
       _currentPage = newPage;
     });
+  }
+
+  void _onSort(dynamic column) {
+    if (column is String) {
+      if (_sortColumn == column) {
+        // Si la colonne est déjà triée, inverser l'ordre de tri
+        setState(() {
+          _sortAscending = !_sortAscending;
+        });
+      } else {
+        // Si la colonne est différente, définir la nouvelle colonne de tri et réinitialiser l'ordre de tri
+        setState(() {
+          _sortColumn = column;
+          _sortAscending = true;
+        });
+      }
+      // Tri des données
+      _source.sort((a, b) {
+        dynamic aValue = a[column];
+        dynamic bValue = b[column];
+        if (aValue is String && bValue is String) {
+          return _sortAscending
+              ? aValue.compareTo(bValue)
+              : bValue.compareTo(aValue);
+        } else {
+          // Si les valeurs ne sont pas de type String, utilisez compareTo pour les comparer
+          return _sortAscending
+              ? aValue.compareTo(bValue)
+              : bValue.compareTo(aValue);
+        }
+      });
+    }
   }
 
   @override
@@ -172,6 +220,10 @@ class _DataPageState extends State<DataPage> {
                                 ),
                                 headers: _headers,
                                 selecteds: _selecteds,
+                                onSort: _onSort, // Ajout de cette ligne
+                                sortColumn: _sortColumn, // Ajout de cette ligne
+                                sortAscending:
+                                    _sortAscending, // Ajout de cette ligne
                                 expanded: List.filled(_source.length, false),
                                 source: paginatedList.map((data) {
                                   final bool isSelected =
