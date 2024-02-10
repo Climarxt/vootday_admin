@@ -45,12 +45,12 @@ class _DataPageState extends State<DataPage> {
         value: "id",
       ),
       DatatableHeader(
-        text: "title",
-        value: "title",
-      ),
-      DatatableHeader(
         text: "brandName",
         value: "brandName",
+      ),
+      DatatableHeader(
+        text: "title",
+        value: "title",
       ),
       DatatableHeader(
         text: "participants",
@@ -59,6 +59,14 @@ class _DataPageState extends State<DataPage> {
       DatatableHeader(
         text: "reward",
         value: "reward",
+      ),
+      DatatableHeader(
+        text: "dateEnd",
+        value: "dateEnd",
+      ),
+      DatatableHeader(
+        text: "dateEvent",
+        value: "dateEvent",
       ),
     ];
     _loadData();
