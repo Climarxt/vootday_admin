@@ -8,3 +8,8 @@ abstract class CalendarComingSoonEvent extends Equatable {
 }
 
 class CalendarComingSoonFetchEvent extends CalendarComingSoonEvent {}
+
+class UpcomingEventsLoadAll extends CalendarComingSoonEvent {
+  @override
+  List<Object> get props => [];
+}

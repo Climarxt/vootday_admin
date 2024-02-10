@@ -249,6 +249,62 @@ class EventRepository {
     return eventsList;
   }
 
+  Future<List<Map<String, dynamic>>> getUpComingEvents() async {
+    try {
+      debugPrint('getAllEvents : Fetching all events from Firestore...');
+
+      // Récupérer tous les documents de la collection 'events'
+      QuerySnapshot eventsSnapshot =
+          await _firebaseFirestore.collection('events').get();
+
+      debugPrint('getAllEvents : All event documents fetched.');
+
+      // Liste pour stocker les futures des événements
+      List<Future<Map<String, dynamic>>> futureEvents = [];
+
+      // Parcourir les documents et créer un future pour chaque événement
+      for (var doc in eventsSnapshot.docs) {
+        futureEvents.add(_createEventMap(doc));
+      }
+
+      // Attendre que tous les futures se terminent
+      List<Map<String, dynamic>> events = await Future.wait(futureEvents);
+
+      debugPrint(
+          'getAllEvents : Event objects transformed. Total events: ${events.length}');
+      debugPrint("DEBUG : $events");
+
+      return events;
+    } catch (e) {
+      debugPrint(
+          'getAllEvents : An error occurred while fetching events: ${e.toString()}');
+      return [];
+    }
+  }
+
+// Fonction pour créer un Map d'événement à partir d'un document
+  Future<Map<String, dynamic>> _createEventMap(DocumentSnapshot doc) async {
+    Event event = await Event.fromDocument(doc) as Event;
+    return {
+      'id': event.id,
+      'author':
+          event.author.toDocument(), // Convert Brand to Map<String, dynamic>
+      'imageUrl': event.imageUrl,
+      'caption': event.caption,
+      'participants': event.participants,
+      'title': event.title,
+      'date': event.date,
+      'dateEvent': event.dateEvent,
+      'dateEnd': event.dateEnd,
+      'tags': event.tags,
+      'reward': event.reward,
+      'done': event.done,
+      'logoUrl': event.logoUrl,
+      'user_ref':
+          event.user_ref.toDocument(), // Convert User to Map<String, dynamic>
+    };
+  }
+
   Future<int> getTotalLikesForEventPosts(String eventId) async {
     int totalLikes = 0;
 

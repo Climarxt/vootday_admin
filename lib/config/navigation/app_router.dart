@@ -213,7 +213,7 @@ GoRouter createRouter(BuildContext context) {
                   return MaterialPage<void>(
                     key: state.pageKey,
                     child: BlocProviderConfig.getCalendarMultiBlocProvider(
-                        context, const CalendarScreen()),
+                        context, const UpcomingScreen()),
                   );
                 },
                 routes: [
