@@ -32,7 +32,7 @@ class _DataPageState extends State<DataPage> {
   void _onRowTap(Map<String, dynamic> rowData) {
     setState(() {
       _selectedRowId = rowData['id'];
-      _navigateToUserScreen(context, _selectedRowId!);
+      _navigateToEventScreen(context, _selectedRowId!);
     });
   }
 
@@ -198,6 +198,6 @@ class _DataPageState extends State<DataPage> {
   }
 }
 
-void _navigateToUserScreen(BuildContext context, String userId) {
-  GoRouter.of(context).go('/users/user/$userId', extra: userId);
+void _navigateToEventScreen(BuildContext context, String eventId) {
+  GoRouter.of(context).go('/upcoming/event/$eventId', extra: eventId);
 }
