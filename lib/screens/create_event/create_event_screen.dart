@@ -295,13 +295,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return FloatingActionButton.extended(
       backgroundColor: couleurBleuClair2,
       onPressed: state.status != CreateEventStatus.submitting
-          ? () => _submitForm(context)
+          ? () {
+              _submitForm(context);
+              Future.delayed(Duration(milliseconds: 1000), () {
+                GoRouter.of(context).replace('/calendar');
+              });
+            }
           : null,
-      label: Text(AppLocalizations.of(context)!.translate('add'),
-          style: Theme.of(context)
-              .textTheme
-              .headlineMedium!
-              .copyWith(color: Colors.white)),
+      label: Text(
+        AppLocalizations.of(context)!.translate('add'),
+        style: Theme.of(context)
+            .textTheme
+            .headlineMedium!
+            .copyWith(color: Colors.white),
+      ),
     );
   }
 

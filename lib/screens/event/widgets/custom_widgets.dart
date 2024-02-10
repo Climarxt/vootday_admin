@@ -81,11 +81,13 @@ Widget _buildDeleteButton(BuildContext context, Event event) {
               ),
               ElevatedButton(
                 onPressed: () {
-                  // Appel de la méthode de suppression via l'EventBloc
                   context
                       .read<EventBloc>()
                       .add(EventDeleteEvent(eventId: event.id));
-                  Navigator.of(context).pop(); // Ferme la boîte de dialogue
+                  Navigator.of(context).pop();
+                  GoRouter.of(context).replace(
+                    '/calendar',
+                  );
                 },
                 child: Text('Supprimer'),
               ),
