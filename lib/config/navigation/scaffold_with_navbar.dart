@@ -28,6 +28,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
             child: NavigationRail(
               backgroundColor: lightBleu,
               groupAlignment: 0,
+              minWidth: 100,
               indicatorColor: couleurBleuClair2,
               selectedIndex: navigationShell.currentIndex,
               labelType: NavigationRailLabelType.selected,
@@ -38,7 +39,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
                 NavigationRailDestination(
                     icon: Icon(Icons.home), label: Text('Home')),
                 NavigationRailDestination(
-                    icon: Icon(Icons.calendar_month), label: Text('Calendar')),
+                    icon: Icon(Icons.calendar_month), label: Text('Upcoming')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.calendar_today), label: Text('Events')),
                 NavigationRailDestination(
                     icon: Icon(Icons.people), label: Text('Users')),
                 NavigationRailDestination(

@@ -158,7 +158,7 @@ GoRouter createRouter(BuildContext context) {
             appTitle: title,
             appBar: state.uri.toString().startsWith('/home') ||
                     state.uri.toString().startsWith('/events') ||
-                    state.uri.toString().startsWith('/calendar') ||
+                    state.uri.toString().startsWith('/upcoming') ||
                     state.uri.toString().startsWith('/users') ||
                     state.uri.toString().startsWith('/profile') ||
                     state.uri.toString().startsWith('/swipe') ||
@@ -204,11 +204,100 @@ GoRouter createRouter(BuildContext context) {
               ),
             ],
           ),
-          // Calendar Event
+          // Upcoming
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
-                path: '/calendar',
+                path: '/upcoming',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: BlocProviderConfig.getCalendarMultiBlocProvider(
+                        context, const CalendarScreen()),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'createevent',
+                    pageBuilder: (BuildContext context, GoRouterState state) {
+                      return MaterialPage<void>(
+                        key: state.pageKey,
+                        child:
+                            BlocProviderConfig.getCreateEventMultiBlocProvider(
+                                context, const CreateEventScreen()),
+                      );
+                    },
+                    routes: [
+                      // calendar/event/:eventId/create/brand
+                      GoRoute(
+                        path: 'brand',
+                        builder: (BuildContext context, GoRouterState state) {
+                          debugPrint('State extra value: ${state.extra}');
+
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(
+                                value: state.extra! as CreateEventCubit,
+                              ),
+                              BlocProvider<BrandCubit>(
+                                create: (context) => BrandCubit(
+                                  brandRepository:
+                                      context.read<BrandRepository>(),
+                                ),
+                              ),
+                            ],
+                            child: const BrandSearchScreen(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                      path: 'event/:eventId',
+                      pageBuilder: (BuildContext context, GoRouterState state) {
+                        final eventId = RouteConfig.getEventId(state);
+                        String currentPath = RouteConfig.getCurrentPath(state);
+                        return MaterialPage<void>(
+                          key: state.pageKey,
+                          child: BlocProviderConfig.getEventMultiBlocProvider(
+                              context,
+                              EventScreen(
+                                fromPath: currentPath,
+                                eventId: eventId,
+                              )),
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          path: 'feedevent',
+                          pageBuilder:
+                              (BuildContext context, GoRouterState state) {
+                            final eventId = RouteConfig.getEventId(state);
+                            final title = RouteConfig.getTitle(state);
+                            final logoUrl = RouteConfig.getLogoUrl(state);
+                            return MaterialPage<void>(
+                              key: state.pageKey,
+                              child:
+                                  BlocProviderConfig.getFeedEventBlocProvider(
+                                context,
+                                FeedEvent(
+                                    eventId: eventId,
+                                    title: title,
+                                    logoUrl: logoUrl),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
+                ],
+              ),
+            ],
+          ),
+          // Events
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/events',
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   return MaterialPage<void>(
                     key: state.pageKey,
