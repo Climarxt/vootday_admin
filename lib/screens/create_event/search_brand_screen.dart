@@ -253,6 +253,6 @@ class _BrandSearchScreenState extends State<BrandSearchScreen> {
   // Handling the click of the floating action button
   void _handlePostButtonPressed(BuildContext context) {
     final goRouter = GoRouter.of(context);
-    goRouter.go('/calendar/createevent/');
+    goRouter.go('/newevent');
   }
 }

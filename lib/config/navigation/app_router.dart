@@ -161,6 +161,7 @@ GoRouter createRouter(BuildContext context) {
                     state.uri.toString().startsWith('/upcoming') ||
                     state.uri.toString().startsWith('/newevent') ||
                     state.uri.toString().startsWith('/users') ||
+                    state.uri.toString().startsWith('/newuser') ||
                     state.uri.toString().startsWith('/profile') ||
                     state.uri.toString().startsWith('/swipe') ||
                     state.uri.toString().startsWith('/settings')

@@ -185,7 +185,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: GestureDetector(
-          onTap: () => GoRouter.of(context).go('/calendar/createevent/brand',
+          onTap: () => GoRouter.of(context).go('/newevent/brand',
               extra: context.read<CreateEventCubit>()),
           child: AbsorbPointer(
             child: TextField(
