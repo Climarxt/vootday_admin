@@ -49,6 +49,10 @@ class _DataPageState extends State<DataPage> {
         value: "title",
       ),
       DatatableHeader(
+        text: "brandName",
+        value: "brandName",
+      ),
+      DatatableHeader(
         text: "participants",
         value: "participants",
       ),

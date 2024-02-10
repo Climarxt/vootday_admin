@@ -272,7 +272,6 @@ class EventRepository {
 
       debugPrint(
           'getAllEvents : Event objects transformed. Total events: ${events.length}');
-      debugPrint("DEBUG : $events");
 
       return events;
     } catch (e) {
@@ -302,6 +301,7 @@ class EventRepository {
       'logoUrl': event.logoUrl,
       'user_ref':
           event.user_ref.toDocument(), // Convert User to Map<String, dynamic>
+      'brandName': event.author.author,
     };
   }
 
