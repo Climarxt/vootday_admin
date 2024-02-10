@@ -8,7 +8,7 @@ import 'package:vootday_admin/config/navigation/scaffold_with_navbar.dart';
 import 'package:vootday_admin/cubit/brands/brands_cubit.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
 import 'package:vootday_admin/screens/about/abouts.dart';
-import 'package:vootday_admin/screens/calendar/calendars.dart';
+import 'package:vootday_admin/screens/calendar/calendars_screens.dart';
 import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/comment/comments.dart';
 import 'package:vootday_admin/screens/create_event/create_event_screen.dart';
@@ -302,7 +302,7 @@ GoRouter createRouter(BuildContext context) {
                   return MaterialPage<void>(
                     key: state.pageKey,
                     child: BlocProviderConfig.getCalendarMultiBlocProvider(
-                        context, const CalendarScreen()),
+                        context, const EventsScreen()),
                   );
                 },
                 routes: [

@@ -8,8 +8,7 @@ import 'package:equatable/equatable.dart';
 part 'calendar_ended_event.dart';
 part 'calendar_ended_state.dart';
 
-class CalendarEndedBloc
-    extends Bloc<CalendarEndedEvent, CalendarEndedState> {
+class CalendarEndedBloc extends Bloc<CalendarEndedEvent, CalendarEndedState> {
   final EventRepository _eventRepository;
 
   CalendarEndedBloc({
@@ -18,6 +17,7 @@ class CalendarEndedBloc
   })  : _eventRepository = eventRepository,
         super(CalendarEndedState.initial()) {
     on<CalendarEndedFetchEvent>(_mapCalendarEndedFetchEvent);
+    on<EndedEventsLoadAll>(_onEndedEventsLoadAll);
   }
 
   Future<void> _mapCalendarEndedFetchEvent(
@@ -43,8 +43,27 @@ class CalendarEndedBloc
       debugPrint('_mapCalendarEndedFetchEvent : Error fetching events - $err');
       emit(state.copyWith(
         status: CalendarEndedStatus.error,
-        failure: const Failure(message: '_mapCalendarEndedFetchEvent : Unable to load the events'),
+        failure: const Failure(
+            message: '_mapCalendarEndedFetchEvent : Unable to load the events'),
         thisEndedEvents: [],
+      ));
+    }
+  }
+
+  void _onEndedEventsLoadAll(
+    EndedEventsLoadAll event,
+    Emitter<CalendarEndedState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: CalendarEndedStatus.loading));
+      final List<Map<String, dynamic>> allEvents =
+          await _eventRepository.getEndedEvents();
+      emit(state.copyWith(
+          allEvents: allEvents, status: CalendarEndedStatus.loaded));
+    } catch (e) {
+      emit(state.copyWith(
+        status: CalendarEndedStatus.error,
+        failure: Failure(message: e.toString()),
       ));
     }
   }

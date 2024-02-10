@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/screens/calendar/bloc/blocs.dart';
-import 'package:vootday_admin/screens/calendar/upcoming/listview_events.dart';
+import 'package:vootday_admin/screens/calendar/events/listview_events.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
-class UpcomingScreen extends StatefulWidget {
-  const UpcomingScreen({super.key});
+class EventsScreen extends StatefulWidget {
+  const EventsScreen({super.key});
 
   @override
-  State<UpcomingScreen> createState() => _UpcomingScreenState();
+  State<EventsScreen> createState() => _EventsScreenState();
 }
 
-class _UpcomingScreenState extends State<UpcomingScreen> {
+class _EventsScreenState extends State<EventsScreen> {
   final _dataTableHorizontalScrollController = ScrollController();
 
   @override
@@ -20,7 +20,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     super.initState();
     context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
     context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
-    context.read<CalendarComingSoonBloc>().add(UpcomingEventsLoadAll());
+    context.read<CalendarEndedBloc>().add(EndedEventsLoadAll());
   }
 
   @override

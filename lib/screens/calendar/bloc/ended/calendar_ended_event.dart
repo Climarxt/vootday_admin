@@ -8,3 +8,8 @@ abstract class CalendarEndedEvent extends Equatable {
 }
 
 class CalendarEndedFetchEvent extends CalendarEndedEvent {}
+
+class EndedEventsLoadAll extends CalendarEndedEvent {
+  @override
+  List<Object> get props => [];
+}

@@ -251,7 +251,7 @@ class EventRepository {
 
   Future<List<Map<String, dynamic>>> getUpComingEvents() async {
     try {
-      debugPrint('getAllEvents : Fetching all events from Firestore...');
+      debugPrint('getUpComingEvents : Fetching all events from Firestore...');
 
       // Récupérer tous les documents de la collection 'events'
       QuerySnapshot eventsSnapshot = await _firebaseFirestore
@@ -259,7 +259,7 @@ class EventRepository {
           .where('done', isEqualTo: false)
           .get();
 
-      debugPrint('getAllEvents : All event documents fetched.');
+      debugPrint('getUpComingEvents : All event documents fetched.');
 
       // Liste pour stocker les futures des événements
       List<Future<Map<String, dynamic>>> futureEvents = [];
@@ -273,12 +273,46 @@ class EventRepository {
       List<Map<String, dynamic>> events = await Future.wait(futureEvents);
 
       debugPrint(
-          'getAllEvents : Event objects transformed. Total events: ${events.length}');
+          'getUpComingEvents : Event objects transformed. Total events: ${events.length}');
 
       return events;
     } catch (e) {
       debugPrint(
-          'getAllEvents : An error occurred while fetching events: ${e.toString()}');
+          'getUpComingEvents : An error occurred while fetching events: ${e.toString()}');
+      return [];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getEndedEvents() async {
+    try {
+      debugPrint('getEndedEvents : Fetching all events from Firestore...');
+
+      // Récupérer tous les documents de la collection 'events'
+      QuerySnapshot eventsSnapshot = await _firebaseFirestore
+          .collection('events')
+          .where('done', isEqualTo: true)
+          .get();
+
+      debugPrint('getEndedEvents : All event documents fetched.');
+
+      // Liste pour stocker les futures des événements
+      List<Future<Map<String, dynamic>>> futureEvents = [];
+
+      // Parcourir les documents et créer un future pour chaque événement
+      for (var doc in eventsSnapshot.docs) {
+        futureEvents.add(_createEventMap(doc));
+      }
+
+      // Attendre que tous les futures se terminent
+      List<Map<String, dynamic>> events = await Future.wait(futureEvents);
+
+      debugPrint(
+          'getEndedEvents : Event objects transformed. Total events: ${events.length}');
+
+      return events;
+    } catch (e) {
+      debugPrint(
+          'getEndedEvents : An error occurred while fetching events: ${e.toString()}');
       return [];
     }
   }
