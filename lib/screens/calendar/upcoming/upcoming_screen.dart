@@ -18,6 +18,8 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
+    context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
     context.read<CalendarComingSoonBloc>().add(UpcomingEventsLoadAll());
   }
 
@@ -57,45 +59,35 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   }
 
   Widget _buildHeaderSection(BuildContext context, Size size) {
-    return const Wrap(
-      direction: Axis.horizontal,
-      spacing: kDefaultPadding,
-      runSpacing: kDefaultPadding,
-      children: [
-        SummaryCard(
-          title: 'Nombre **',
-          value: '11',
-          icon: Icons.people,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        SummaryCard(
-          title: 'Nombre **',
-          value: '11',
-          icon: Icons.woman,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        SummaryCard(
-          title: 'Nombre **',
-          value: '11',
-          icon: Icons.man,
-          backgroundColor: white,
-          textColor: black,
-          iconColor: Colors.black12,
-          width: 256,
-        ),
-        UserPieChart(
-          manUsersCount: 11,
-          womanUsersCount: 11,
-          allUsersCount: 22,
-        ),
-        // buildButtonsCard(),
-      ],
+    return BlocBuilder<CalendarStatsBloc, CalendarStatsState>(
+      builder: (context, state) {
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            const SummaryCard(
+              title: 'Nombre de participations',
+              value: '**',
+              icon: Icons.person,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: 'Next Events',
+              value: state.comingEventsCount.toString(),
+              icon: Icons.calendar_month,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            // _buildButtonsCard(),
+          ],
+        );
+      },
     );
   }
 }
