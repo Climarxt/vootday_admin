@@ -254,8 +254,10 @@ class EventRepository {
       debugPrint('getAllEvents : Fetching all events from Firestore...');
 
       // Récupérer tous les documents de la collection 'events'
-      QuerySnapshot eventsSnapshot =
-          await _firebaseFirestore.collection('events').get();
+      QuerySnapshot eventsSnapshot = await _firebaseFirestore
+          .collection('events')
+          .where('done', isEqualTo: false)
+          .get();
 
       debugPrint('getAllEvents : All event documents fetched.');
 
