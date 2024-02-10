@@ -159,6 +159,7 @@ GoRouter createRouter(BuildContext context) {
             appBar: state.uri.toString().startsWith('/home') ||
                     state.uri.toString().startsWith('/events') ||
                     state.uri.toString().startsWith('/upcoming') ||
+                    state.uri.toString().startsWith('/newevent') ||
                     state.uri.toString().startsWith('/users') ||
                     state.uri.toString().startsWith('/profile') ||
                     state.uri.toString().startsWith('/swipe') ||
@@ -382,6 +383,43 @@ GoRouter createRouter(BuildContext context) {
               ),
             ],
           ),
+          // New Event
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/newevent',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: BlocProviderConfig.getCreateEventMultiBlocProvider(
+                        context, const CreateEventScreen()),
+                  );
+                },
+                routes: [
+                  GoRoute(
+                    path: 'brand',
+                    builder: (BuildContext context, GoRouterState state) {
+                      debugPrint('State extra value: ${state.extra}');
+
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(
+                            value: state.extra! as CreateEventCubit,
+                          ),
+                          BlocProvider<BrandCubit>(
+                            create: (context) => BrandCubit(
+                              brandRepository: context.read<BrandRepository>(),
+                            ),
+                          ),
+                        ],
+                        child: const BrandSearchScreen(),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
           // Users
           StatefulShellBranch(
             routes: <RouteBase>[
@@ -410,6 +448,20 @@ GoRouter createRouter(BuildContext context) {
                       },
                     ),
                   ]),
+            ],
+          ),
+           // new user
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/newuser',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: const SettingsScreen(),
+                  );
+                },
+              ),
             ],
           ),
           // Profile

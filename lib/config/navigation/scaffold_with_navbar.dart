@@ -30,7 +30,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
               groupAlignment: 0,
               indicatorColor: couleurBleuClair2,
               selectedIndex: navigationShell.currentIndex,
-              labelType: NavigationRailLabelType.selected,
+              labelType: NavigationRailLabelType.none,
               onDestinationSelected: (int index) => _onTap(context, index),
               selectedIconTheme: const IconThemeData(color: white),
               selectedLabelTextStyle: const TextStyle(color: black),
@@ -42,7 +42,11 @@ class ScaffoldWithNavBar extends StatelessWidget {
                 NavigationRailDestination(
                     icon: Icon(Icons.calendar_today), label: Text('Events')),
                 NavigationRailDestination(
+                    icon: Icon(Icons.edit_calendar), label: Text('New Event')),
+                NavigationRailDestination(
                     icon: Icon(Icons.people), label: Text('Users')),
+                NavigationRailDestination(
+                    icon: Icon(Icons.person_add_alt_1), label: Text('New user')),
                 NavigationRailDestination(
                     icon: Icon(Icons.account_circle), label: Text('Profile')),
                 NavigationRailDestination(
