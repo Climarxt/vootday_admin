@@ -72,7 +72,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // _buildHeaderSection(context, size),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 3.0),
@@ -92,22 +91,20 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildDetailList(), // Première colonne
+            children: _buildDetailList(),
           ),
         ),
-        const SizedBox(width: kDefaultPadding),
-        Expanded(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4.0),
-              child: Card(
-                child: Image.asset('assets/images/placeholder-image.png'),
-              ),
+        Container(
+            width: 540, // Largeur fixe pour l'image
+            height: 675, // Hauteur fixe pour l'image (portrait)
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey), // Bordure grise
+              borderRadius: BorderRadius.circular(8.0), // Bord arrondi
             ),
-            _buildTextFieldCaption('Caption', _captionController),
-          ],
-        )),
+            child: Image.asset(
+              'assets/images/placeholder-image.png',
+              fit: BoxFit.cover,
+            )),
       ],
     );
   }
@@ -122,6 +119,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       _buildDateSelector('End Date', _dateEndController),
       _buildTextField('Tags (comma separated)', _tagsController),
       _buildTextField('Reward', _rewardController),
+      _buildTextFieldCaption('Caption', _captionController),
+
       // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
     ];
   }
@@ -185,8 +184,8 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       child: Padding(
         padding: const EdgeInsets.all(4),
         child: GestureDetector(
-          onTap: () => GoRouter.of(context).go('/newevent/brand',
-              extra: context.read<CreateEventCubit>()),
+          onTap: () => GoRouter.of(context)
+              .go('/newevent/brand', extra: context.read<CreateEventCubit>()),
           child: AbsorbPointer(
             child: TextField(
               controller: TextEditingController(text: 'Brand Name'),

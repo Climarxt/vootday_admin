@@ -451,7 +451,7 @@ GoRouter createRouter(BuildContext context) {
                   ]),
             ],
           ),
-           // new user
+           // New user
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
