@@ -86,7 +86,7 @@ Widget _buildDeleteButton(BuildContext context, Event event) {
                       .add(EventDeleteEvent(eventId: event.id));
                   Navigator.of(context).pop();
                   GoRouter.of(context).replace(
-                    '/calendar',
+                    '/newevent',
                   );
                 },
                 child: Text('Supprimer'),

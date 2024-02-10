@@ -3,53 +3,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
+import 'package:vootday_admin/screens/create_event/config.dart';
 import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/widgets/customize_widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
 class CreateEventScreen extends StatefulWidget {
-  const CreateEventScreen({
-    super.key,
-  });
+  const CreateEventScreen({Key? key}) : super(key: key);
 
   @override
   State<CreateEventScreen> createState() => _CreateEventScreenState();
 }
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _authorController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
-  final TextEditingController _captionController = TextEditingController();
-  final TextEditingController _participantsController = TextEditingController();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _dateEventController = TextEditingController();
-  final TextEditingController _dateEndController = TextEditingController();
-  final TextEditingController _tagsController = TextEditingController();
-  final TextEditingController _rewardController = TextEditingController();
-  final TextEditingController _logoUrlController = TextEditingController();
+  final CreateEventScreenConfig _config = CreateEventScreenConfig();
 
   @override
   void dispose() {
-    // Nettoyage des controllers lors de la suppression du State
-    _idController.dispose();
-    _authorController.dispose();
-    _imageUrlController.dispose();
-    _captionController.dispose();
-    _participantsController.dispose();
-    _titleController.dispose();
-    _dateController.dispose();
-    _dateEventController.dispose();
-    _dateEndController.dispose();
-    _tagsController.dispose();
-    _rewardController.dispose();
-    _logoUrlController.dispose();
+    _config.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return BlocConsumer<CreateEventCubit, CreateEventState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -67,18 +44,15 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: _buildDetailRows(),
-              ),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: _buildDetailRows(),
+            ),
+          ],
         ),
       ),
     );
@@ -95,88 +69,38 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           ),
         ),
         Container(
-            width: 540, // Largeur fixe pour l'image
-            height: 675, // Hauteur fixe pour l'image (portrait)
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey), // Bordure grise
-              borderRadius: BorderRadius.circular(8.0), // Bord arrondi
-            ),
-            child: Image.asset(
-              'assets/images/placeholder-image.png',
-              fit: BoxFit.cover,
-            )),
+          width: 540,
+          height: 675,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Image.asset(
+            'assets/images/placeholder-image.png',
+            fit: BoxFit.cover,
+          ),
+        ),
       ],
     );
   }
 
   List<Widget> _buildDetailList() {
     return [
-      _buildTextLock('ID', generateRandomId(), _idController),
-      _buildBrandInput(context),
-      _buildTextField('Title', _titleController),
-      _buildTextLock('Date', DateTime.now().toString(), _dateController),
-      _buildDateSelector('Event Date', _dateEventController),
-      _buildDateSelector('End Date', _dateEndController),
-      _buildTextField('Tags (comma separated)', _tagsController),
-      _buildTextField('Reward', _rewardController),
-      _buildTextFieldCaption('Caption', _captionController),
-
-      // Ajouter des widgets pour 'done' et 'user_ref' si nécessaire
+      buildTextLock(context, 'ID', generateRandomId(), _config.idController),
+      buildBrandInput(context),
+      buildTextField(context, 'Title', _config.titleController),
+      buildTextLock(
+          context, 'Date', DateTime.now().toString(), _config.dateController),
+      buildDateSelector(context, 'Event Date', _config.dateEventController),
+      buildDateSelector(context, 'End Date', _config.dateEndController),
+      buildTextField(context, 'Tags (comma separated)', _config.tagsController),
+      buildTextField(context, 'Reward', _config.rewardController),
+      buildTextFieldCaption(context, 'Caption', _config.captionController),
     ];
   }
 
-  Widget _buildDateSelector(String label, TextEditingController controller) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: GestureDetector(
-          onTap: () {
-            // Afficher un sélecteur de date lorsqu'on appuie sur le champ de texte
-            _selectDate(context, controller);
-          },
-          child: AbsorbPointer(
-            child: TextFormField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(color: Colors.black),
-                fillColor: white,
-                filled: true,
-                border: const OutlineInputBorder(),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != DateTime.now()) {
-      setState(() {
-        controller.text = picked.toString();
-      });
-    }
-  }
-
-  Widget _buildBrandInput(BuildContext context) {
-    final tagCount = context
-        .read<CreateEventCubit>()
-        .state
-        .tags
-        .length; // Récupération du nombre de tags
+  Widget buildBrandInput(BuildContext context) {
+    final int tagCount = context.read<CreateEventCubit>().state.tags.length;
 
     return ConstrainedBox(
       constraints:
@@ -190,7 +114,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             child: TextField(
               controller: TextEditingController(text: 'Brand Name'),
               decoration: InputDecoration(
-                labelText: 'Author ($tagCount)', // Affichage du nombre de tags
+                labelText: 'Author ($tagCount)',
                 labelStyle: const TextStyle(color: Colors.black),
                 fillColor: white,
                 filled: true,
@@ -204,91 +128,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  labelText: label,
-                  labelStyle: const TextStyle(color: Colors.black),
-                  fillColor: white,
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextFieldCaption(
-      String label, TextEditingController controller) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: TextField(
-          controller: controller,
-          keyboardType:
-              TextInputType.multiline, // Permettre le texte multiligne
-          maxLines: null, // Permettre un nombre illimité de lignes
-          decoration: InputDecoration(
-            labelText: label,
-            labelStyle: const TextStyle(color: Colors.black),
-            fillColor: white,
-            filled: true,
-            border: const OutlineInputBorder(),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextLock(
-      String label, String value, TextEditingController controller) {
-    Size size = MediaQuery.of(context).size;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: size.width / 2.2),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: TextEditingController(text: value),
-                decoration: InputDecoration(
-                  labelText: label,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  fillColor: Colors.grey[300],
-                  filled: true,
-                  border: const OutlineInputBorder(),
-                  disabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                enabled: false,
-                style: const TextStyle(color: Colors.black54),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildFloatingActionButton(BuildContext context) {
     final state = context.watch<CreateEventCubit>().state;
     return FloatingActionButton.extended(
@@ -296,13 +135,13 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       onPressed: state.status != CreateEventStatus.submitting
           ? () {
               _submitForm(context);
-              Future.delayed(Duration(milliseconds: 1000), () {
-                GoRouter.of(context).replace('/calendar');
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                GoRouter.of(context).replace('/upcoming');
               });
             }
           : null,
       label: Text(
-        AppLocalizations.of(context)!.translate('add'),
+        AppLocalizations.of(context)!.translate('add')!,
         style: Theme.of(context)
             .textTheme
             .headlineMedium!
@@ -312,31 +151,31 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   void _submitForm(BuildContext context) {
-    // Récupération des valeurs des contrôleurs
-    final String id = _idController.text;
-    // final String author = _authorController.text;
-    final String imageUrl = _imageUrlController.text;
-    final String caption = _captionController.text;
-    final int participants = int.tryParse(_participantsController.text) ?? 0;
-    final String title = _titleController.text;
-    // Convertir les dates en DateTime
-    final DateTime? date = DateTime.tryParse(_dateController.text);
-    final DateTime? dateEvent = DateTime.tryParse(_dateEventController.text);
-    final DateTime? dateEnd = DateTime.tryParse(_dateEndController.text);
-    final List<String> tags =
-        _tagsController.text.split(',').map((tag) => tag.trim()).toList();
-    final String reward = _rewardController.text;
-    final String logoUrl = _logoUrlController.text;
+    final String id = _config.idController.text;
+    final String imageUrl = _config.imageUrlController.text;
+    final String caption = _config.captionController.text;
+    final int participants =
+        int.tryParse(_config.participantsController.text) ?? 0;
+    final String title = _config.titleController.text;
+    final DateTime? date = DateTime.tryParse(_config.dateController.text);
+    final DateTime? dateEvent =
+        DateTime.tryParse(_config.dateEventController.text);
+    final DateTime? dateEnd = DateTime.tryParse(_config.dateEndController.text);
+    final List<String> tags = _config.tagsController.text
+        .split(',')
+        .map((tag) => tag.trim())
+        .toList();
+    final String reward = _config.rewardController.text;
+    final String logoUrl = _config.logoUrlController.text;
 
-    // Création de l'objet Event
-    Event newEvent = Event(
+    final newEvent = Event(
       id: id,
       author: Brand.empty.copyWith(id: '8l6QjuTGFQpgBKscLkxp'),
       imageUrl: imageUrl,
       caption: caption,
       participants: participants,
       title: title,
-      date: date ?? DateTime.now(), // Utiliser une valeur par défaut si null
+      date: date ?? DateTime.now(),
       dateEvent: dateEvent ?? DateTime.now(),
       dateEnd: dateEnd ?? DateTime.now(),
       tags: tags,
@@ -345,7 +184,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       user_ref: User.empty.copyWith(id: 'CTZ9T78S0N8Df2Bvy2dd'),
     );
 
-    // Appel à createEvent du Cubit
     context.read<CreateEventCubit>().createEvent(newEvent);
   }
 }
