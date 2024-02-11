@@ -14,18 +14,12 @@ class SearchCubit extends Cubit<SearchState> {
         super(SearchState.initial());
 
   void searchUsersBrand(String query) async {
-    debugPrint(
-        'Searching users with query: $query'); // Ajoutez ce print pour afficher la requête de recherche
-
     emit(state.copyWith(status: SearchStatus.loading));
     try {
       final users = await _userRepository.searchUsersBrand(query: query);
-      debugPrint(
-          'Found ${users.length} users matching the query.'); // Ajoutez ce print pour afficher le nombre d'utilisateurs trouvés
       emit(state.copyWith(users: users, status: SearchStatus.loaded));
     } catch (err) {
-      debugPrint(
-          'Error searching users: $err'); // Ajoutez ce print pour afficher les erreurs
+      debugPrint('Error searching users: $err');
       state.copyWith(
         status: SearchStatus.error,
         failure:
