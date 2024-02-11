@@ -141,7 +141,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             }
           : null,
       label: Text(
-        AppLocalizations.of(context)!.translate('add')!,
+        AppLocalizations.of(context)!.translate('add'),
         style: Theme.of(context)
             .textTheme
             .headlineMedium!
