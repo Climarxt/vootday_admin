@@ -18,6 +18,8 @@ class CreateEventScreen extends StatefulWidget {
 
 class _CreateEventScreenState extends State<CreateEventScreen> {
   final CreateEventScreenConfig _config = CreateEventScreenConfig();
+  bool _showUserList = true;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void dispose() {
@@ -96,7 +98,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       buildTextLock(context, 'ID', generateRandomId(), _config.idController),
       buildTextLock(
           context, 'Date', DateTime.now().toString(), _config.dateController),
-      buildBrandInput(context),
       buildTextField(context, 'Title', _config.titleController),
       buildDateSelector(context, 'Event Date', _config.dateEventController),
       buildDateSelector(context, 'End Date', _config.dateEndController),
@@ -162,40 +163,65 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Search for User:'),
-        TextField(
-          onChanged: (query) {
-            context.read<SearchCubit>().searchUsersBrand(query);
-          },
-          decoration: InputDecoration(
-            hintText: 'Enter username',
-            prefixIcon: Icon(Icons.search),
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: TextField(
+            controller: _searchController,
+            onChanged: (query) {
+              if (query.isEmpty) {
+                // Si le champ de recherche est vide, réinitialiser la liste déroulante
+                setState(() {
+                  _showUserList = true;
+                });
+              } else {
+                // Sinon, effectuer la recherche normalement
+                context.read<SearchCubit>().searchUsersBrand(query);
+              }
+            },
+            decoration: const InputDecoration(
+              labelText: 'Enter Brand',
+              labelStyle: TextStyle(color: Colors.black),
+              fillColor: white,
+              filled: true,
+              border: OutlineInputBorder(),
+            ),
           ),
         ),
-        SizedBox(height: 10),
-        BlocBuilder<SearchCubit, SearchState>(
-          builder: (context, state) {
-            if (state.status == SearchStatus.loading) {
-              return CircularProgressIndicator();
-            } else if (state.status == SearchStatus.error) {
-              return Text('Error: ${state.failure.message}');
-            } else if (state.status == SearchStatus.loaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: state.users.map((user) {
-                  return ListTile(
-                    title: Text(user.username),
-                    onTap: () {
-                      context.read<SearchCubit>().selectUser(user);
-                    },
-                  );
-                }).toList(),
-              );
-            } else {
-              return Container();
-            }
-          },
-        ),
+        const SizedBox(height: 10),
+        // Utilisez la variable _showUserList pour contrôler l'affichage de la liste
+        if (_showUserList)
+          BlocBuilder<SearchCubit, SearchState>(
+            builder: (context, state) {
+              if (state.status == SearchStatus.loading) {
+                return const CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.transparent));
+              } else if (state.status == SearchStatus.error) {
+                return Text('Error: ${state.failure.message}');
+              } else if (state.status == SearchStatus.loaded) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: state.users.map((user) {
+                    return ListTile(
+                      title: Text(user.username),
+                      onTap: () {
+                        // Mettre à jour le champ selectedUser dans SearchCubit
+                        context.read<SearchCubit>().selectUser(user);
+                        // Mettre à jour la valeur du champ de recherche avec l'username sélectionné
+                        _searchController.text = user.username;
+                        // Masquer la liste déroulante après la sélection de l'utilisateur
+                        setState(() {
+                          _showUserList = false;
+                        });
+                      },
+                    );
+                  }).toList(),
+                );
+              } else {
+                return Container();
+              }
+            },
+          ),
       ],
     );
   }
