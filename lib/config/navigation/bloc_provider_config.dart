@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vootday_admin/blocs/blocs.dart';
 import 'package:vootday_admin/repositories/repositories.dart';
-import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/search_brand/search_cubit.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/blocs.dart';
 import 'package:vootday_admin/screens/users/bloc/profile/profile_bloc.dart';
@@ -142,6 +143,14 @@ class BlocProviderConfig {
               brandRepository: context.read<BrandRepository>(),
             );
             return brandCubit;
+          },
+        ),
+        BlocProvider<SearchCubit>(
+          create: (context) {
+            final searchCubit = SearchCubit(
+              userRepository: context.read<UserRepository>(),
+            );
+            return searchCubit;
           },
         ),
       ],

@@ -12,7 +12,7 @@ import 'package:vootday_admin/screens/calendar/calendars_screens.dart';
 import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/comment/comments.dart';
 import 'package:vootday_admin/screens/create_event/create_event_screen.dart';
-import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event/create_event_cubit.dart';
 import 'package:vootday_admin/screens/create_event/search_brand_screen.dart';
 import 'package:vootday_admin/screens/event/events.dart';
 import 'package:vootday_admin/screens/event/feed_event.dart';

@@ -155,6 +155,20 @@ class UserRepository extends BaseUserRepository {
     return userSnap.docs.map((doc) => User.fromDocument(doc)).toList();
   }
 
+  Future<List<User>> searchUsersBrand({required String query}) async {
+    // Convertir la requête en minuscules
+    String lowerCaseQuery = query.toLowerCase();
+
+    final userSnap = await _firebaseFirestore
+        .collection(Paths.users)
+        .where('username_lowercase', isGreaterThanOrEqualTo: lowerCaseQuery)
+        .where('username_lowercase', isLessThan: '$lowerCaseQuery\uf8ff')
+        .where('selectedGender', isEqualTo: 'Brand')
+        .get();
+
+    return userSnap.docs.map((doc) => User.fromDocument(doc)).toList();
+  }
+
   @override
   void followUser({
     required String userId,

@@ -7,7 +7,7 @@ import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/cubit/brands/brands_state.dart';
 import 'package:vootday_admin/cubit/cubits.dart';
 import 'package:vootday_admin/models/models.dart';
-import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event/create_event_cubit.dart';
 import 'package:vootday_admin/screens/create_event/widgets/widgets.dart';
 
 // Main screen for brand searching

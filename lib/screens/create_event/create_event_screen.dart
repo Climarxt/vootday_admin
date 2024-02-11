@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:vootday_admin/config/configs.dart';
 import 'package:vootday_admin/models/models.dart';
 import 'package:vootday_admin/screens/create_event/config.dart';
-import 'package:vootday_admin/screens/create_event/cubit/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/create_event/create_event_cubit.dart';
+import 'package:vootday_admin/screens/create_event/cubit/search_brand/search_cubit.dart';
 import 'package:vootday_admin/screens/create_event/widgets/customize_widgets.dart';
 import 'package:vootday_admin/screens/widgets/widgets.dart';
 
@@ -22,6 +23,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   void dispose() {
     _config.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<SearchCubit>();
   }
 
   @override
@@ -87,15 +94,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   List<Widget> _buildDetailList() {
     return [
       buildTextLock(context, 'ID', generateRandomId(), _config.idController),
-      buildBrandInput(context),
-      buildTextField(context, 'Title', _config.titleController),
       buildTextLock(
           context, 'Date', DateTime.now().toString(), _config.dateController),
+      buildBrandInput(context),
+      buildTextField(context, 'Title', _config.titleController),
       buildDateSelector(context, 'Event Date', _config.dateEventController),
       buildDateSelector(context, 'End Date', _config.dateEndController),
       buildTextField(context, 'Tags (comma separated)', _config.tagsController),
       buildTextField(context, 'Reward', _config.rewardController),
       buildTextFieldCaption(context, 'Caption', _config.captionController),
+      buildUserSearchField(context),
     ];
   }
 
@@ -150,6 +158,48 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
+  Widget buildUserSearchField(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Search for User:'),
+        TextField(
+          onChanged: (query) {
+            context.read<SearchCubit>().searchUsersBrand(query);
+          },
+          decoration: InputDecoration(
+            hintText: 'Enter username',
+            prefixIcon: Icon(Icons.search),
+          ),
+        ),
+        SizedBox(height: 10),
+        BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            if (state.status == SearchStatus.loading) {
+              return CircularProgressIndicator();
+            } else if (state.status == SearchStatus.error) {
+              return Text('Error: ${state.failure.message}');
+            } else if (state.status == SearchStatus.loaded) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: state.users.map((user) {
+                  return ListTile(
+                    title: Text(user.username),
+                    onTap: () {
+                      context.read<SearchCubit>().selectUser(user);
+                    },
+                  );
+                }).toList(),
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   void _submitForm(BuildContext context) {
     final String id = _config.idController.text;
     final String imageUrl = _config.imageUrlController.text;
@@ -167,6 +217,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         .toList();
     final String reward = _config.rewardController.text;
     final String logoUrl = _config.logoUrlController.text;
+    final User selectedUser = context.read<SearchCubit>().state.selectedUser;
 
     final newEvent = Event(
       id: id,
@@ -181,7 +232,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       tags: tags,
       reward: reward,
       logoUrl: logoUrl,
-      user_ref: User.empty.copyWith(id: 'CTZ9T78S0N8Df2Bvy2dd'),
+      user_ref: selectedUser,
     );
 
     context.read<CreateEventCubit>().createEvent(newEvent);
