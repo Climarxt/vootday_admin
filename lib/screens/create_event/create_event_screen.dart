@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -226,7 +227,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     );
   }
 
-  void _submitForm(BuildContext context) {
+  void _submitForm(BuildContext context) async {
     final String id = _config.idController.text;
     final String imageUrl = _config.imageUrlController.text;
     final String caption = _config.captionController.text;
@@ -245,22 +246,56 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     final String logoUrl = _config.logoUrlController.text;
     final User selectedUser = context.read<SearchCubit>().state.selectedUser;
 
-    final newEvent = Event(
-      id: id,
-      author: Brand.empty.copyWith(id: '8l6QjuTGFQpgBKscLkxp'),
-      imageUrl: imageUrl,
-      caption: caption,
-      participants: participants,
-      title: title,
-      date: date ?? DateTime.now(),
-      dateEvent: dateEvent ?? DateTime.now(),
-      dateEnd: dateEnd ?? DateTime.now(),
-      tags: tags,
-      reward: reward,
-      logoUrl: logoUrl,
-      user_ref: selectedUser,
-    );
+    // Récupérer l'auteur (Brand) correspondant à l'utilisateur sélectionné
+    final Brand? author = await _fetchBrandForUser(selectedUser);
 
-    context.read<CreateEventCubit>().createEvent(newEvent);
+    if (author != null) {
+      final newEvent = Event(
+        id: id,
+        author: author, // Utiliser l'auteur récupéré
+        imageUrl: imageUrl,
+        caption: caption,
+        participants: participants,
+        title: title,
+        date: date ?? DateTime.now(),
+        dateEvent: dateEvent ?? DateTime.now(),
+        dateEnd: dateEnd ?? DateTime.now(),
+        tags: tags,
+        reward: reward,
+        logoUrl: logoUrl,
+        user_ref: selectedUser,
+      );
+
+      context.read<CreateEventCubit>().createEvent(newEvent);
+    } else {
+      // Gérer le cas où aucun auteur n'a été trouvé pour l'utilisateur sélectionné
+      debugPrint('Aucun auteur n a été trouvé pour l utilisateur sélectionné.');
+    }
+  }
+
+  Future<Brand?> _fetchBrandForUser(User user) async {
+    try {
+      // Rechercher l'auteur correspondant à l'utilisateur dans Firebase
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('brands')
+          .where('author', isEqualTo: user.username)
+          .get();
+
+      // S'il y a des documents correspondants, retourner le premier
+      if (querySnapshot.docs.isNotEmpty) {
+        final brandDoc = querySnapshot.docs.first;
+        final brand = Brand.fromDocument(brandDoc);
+        debugPrint('Auteur trouvé pour l utilisateur ${user.username}: $brand DEBUG : ${brand.id}' );
+        return brand;
+      } else {
+        // Si aucun auteur n'a été trouvé, retourner null
+        debugPrint('Aucun auteur trouvé pour l utilisateur ${user.username}');
+        return null;
+      }
+    } catch (e) {
+      // Gérer les erreurs éventuelles lors de la recherche de l'auteur
+      debugPrint('Erreur lors de la recherche de l auteur : $e');
+      return null;
+    }
   }
 }

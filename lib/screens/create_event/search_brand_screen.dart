@@ -153,7 +153,7 @@ class _BrandSearchScreenState extends State<BrandSearchScreen> {
         orElse: () => Brand(
             author: option,
             logoUrl:
-                'https://firebasestorage.googleapis.com/v0/b/bootdv2.appspot.com/o/images%2Fbrands%2Fquestionmarklogo.svg?alt=media&token=0803c330-d49c-4808-ba80-80f1e6258897&_gl=1*111mjg0*_ga*NzczMDE3MDE2LjE2OTcwMzM5MTE.*_ga_CW55HF8NVT*MTY5ODM0ODMxMS4yMC4xLjE2OTgzNDkxMDUuMzkuMC4w'));
+                'https://firebasestorage.googleapis.com/v0/b/bootdv2.appspot.com/o/images%2Fbrands%2Fquestionmarklogo.svg?alt=media&token=0803c330-d49c-4808-ba80-80f1e6258897&_gl=1*111mjg0*_ga*NzczMDE3MDE2LjE2OTcwMzM5MTE.*_ga_CW55HF8NVT*MTY5ODM0ODMxMS4yMC4xLjE2OTgzNDkxMDUuMzkuMC4w', id: ''));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),

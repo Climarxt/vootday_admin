@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Brand extends Equatable {
-  final String? id;
+  final String id; // Changez cette ligne pour rendre l'ID non nullable
   final String author;
   final String logoUrl;
 
   const Brand({
-    this.id,
+    required this.id, // Rendez l'ID obligatoire
     required this.author,
     required this.logoUrl,
   });
@@ -43,6 +43,7 @@ class Brand extends Equatable {
   static Brand fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Brand(
+      id: doc.id,
       author: data['author'] ?? '',
       logoUrl: data['logoUrl'] ?? '',
     );
