@@ -500,7 +500,7 @@ GoRouter createRouter(BuildContext context) {
 
   authBloc.stream.listen((state) {
     if (state.status == AuthStatus.unauthenticated) {
-      goRouter.go('/login');
+      goRouter.go('/home');
     } else if (state.status == AuthStatus.authenticated) {
       goRouter.go('/home');
     }

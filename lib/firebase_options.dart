@@ -49,7 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '920926023285',
     projectId: 'bootdv2',
     authDomain: 'bootdv2.firebaseapp.com',
-    databaseURL: 'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bootdv2.appspot.com',
     measurementId: 'G-MVJ791NXR7',
   );
@@ -59,7 +60,8 @@ class DefaultFirebaseOptions {
     appId: '1:920926023285:android:2238423a26698b83e3d23c',
     messagingSenderId: '920926023285',
     projectId: 'bootdv2',
-    databaseURL: 'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bootdv2.appspot.com',
   );
 
@@ -68,7 +70,8 @@ class DefaultFirebaseOptions {
     appId: '1:920926023285:ios:125fab48ad176823e3d23c',
     messagingSenderId: '920926023285',
     projectId: 'bootdv2',
-    databaseURL: 'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bootdv2.appspot.com',
     iosBundleId: 'com.example.vootdayAdmin',
   );
@@ -78,7 +81,8 @@ class DefaultFirebaseOptions {
     appId: '1:920926023285:ios:05dcde5ad8f3a1a9e3d23c',
     messagingSenderId: '920926023285',
     projectId: 'bootdv2',
-    databaseURL: 'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://bootdv2-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bootdv2.appspot.com',
     iosBundleId: 'com.example.vootdayAdmin.RunnerTests',
   );
