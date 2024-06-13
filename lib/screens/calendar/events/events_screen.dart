@@ -39,15 +39,16 @@ class _EventsScreenState extends State<EventsScreen> {
           padding: const EdgeInsets.symmetric(vertical: kDefaultPadding),
           child: CustomScrollView(
             slivers: [
-              SliverAppBar(
-                expandedHeight: 136.0,
+               SliverAppBar(
+                expandedHeight: 96.0,
                 flexibleSpace: FlexibleSpaceBar(
+                  title: const  Text('Ended Events'),
                   background: _buildHeaderSection(context, size),
                 ),
               ),
               const SliverFillRemaining(
                 hasScrollBody: false,
-                child: DataPage(), // Utilisation de DataPage ici
+                child: DataPage(),
               ),
             ],
           ),
