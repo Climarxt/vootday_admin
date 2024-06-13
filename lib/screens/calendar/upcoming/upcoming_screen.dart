@@ -41,8 +41,9 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 136.0,
+                expandedHeight: 96.0,
                 flexibleSpace: FlexibleSpaceBar(
+                  title: const  Text('Upcoming Events'),
                   background: _buildHeaderSection(context, size),
                 ),
               ),
@@ -61,9 +62,9 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
     return BlocBuilder<CalendarStatsBloc, CalendarStatsState>(
       builder: (context, state) {
         if (state.comingEventsStatus == CalendarStatsStatus.loading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (state.comingEventsStatus == CalendarStatsStatus.error) {
-          return Center(child: Text('Failed to load data'));
+          return const Center(child: Text('Failed to load data'));
         } else {
           return Wrap(
             direction: Axis.horizontal,
