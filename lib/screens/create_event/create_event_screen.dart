@@ -37,16 +37,24 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return BlocConsumer<CreateEventCubit, CreateEventState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        return Scaffold(
-          floatingActionButton: _buildFloatingActionButton(context),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          body: _buildBody(context, size),
-        );
-      },
+
+    return Scaffold(
+      floatingActionButton: _buildFloatingActionButton(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            expandedHeight: 126.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Create Event'),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: _buildBody(context, size),
+          ),
+        ],
+      ),
     );
   }
 
@@ -54,14 +62,31 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(kDefaultPadding),
-        child: Column(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3.0),
-              child: _buildDetailRows(),
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                child: _buildDetailRows(),
+              ),
             ),
+            const SizedBox(width: 20),
+            Container(
+              width: 540,
+              height: 675,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Image.asset(
+                'assets/images/placeholder-image.png',
+                fit: BoxFit.cover,
+              ),
+            ),
+            Spacer(), // Added spacer to push the content to the center
           ],
         ),
       ),
@@ -76,18 +101,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: _buildDetailList(),
-          ),
-        ),
-        Container(
-          width: 540,
-          height: 675,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Image.asset(
-            'assets/images/placeholder-image.png',
-            fit: BoxFit.cover,
           ),
         ),
       ],
@@ -107,35 +120,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       buildTextFieldCaption(context, 'Caption', _config.captionController),
       buildUserSearchField(context),
     ];
-  }
-
-  Widget buildBrandInput(BuildContext context) {
-    final int tagCount = context.read<CreateEventCubit>().state.tags.length;
-
-    return ConstrainedBox(
-      constraints:
-          BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2.2),
-      child: Padding(
-        padding: const EdgeInsets.all(4),
-        child: GestureDetector(
-          onTap: () => GoRouter.of(context)
-              .go('/newevent/brand', extra: context.read<CreateEventCubit>()),
-          child: AbsorbPointer(
-            child: TextField(
-              controller: TextEditingController(text: 'Brand Name'),
-              decoration: InputDecoration(
-                labelText: 'Author ($tagCount)',
-                labelStyle: const TextStyle(color: Colors.black),
-                fillColor: white,
-                filled: true,
-                border: const OutlineInputBorder(),
-                suffixIcon: const Icon(Icons.arrow_forward),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   Widget _buildFloatingActionButton(BuildContext context) {
@@ -161,73 +145,79 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   Widget buildUserSearchField(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(4),
-          child: TextField(
-            controller: _searchController,
-            onChanged: (query) {
-              if (query.isEmpty) {
-                // Si le champ de recherche est vide, réinitialiser la liste déroulante
+    final Size size = MediaQuery.of(context).size;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: size.width / 2.2),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _searchController,
+              onChanged: (query) {
                 setState(() {
-                  _showUserList = true;
+                  _showUserList = query.isEmpty;
                 });
-              } else {
-                // Sinon, effectuer la recherche normalement
-                context.read<SearchCubit>().searchUsersBrand(query);
-              }
-            },
-            decoration: const InputDecoration(
-              labelText: 'Enter Brand',
-              labelStyle: TextStyle(color: Colors.black),
-              fillColor: white,
-              filled: true,
-              border: OutlineInputBorder(),
+                if (query.isNotEmpty) {
+                  context.read<SearchCubit>().searchUsersBrand(query);
+                }
+              },
+              decoration: const InputDecoration(
+                labelText: 'Enter Brand',
+                labelStyle: TextStyle(color: Colors.black),
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(),
+              ),
             ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        // Utilisez la variable _showUserList pour contrôler l'affichage de la liste
-        if (_showUserList)
-          BlocBuilder<SearchCubit, SearchState>(
-            builder: (context, state) {
-              if (state.status == SearchStatus.loading) {
-                return const CircularProgressIndicator(
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(Colors.transparent));
-              } else if (state.status == SearchStatus.error) {
-                return Text('Error: ${state.failure.message}');
-              } else if (state.status == SearchStatus.loaded) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: state.users.map((user) {
-                    return ListTile(
-                      title: Text(user.username),
-                      onTap: () {
-                        // Mettre à jour le champ selectedUser dans SearchCubit
-                        context.read<SearchCubit>().selectUser(user);
-                        // Mettre à jour la valeur du champ de recherche avec l'username sélectionné
-                        _searchController.text = user.username;
-                        // Masquer la liste déroulante après la sélection de l'utilisateur
-                        setState(() {
-                          _showUserList = false;
-                        });
-                      },
+            const SizedBox(height: 10),
+            if (_showUserList)
+              BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, state) {
+                  if (state.status == SearchStatus.loading) {
+                    return const CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.transparent));
+                  } else if (state.status == SearchStatus.error) {
+                    return Text('Error: ${state.failure.message}');
+                  } else if (state.status == SearchStatus.loaded) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: state.users.map((user) {
+                        return ListTile(
+                          title: Text(user.username),
+                          onTap: () {
+                            context.read<SearchCubit>().selectUser(user);
+                            _searchController.text = user.username;
+                            setState(() {
+                              _showUserList = false;
+                            });
+                          },
+                        );
+                      }).toList(),
                     );
-                  }).toList(),
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
-      ],
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+          ],
+        ),
+      ),
     );
   }
 
   void _submitForm(BuildContext context) async {
+    final newEvent = await _createNewEvent(context);
+    if (newEvent != null) {
+      context.read<CreateEventCubit>().createEvent(newEvent);
+    } else {
+      debugPrint('Aucun auteur n a été trouvé pour l utilisateur sélectionné.');
+    }
+  }
+
+  Future<Event?> _createNewEvent(BuildContext context) async {
     final String id = _config.idController.text;
     final String imageUrl = _config.imageUrlController.text;
     final String caption = _config.captionController.text;
@@ -246,13 +236,12 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     final String logoUrl = _config.logoUrlController.text;
     final User selectedUser = context.read<SearchCubit>().state.selectedUser;
 
-    // Récupérer l'auteur (Brand) correspondant à l'utilisateur sélectionné
     final Brand? author = await _fetchBrandForUser(selectedUser);
 
     if (author != null) {
-      final newEvent = Event(
+      return Event(
         id: id,
-        author: author, // Utiliser l'auteur récupéré
+        author: author,
         imageUrl: imageUrl,
         caption: caption,
         participants: participants,
@@ -265,35 +254,28 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         logoUrl: logoUrl,
         user_ref: selectedUser,
       );
-
-      context.read<CreateEventCubit>().createEvent(newEvent);
-    } else {
-      // Gérer le cas où aucun auteur n'a été trouvé pour l'utilisateur sélectionné
-      debugPrint('Aucun auteur n a été trouvé pour l utilisateur sélectionné.');
     }
+    return null;
   }
 
   Future<Brand?> _fetchBrandForUser(User user) async {
     try {
-      // Rechercher l'auteur correspondant à l'utilisateur dans Firebase
       final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('brands')
           .where('author', isEqualTo: user.username)
           .get();
 
-      // S'il y a des documents correspondants, retourner le premier
       if (querySnapshot.docs.isNotEmpty) {
         final brandDoc = querySnapshot.docs.first;
         final brand = Brand.fromDocument(brandDoc);
-        debugPrint('Auteur trouvé pour l utilisateur ${user.username}: $brand DEBUG : ${brand.id}' );
+        debugPrint(
+            'Auteur trouvé pour l utilisateur ${user.username}: $brand DEBUG : ${brand.id}');
         return brand;
       } else {
-        // Si aucun auteur n'a été trouvé, retourner null
         debugPrint('Aucun auteur trouvé pour l utilisateur ${user.username}');
         return null;
       }
     } catch (e) {
-      // Gérer les erreurs éventuelles lors de la recherche de l'auteur
       debugPrint('Erreur lors de la recherche de l auteur : $e');
       return null;
     }
