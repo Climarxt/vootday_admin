@@ -43,7 +43,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               SliverAppBar(
                 expandedHeight: 96.0,
                 flexibleSpace: FlexibleSpaceBar(
-                  title: const  Text('Upcoming Events'),
+                  title: const Text('Upcoming Events'),
                   background: _buildHeaderSection(context, size),
                 ),
               ),
@@ -61,37 +61,31 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   Widget _buildHeaderSection(BuildContext context, Size size) {
     return BlocBuilder<CalendarStatsBloc, CalendarStatsState>(
       builder: (context, state) {
-        if (state.comingEventsStatus == CalendarStatsStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state.comingEventsStatus == CalendarStatsStatus.error) {
-          return const Center(child: Text('Failed to load data'));
-        } else {
-          return Wrap(
-            direction: Axis.horizontal,
-            spacing: kDefaultPadding,
-            runSpacing: kDefaultPadding,
-            children: [
-              const SummaryCard(
-                title: 'Data 1',
-                value: '**',
-                icon: Icons.person,
-                backgroundColor: white,
-                textColor: black,
-                iconColor: Colors.black12,
-                width: 256,
-              ),
-              SummaryCard(
-                title: 'Data 2',
-                value: state.comingEventsCount.toString(),
-                icon: Icons.calendar_month,
-                backgroundColor: white,
-                textColor: black,
-                iconColor: Colors.black12,
-                width: 256,
-              ),
-            ],
-          );
-        }
+        return Wrap(
+          direction: Axis.horizontal,
+          spacing: kDefaultPadding,
+          runSpacing: kDefaultPadding,
+          children: [
+            const SummaryCard(
+              title: 'Data 1',
+              value: '**',
+              icon: Icons.person,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+            SummaryCard(
+              title: 'Data 2',
+              value: state.comingEventsCount.toString(),
+              icon: Icons.calendar_month,
+              backgroundColor: white,
+              textColor: black,
+              iconColor: Colors.black12,
+              width: 256,
+            ),
+          ],
+        );
       },
     );
   }
