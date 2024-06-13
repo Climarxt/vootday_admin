@@ -15,7 +15,7 @@ import 'package:vootday_admin/screens/comment/bloc/comments_bloc.dart';
 import 'package:vootday_admin/screens/event/bloc/blocs.dart';
 
 void main() async {
-  Bloc.observer = SimpleBlocObserver();
+  // Bloc.observer = SimpleBlocObserver();
   setUrlStrategy(PathUrlStrategy());
   await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
