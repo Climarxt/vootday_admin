@@ -10,9 +10,6 @@ part 'calendar_stats_state.dart';
 class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
   final EventRepository _eventRepository;
 
-  int? _endedEventsCount;
-  int? _comingEventsCount;
-
   CalendarStatsBloc({
     required EventRepository eventRepository,
     required AuthBloc authBloc,
@@ -28,29 +25,37 @@ class CalendarStatsBloc extends Bloc<CalendarStatsEvent, CalendarStatsState> {
     CalendarStatsCountEndedFetchEvent event,
     Emitter<CalendarStatsState> emit,
   ) async {
-    _endedEventsCount = await _eventRepository.getCountEndedEvents();
-    _updateStateIfDataReady(emit);
+    emit(state.copyWith(endedEventsStatus: CalendarStatsStatus.loading));
+    try {
+      final endedEventsCount = await _eventRepository.getCountEndedEvents();
+      emit(state.copyWith(
+        endedEventsCount: endedEventsCount,
+        endedEventsStatus: CalendarStatsStatus.loaded,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        endedEventsStatus: CalendarStatsStatus.error,
+        failure: Failure(message: e.toString()),
+      ));
+    }
   }
 
   Future<void> _mapCalendarStatsCountComingFetchEvent(
     CalendarStatsCountComingFetchEvent event,
     Emitter<CalendarStatsState> emit,
   ) async {
-    _comingEventsCount = await _eventRepository.getCountComingEvents();
-    _updateStateIfDataReady(emit);
-  }
-
-  void _updateStateIfDataReady(Emitter<CalendarStatsState> emit) {
-    if (_endedEventsCount != null && _comingEventsCount != null) {
-      emit(CalendarStatsState(
-        endedEventsCount: _endedEventsCount!,
-        comingEventsCount: _comingEventsCount!,
-        status: CalendarStatsStatus.loaded,
-        failure: const Failure(),
+    emit(state.copyWith(comingEventsStatus: CalendarStatsStatus.loading));
+    try {
+      final comingEventsCount = await _eventRepository.getCountComingEvents();
+      emit(state.copyWith(
+        comingEventsCount: comingEventsCount,
+        comingEventsStatus: CalendarStatsStatus.loaded,
       ));
-      // Réinitialiser les valeurs pour les prochaines utilisations
-      _endedEventsCount = null;
-      _comingEventsCount = null;
+    } catch (e) {
+      emit(state.copyWith(
+        comingEventsStatus: CalendarStatsStatus.error,
+        failure: Failure(message: e.toString()),
+      ));
     }
   }
 }

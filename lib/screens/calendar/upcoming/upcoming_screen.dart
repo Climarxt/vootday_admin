@@ -19,7 +19,6 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   void initState() {
     super.initState();
     context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
-    context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
     context.read<CalendarComingSoonBloc>().add(UpcomingEventsLoadAll());
   }
 
@@ -61,32 +60,37 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   Widget _buildHeaderSection(BuildContext context, Size size) {
     return BlocBuilder<CalendarStatsBloc, CalendarStatsState>(
       builder: (context, state) {
-        return Wrap(
-          direction: Axis.horizontal,
-          spacing: kDefaultPadding,
-          runSpacing: kDefaultPadding,
-          children: [
-            const SummaryCard(
-              title: 'Data 1',
-              value: '**',
-              icon: Icons.person,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            SummaryCard(
-              title: 'Data 2',
-              value: state.comingEventsCount.toString(),
-              icon: Icons.calendar_month,
-              backgroundColor: white,
-              textColor: black,
-              iconColor: Colors.black12,
-              width: 256,
-            ),
-            // _buildButtonsCard(),
-          ],
-        );
+        if (state.comingEventsStatus == CalendarStatsStatus.loading) {
+          return Center(child: CircularProgressIndicator());
+        } else if (state.comingEventsStatus == CalendarStatsStatus.error) {
+          return Center(child: Text('Failed to load data'));
+        } else {
+          return Wrap(
+            direction: Axis.horizontal,
+            spacing: kDefaultPadding,
+            runSpacing: kDefaultPadding,
+            children: [
+              const SummaryCard(
+                title: 'Data 1',
+                value: '**',
+                icon: Icons.person,
+                backgroundColor: white,
+                textColor: black,
+                iconColor: Colors.black12,
+                width: 256,
+              ),
+              SummaryCard(
+                title: 'Data 2',
+                value: state.comingEventsCount.toString(),
+                icon: Icons.calendar_month,
+                backgroundColor: white,
+                textColor: black,
+                iconColor: Colors.black12,
+                width: 256,
+              ),
+            ],
+          );
+        }
       },
     );
   }

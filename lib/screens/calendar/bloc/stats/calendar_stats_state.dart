@@ -5,13 +5,15 @@ enum CalendarStatsStatus { initial, loading, loaded, noEvents, error }
 class CalendarStatsState extends Equatable {
   final int endedEventsCount;
   final int comingEventsCount;
-  final CalendarStatsStatus status;
+  final CalendarStatsStatus endedEventsStatus;
+  final CalendarStatsStatus comingEventsStatus;
   final Failure failure;
 
   const CalendarStatsState({
     required this.endedEventsCount,
     required this.comingEventsCount,
-    required this.status,
+    required this.endedEventsStatus,
+    required this.comingEventsStatus,
     required this.failure,
   });
 
@@ -19,33 +21,33 @@ class CalendarStatsState extends Equatable {
     return const CalendarStatsState(
       endedEventsCount: 0,
       comingEventsCount: 0,
-      status: CalendarStatsStatus.initial,
-      failure: Failure(),
-    );
-  }
-
-  factory CalendarStatsState.loading() {
-    return const CalendarStatsState(
-      endedEventsCount: 0,
-      comingEventsCount: 0,
-      status: CalendarStatsStatus.loading, // Change this to `.loading`
+      endedEventsStatus: CalendarStatsStatus.initial,
+      comingEventsStatus: CalendarStatsStatus.initial,
       failure: Failure(),
     );
   }
 
   @override
-  List<Object?> get props => [endedEventsCount, status, failure];
+  List<Object?> get props => [
+        endedEventsCount,
+        comingEventsCount,
+        endedEventsStatus,
+        comingEventsStatus,
+        failure
+      ];
 
   CalendarStatsState copyWith({
     int? endedEventsCount,
     int? comingEventsCount,
-    CalendarStatsStatus? status,
+    CalendarStatsStatus? endedEventsStatus,
+    CalendarStatsStatus? comingEventsStatus,
     Failure? failure,
   }) {
     return CalendarStatsState(
       endedEventsCount: endedEventsCount ?? this.endedEventsCount,
       comingEventsCount: comingEventsCount ?? this.comingEventsCount,
-      status: status ?? this.status,
+      endedEventsStatus: endedEventsStatus ?? this.endedEventsStatus,
+      comingEventsStatus: comingEventsStatus ?? this.comingEventsStatus,
       failure: failure ?? this.failure,
     );
   }
