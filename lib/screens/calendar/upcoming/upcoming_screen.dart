@@ -19,7 +19,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
   void initState() {
     super.initState();
     context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
-    context.read<CalendarComingSoonBloc>().add(UpcomingEventsLoadAll());
+    // context.read<CalendarComingSoonBloc>().add(UpcomingEventsLoadAll());
   }
 
   @override
@@ -48,7 +48,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
               ),
               const SliverFillRemaining(
                 hasScrollBody: false,
-                child: DataPage(), // Utilisation de DataPage ici
+                child: DataPage(),
               ),
             ],
           ),

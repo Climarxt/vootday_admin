@@ -257,7 +257,6 @@ class EventRepository {
     try {
       logger.logInfo(functionName, 'Fetching all events from Firestore...');
 
-      // Récupérer tous les documents de la collection 'events'
       QuerySnapshot eventsSnapshot = await _firebaseFirestore
           .collection('events')
           .where('done', isEqualTo: false)
@@ -265,15 +264,12 @@ class EventRepository {
 
       logger.logInfo(functionName, 'All event documents fetched.');
 
-      // Liste pour stocker les futures des événements
       List<Future<Map<String, dynamic>>> futureEvents = [];
 
-      // Parcourir les documents et créer un future pour chaque événement
       for (var doc in eventsSnapshot.docs) {
         futureEvents.add(_createEventMap(doc));
       }
 
-      // Attendre que tous les futures se terminent
       List<Map<String, dynamic>> events = await Future.wait(futureEvents);
 
       logger.logInfo(functionName, 'Event objects transformed.',
