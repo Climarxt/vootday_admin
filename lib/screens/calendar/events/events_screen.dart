@@ -18,9 +18,7 @@ class _EventsScreenState extends State<EventsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CalendarStatsBloc>().add(CalendarStatsCountComingFetchEvent());
     context.read<CalendarStatsBloc>().add(CalendarStatsCountEndedFetchEvent());
-    context.read<CalendarEndedBloc>().add(EndedEventsLoadAll());
   }
 
   @override
@@ -77,7 +75,7 @@ class _EventsScreenState extends State<EventsScreen> {
             ),
             SummaryCard(
               title: 'Data 2',
-              value: state.comingEventsCount.toString(),
+              value: state.endedEventsCount.toString(),
               icon: Icons.calendar_month,
               backgroundColor: white,
               textColor: black,

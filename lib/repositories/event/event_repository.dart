@@ -12,6 +12,7 @@ class EventRepository {
   EventRepository({FirebaseFirestore? firebaseFirestore})
       : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
         logger = ContextualLogger('EventRepository');
+
   Future<Event?> getEventById(String eventId) async {
     try {
       DocumentSnapshot eventSnap =
@@ -283,9 +284,10 @@ class EventRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getEndedEvents() async {
+Future<List<Map<String, dynamic>>> getEndedEvents() async {
+    const String functionName = 'EventRepository.getEndedEvents';
     try {
-      debugPrint('getEndedEvents : Fetching all events from Firestore...');
+      logger.logInfo(functionName, 'Fetching all events from Firestore...');
 
       // Récupérer tous les documents de la collection 'events'
       QuerySnapshot eventsSnapshot = await _firebaseFirestore
@@ -293,7 +295,7 @@ class EventRepository {
           .where('done', isEqualTo: true)
           .get();
 
-      debugPrint('getEndedEvents : All event documents fetched.');
+      logger.logInfo(functionName, 'All event documents fetched.');
 
       // Liste pour stocker les futures des événements
       List<Future<Map<String, dynamic>>> futureEvents = [];
@@ -306,13 +308,15 @@ class EventRepository {
       // Attendre que tous les futures se terminent
       List<Map<String, dynamic>> events = await Future.wait(futureEvents);
 
-      debugPrint(
-          'getEndedEvents : Event objects transformed. Total events: ${events.length}');
+      logger.logInfo(functionName, 'Event objects transformed', {
+        'totalEvents': events.length
+      });
 
       return events;
     } catch (e) {
-      debugPrint(
-          'getEndedEvents : An error occurred while fetching events: ${e.toString()}');
+      logger.logError(functionName, 'An error occurred while fetching events', {
+        'error': e.toString()
+      });
       return [];
     }
   }
