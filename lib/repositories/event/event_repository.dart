@@ -1,14 +1,17 @@
 import 'package:vootday_admin/config/configs.dart';
+import 'package:vootday_admin/config/logger/logger.dart';
 import 'package:vootday_admin/models/models.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class EventRepository {
   final FirebaseFirestore _firebaseFirestore;
+  final ContextualLogger logger;
 
   EventRepository({FirebaseFirestore? firebaseFirestore})
-      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
-
+      : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance,
+        logger = ContextualLogger('EventRepository');
   Future<Event?> getEventById(String eventId) async {
     try {
       DocumentSnapshot eventSnap =
@@ -250,8 +253,9 @@ class EventRepository {
   }
 
   Future<List<Map<String, dynamic>>> getUpComingEvents() async {
+    const String functionName = 'getUpComingEvents';
     try {
-      debugPrint('getUpComingEvents : Fetching all events from Firestore...');
+      logger.logInfo(functionName, 'Fetching all events from Firestore...');
 
       // Récupérer tous les documents de la collection 'events'
       QuerySnapshot eventsSnapshot = await _firebaseFirestore
@@ -259,7 +263,7 @@ class EventRepository {
           .where('done', isEqualTo: false)
           .get();
 
-      debugPrint('getUpComingEvents : All event documents fetched.');
+      logger.logInfo(functionName, 'All event documents fetched.');
 
       // Liste pour stocker les futures des événements
       List<Future<Map<String, dynamic>>> futureEvents = [];
@@ -272,13 +276,13 @@ class EventRepository {
       // Attendre que tous les futures se terminent
       List<Map<String, dynamic>> events = await Future.wait(futureEvents);
 
-      debugPrint(
-          'getUpComingEvents : Event objects transformed. Total events: ${events.length}');
+      logger.logInfo(functionName, 'Event objects transformed.',
+          {'totalEvents': events.length});
 
       return events;
     } catch (e) {
-      debugPrint(
-          'getUpComingEvents : An error occurred while fetching events: ${e.toString()}');
+      logger.logError(functionName, 'An error occurred while fetching events',
+          {'error': e.toString()});
       return [];
     }
   }
@@ -317,28 +321,43 @@ class EventRepository {
     }
   }
 
-// Fonction pour créer un Map d'événement à partir d'un document
+  // Fonction pour créer un Map d'événement à partir d'un document
   Future<Map<String, dynamic>> _createEventMap(DocumentSnapshot doc) async {
-    Event event = await Event.fromDocument(doc) as Event;
-    return {
-      'id': event.id,
-      'author':
-          event.author.toDocument(), // Convert Brand to Map<String, dynamic>
-      'imageUrl': event.imageUrl,
-      'caption': event.caption,
-      'participants': event.participants,
-      'title': event.title,
-      'date': event.date,
-      'dateEvent': event.dateEvent,
-      'dateEnd': event.dateEnd,
-      'tags': event.tags,
-      'reward': event.reward,
-      'done': event.done,
-      'logoUrl': event.logoUrl,
-      'user_ref':
-          event.user_ref.toDocument(), // Convert User to Map<String, dynamic>
-      'brandName': event.author.author,
-    };
+    const String functionName = '_createEventMap';
+    try {
+      Event event = await Event.fromDocument(doc) as Event;
+      Map<String, dynamic> eventMap = {
+        'id': event.id,
+        'author':
+            event.author.toDocument(), // Convert Brand to Map<String, dynamic>
+        'imageUrl': event.imageUrl,
+        'caption': event.caption,
+        'participants': event.participants,
+        'title': event.title,
+        'date': event.date,
+        'dateEvent': event.dateEvent,
+        'dateEnd': event.dateEnd,
+        'tags': event.tags,
+        'reward': event.reward,
+        'done': event.done,
+        'logoUrl': event.logoUrl,
+        'user_ref':
+            event.user_ref.toDocument(), // Convert User to Map<String, dynamic>
+        'brandName': event.author.author,
+      };
+
+      logger.logInfo(functionName, 'Event mapped', {
+        'id': event.id,
+        'author': event.author.author,
+        'title': event.title,
+      });
+
+      return eventMap;
+    } catch (e) {
+      logger.logError(
+          functionName, 'Error mapping event', {'error': e.toString()});
+      return {};
+    }
   }
 
   Future<int> getTotalLikesForEventPosts(String eventId) async {
@@ -384,9 +403,10 @@ class EventRepository {
   }
 
   Future<int> getCountEndedEvents() async {
+    const String functionName = 'getCountEndedEvents';
     try {
-      debugPrint(
-          'getCountEndedEvents : Récupération du nombre d\'événements terminés...');
+      logger.logInfo(
+          functionName, 'Récupération du nombre d\'événements terminés...');
 
       // Requête pour filtrer les événements où 'done' est vrai
       QuerySnapshot querySnapshot = await _firebaseFirestore
@@ -397,35 +417,37 @@ class EventRepository {
       // Le nombre de documents correspondants représente le nombre d'événements terminés
       int count = querySnapshot.docs.length;
 
-      debugPrint('getCountEndedEvents : Nombre d\'événements terminés: $count');
+      logger.logInfo(functionName, 'Nombre d\'événements terminés récupéré',
+          {'count': count});
       return count;
     } catch (e) {
-      debugPrint(
-          'getCountEndedEvents : Erreur lors du comptage des événements - ${e.toString()}');
+      logger.logError(functionName, 'Erreur lors du comptage des événements',
+          {'error': e.toString()});
       return 0; // Retourne 0 en cas d'erreur
     }
   }
 
   Future<int> getCountComingEvents() async {
+    const String functionName = 'getCountComingEvents';
     try {
-      debugPrint(
-          'getCountComingEvents : Récupération du nombre d\'événements terminés...');
+      logger.logInfo(
+          functionName, 'Récupération du nombre d\'événements terminés...');
 
-      // Requête pour filtrer les événements où 'done' est vrai
+      // Requête pour filtrer les événements où 'done' est faux
       QuerySnapshot querySnapshot = await _firebaseFirestore
           .collection(Paths.events)
           .where('done', isEqualTo: false)
           .get();
 
-      // Le nombre de documents correspondants représente le nombre d'événements terminés
+      // Le nombre de documents correspondants représente le nombre d'événements à venir
       int count = querySnapshot.docs.length;
 
-      debugPrint(
-          'getCountComingEvents : Nombre d\'événements terminés: $count');
+      logger.logInfo(
+          functionName, 'Nombre d\'événements terminés', {'count': count});
       return count;
     } catch (e) {
-      debugPrint(
-          'getCountComingEvents : Erreur lors du comptage des événements - ${e.toString()}');
+      logger.logError(functionName, 'Erreur lors du comptage des événements',
+          {'error': e.toString()});
       return 0; // Retourne 0 en cas d'erreur
     }
   }
