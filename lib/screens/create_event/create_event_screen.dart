@@ -38,57 +38,57 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      floatingActionButton: _buildFloatingActionButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            expandedHeight: 126.0,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text('Create Event'),
+    return Padding(
+      padding: const EdgeInsets.all(kDefaultPadding),
+      child: Scaffold(
+        floatingActionButton: _buildFloatingActionButton(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: CustomScrollView(
+          slivers: [
+            const SliverAppBar(
+              expandedHeight: 126.0,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text('Create Event'),
+              ),
             ),
-          ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: _buildBody(context, size),
-          ),
-        ],
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _buildBody(context, size),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context, Size size) {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(kDefaultPadding),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                child: _buildDetailRows(),
-              ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3.0),
+              child: _buildDetailRows(),
             ),
-            const SizedBox(width: 20),
-            Container(
-              width: 540,
-              height: 675,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Image.asset(
-                'assets/images/placeholder-image.png',
-                fit: BoxFit.cover,
-              ),
+          ),
+          const SizedBox(width: 20),
+          Container(
+            width: 540,
+            height: 675,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            Spacer(), // Added spacer to push the content to the center
-          ],
-        ),
+            child: Image.asset(
+              'assets/images/placeholder-image.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Spacer(), // Added spacer to push the content to the center
+        ],
       ),
     );
   }

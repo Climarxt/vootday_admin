@@ -16,6 +16,7 @@ import 'package:vootday_admin/screens/create_event/cubit/create_event/create_eve
 import 'package:vootday_admin/screens/create_event/search_brand_screen.dart';
 import 'package:vootday_admin/screens/event/events.dart';
 import 'package:vootday_admin/screens/event/feed_event.dart';
+import 'package:vootday_admin/screens/functions/functions_screens.dart';
 import 'package:vootday_admin/screens/login/cubit/login_cubit.dart';
 import 'package:vootday_admin/screens/login/logins.dart';
 import 'package:vootday_admin/screens/post/posts.dart';
@@ -164,7 +165,8 @@ GoRouter createRouter(BuildContext context) {
                     state.uri.toString().startsWith('/newuser') ||
                     state.uri.toString().startsWith('/profile') ||
                     state.uri.toString().startsWith('/swipe') ||
-                    state.uri.toString().startsWith('/settings')
+                    state.uri.toString().startsWith('/settings') ||
+                    state.uri.toString().startsWith('/functions')
                 ? null
                 : AppBar(
                     // If the current location is '/** */', display a leading IconButton
@@ -421,6 +423,20 @@ GoRouter createRouter(BuildContext context) {
               ),
             ],
           ),
+          // Functions
+          StatefulShellBranch(
+            routes: <RouteBase>[
+              GoRoute(
+                path: '/functions',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return MaterialPage<void>(
+                    key: state.pageKey,
+                    child: const FunctionsScreen(),
+                  );
+                },
+              ),
+            ],
+          ),
           // Users
           StatefulShellBranch(
             routes: <RouteBase>[
@@ -451,25 +467,11 @@ GoRouter createRouter(BuildContext context) {
                   ]),
             ],
           ),
-           // New user
+          // New user
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
                 path: '/newuser',
-                pageBuilder: (BuildContext context, GoRouterState state) {
-                  return MaterialPage<void>(
-                    key: state.pageKey,
-                    child: const SettingsScreen(),
-                  );
-                },
-              ),
-            ],
-          ),
-          // Profile
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: '/profile',
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   return MaterialPage<void>(
                     key: state.pageKey,

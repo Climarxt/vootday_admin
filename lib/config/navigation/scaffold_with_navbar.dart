@@ -44,14 +44,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
                 NavigationRailDestination(
                     icon: Icon(Icons.edit_calendar), label: Text('New Event')),
                 NavigationRailDestination(
+                    icon: Icon(Icons.code), label: Text('Functions')),
+                NavigationRailDestination(
                     icon: Icon(Icons.people), label: Text('Users')),
                 NavigationRailDestination(
-                    icon: Icon(Icons.person_add_alt_1), label: Text('New user')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.account_circle), label: Text('Profile')),
-                NavigationRailDestination(
-                    icon: Icon(Icons.question_mark_outlined),
-                    label: Text('Settings')),
+                    icon: Icon(Icons.person_add_alt_1),
+                    label: Text('New user')),
               ],
             ),
           ),
